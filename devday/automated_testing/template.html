@@ -1,0 +1,269 @@
+<!--
+Google IO 2012/2013 HTML5 Slide Template
+
+Authors: Eric Bidelman <ebidel@gmail.com>
+         Luke Mahé <lukem@google.com>
+
+URL: https://code.google.com/p/io-2012-slides
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <!--This one seems to work all the time, but really small on ipad-->
+  <!--<meta name="viewport" content="initial-scale=0.4">-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" media="all" href="theme/css/default.css">
+  <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="theme/css/phone.css">
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="js/slides" src="js/require-1.0.8.min.js"></script>
+</head>
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+    <aside class="gdbar"><img src="images/google_developers_icon_128.png"></aside>
+    <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+    </hgroup>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Agenda</h2>
+    </hgroup>
+    <article>
+      <ul>
+        <li>Theory (overview)</li>
+        <li>Examples of unit tests</li>
+		<li>Examples of spring tests</li>
+        <li>Excluded topics</li>
+      </ul>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2><a href="http://en.wikipedia.org/wiki/Software_testing">Basic theory</a></h2>
+    </hgroup>
+    <article class="smaller">
+      <ul class="build">
+        <li>Types:
+		  <ul>
+			<li>Static (reviews, inspection, etc.)</li>
+			<li>Dynamic (execution of program againt test case)</li>
+		  </ul>
+		</li>
+        <li>Approaches:
+		  <ul>
+			<li>Black box (examining functionality without any knowledge of internal implementation)</li>
+			<li>White box(tests internal structures or workings of a program)</li>
+			<li>Gray box (executing tests at the user, or black-box level, with having knowledge of internal data structures and algorithms for purposes of designing tests)</li>
+		  </ul>
+		</li>
+        <li>Levels:
+		  <ul>
+			<li>Unit (component testing)</li>
+			<li>Integration (testing interfaces between components against a software design)</li>
+			<li>System(tests a completely integrated system to verify that it meets its requirement)</li>
+			<li>Acceptance</li>
+		  </ul>
+		</li>
+      </ul>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2><a href="http://en.wikipedia.org/wiki/Software_testing">Objectives of testing</a></h2>
+    </hgroup>
+    <article class="smaller">
+	  <ul>
+		<li>Installation (verify installation)</li>
+		<li>Compatibility (testing compatibility with other SW - e.g. OS)</li>
+		<li>Sanity (determines whether it is reasonable to proceed with further testing)</li>
+		<li>Smoke (determines whether there are serious problems)</li>
+		<li>Regression (testing focused on finding defects after a major code change has occurred)</li>
+		<li>Functional (testing to verify a specific action or function of the code meets requirement or specification)</li>
+		<li>Performance (determines how a system or sub-system performs in terms of responsiveness and stability under a particular workload)</li>
+		<li>Security (determines prepareness of system to prevent system intrusion by hackers)</li>
+	  </ul>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Mocks & Stubs - comparison</h2>
+      <h3>Based on spring training materials</h3>
+    </hgroup>
+    <article>
+      <table>
+        <tr>
+          <th></th>
+		  <th>Advantages</th>
+		  <th>Disadvantages</th>
+        </tr>
+        <tr>
+          <td class="highlight">Mock</td>
+		  <td>
+			  <ul>
+				<li>No additional class to maintain</li>
+				<li>Only relevant for the test</li>
+				<li>Test behavior and state</li>
+			  </ul>  
+		  </td>
+		  <td>
+			  <ul>
+				<li>A little harder to understand (at first)</li>
+			  </ul>  
+		  </td>
+        </tr>
+        <tr>
+          <td class="highlight">Stub</td>
+		  <td>
+			  <ul>
+				<li>Easy to implement and understand</li>
+				<li>Reusable</li>
+			  </ul>  
+		  </td>
+		  <td>
+			  <ul>
+				<li>Needs update when the interface is changed</li>
+				<li>Must implement all methods</li>
+				<li>Refactoring can break other test (where the stub is reused)</li>
+			  </ul>  
+		  </td>
+        </tr>
+      </table>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Mocks & Stubs - general recommendations</h2>
+      <h3>Based on spring training materials</h3>
+    </hgroup>
+    <article>
+	  <ul>
+		<li>Use mocks for non-trivial interfaces</li>
+		<li>Use stubs for simple interfaces with repeated functionality</li>
+		<li>Always consider the specific situation</li>
+	  </ul>  
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Rules for writting tests</h2>
+    </hgroup>
+    <article>
+	  <ul>
+		<li>independency</li>
+		<li>performance</li>
+		<li>only in test package</li>
+		<li>high test coverage != good tests</li>
+	  </ul>  
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Unit tests</h2>
+	  <h2>Examples</h2>
+    </hgroup>
+    <article>
+	  <ul>
+		<li>simple tests</li>
+		<li>mocks (EasyMock + Mockito + PowerMock)</li>
+		<li>common techniques (hamcrest, before & after, method order)</li>
+		<li>advanced techniques (private constructors and methods, enums, exception, static methods, parameterized test, etc.)</li>
+		<li>maven - run tests in parallel</li>
+	  </ul>  
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Unit tests</h2>
+	  <h2>Excluded topics</h2>
+    </hgroup>
+    <article>
+	  <ul>
+		<li>@DataPoint a @Theory</li>
+		<li>@Cathegory + maven exclude</li>
+		<li>Powermock - verifystatic, verifyPrivate, invoke</li>
+		<li>Mockito - @mock</li>
+	  </ul>  
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Spring tests</h2>
+	  <h2>Examples</h2>
+    </hgroup>
+    <article> 
+	  <ul>
+		<li>Basic usage</li>
+		<li>Persistence</li>
+		<li>"Special" testing annotations</li>
+		<li><a href="http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/testing.html">mock - chapter 10.2.1</a></li>
+	  </ul>  
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Other topics for next presentation</h2>
+    </hgroup>
+    <article>
+	  <ul>
+		<li>Excluded topics</li>
+		<li>Spring MVC</li>
+		<li>Soap</li>
+		<li>Selenium</li>
+		<li>Etc.</li>
+	  </ul>  
+    </article>
+  </slide>
+
+  <slide class="thank-you-slide segue nobackground">
+    <aside class="gdbar right"><img src="images/google_developers_icon_128.png"></aside>
+    <article class="flexbox vleft auto-fadein">
+      <h2>Thank You!</h2>
+    </article>
+    <p class="auto-fadein" data-config-contact>
+      <!-- populated from slide_config.json -->
+    </p>
+  </slide>
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-XXXXXXXX-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+<!--[if IE]>
+  <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+</body>
+</html>
