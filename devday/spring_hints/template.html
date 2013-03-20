@@ -141,7 +141,7 @@ public class MessageHolder {
 
   <slide>
     <hgroup>
-      <h2>Core - bean creation</h2>
+      <h2>Bean lifecycle - overview</h2>
 	  <h3>Based on spring training materials</h3>
     </hgroup>
     <article class="smaller">
@@ -187,7 +187,7 @@ public class MessageHolder {
 
   <slide>
     <hgroup>
-      <h2>Bean initialization</h2>
+      <h2>Bean lifecycle - initialization</h2>
 	  <h3>Based on spring training materials</h3>
     </hgroup>
     <article class="smaller">
@@ -207,7 +207,7 @@ public class MessageHolder {
 
   <slide>
     <hgroup>
-      <h2>Bean destroy</h2>
+      <h2>Bean lifecycle - destroy</h2>
 	  <h3>Based on spring training materials</h3>
     </hgroup>
     <article class="smaller">
@@ -220,11 +220,152 @@ public class MessageHolder {
   </slide>
 
   <slide>
+	<aside class="gdbar right"><img src="images/google_developers_icon_128.png"></aside>
     <hgroup>
       <h2>Configuration</h2>
     </hgroup>
+    <article>
+	  <ul>
+        <li>Splitting files</li>
+        <li>Place holder/override</li>
+		<li><a href="http://app.connect.vmware.com/e/es.aspx?s=524&e=32081812&elq=1073cca8769244ad9bc3ca97b763bc6a&OPENID=Browser">SpEL</a></li>
+		<li>Abstract definition</li>
+		<li>Namespace P and C</li>
+      </ul>	
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Configuration - Splitting files</h2>
+    </hgroup>
     <article class="smaller">
-      TODO
+      <p>Infrastructure configuration (system-config.xml):<pre class="prettyprint" data-lang="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+    &lt;bean&gt;
+	&lt;jdbc:embedded-database id="dataSource"&gt;
+		&lt;jdbc:script location="classpath:com/bank/config/sql/schema.sql"/&gt;
+		&lt;jdbc:script location="classpath:com/bank/config/sql/test-data.sql"/&gt;
+	&lt;/jdbc:embedded-database&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;</pre>
+		</p>
+      <p>Application configuration (application-context.xml):<pre class="prettyprint" data-lang="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+    <b>&lt;import resource="classpath:/META-INF/spring/system-config.xml"/&gt;</b>
+	
+    &lt;bean id="someDAO" class="com.asseco.SomeDAO"&gt;
+        &lt;property name="dataSource" <b>ref="dataSource"</b> /&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;</pre>
+		</p>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Configuration - property-placeholder</h2>
+    </hgroup>
+    <article class="smaller">
+	  <p>The purpose is to "manage" (load) configuration properties (placeholders).</p>
+      <p>Simple configuration:<pre class="prettyprint" data-lang="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+	&lt;context:property-placeholder location="classpath:db-${my.env}.properties"/&gt;
+&lt;/beans&gt;</pre>
+		</p>
+      <p>Advanced configuration:<pre class="prettyprint" data-lang="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+	&lt;context:property-placeholder location="classpath:db-${my.env}.properties" 
+		properties-ref="defaultConfig" ignore-resource-not-found="true" /&gt;
+	
+	&lt;util:map id="defaultConfig"&gt;
+		&lt;entry key="sdpf3ExeAuditSearchPeriodAllowed" value="7"/&gt;
+	&lt;/util:map&gt;
+&lt;/beans&gt;</pre>
+		</p>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Configuration - property-override</h2>
+    </hgroup>
+    <article class="smaller">
+	  <p>The purpose is to override bean's properties.</p>
+      <pre class="prettyprint" data-lang="java">
+@Component
+public class CustomBean {
+    @Value("${some-config-item}")
+    private String message = "default message";
+}</pre><pre class="prettyprint" data-lang="properties">
+<b>customBean.message=custom message</b>
+</pre><pre class="prettyprint" data-lang="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+	<b>&lt;context:property-override location="classpath:config.properties"/&gt;</b>
+	
+	&lt;bean id="customBean" class="org.somepackage.CustomBean"/&gt;
+&lt;/beans&gt;</pre>
+		</p>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Spring Expression Language (SpEL)</h2>
+    </hgroup>
+    <article class="smaller">
+	  <ul>
+        <li>Reference bean<pre class="prettyprint" data-lang="java">
+    @Value("${customBean.message}")
+    private String foo;</pre>
+		</li>
+        <li>Invoking methods, do mathematical, relational and logical operations on values<pre class="prettyprint" data-lang="java">
+    @Value("#{T(java.lang.Math).random()}")
+    private Double value;
+	
+    @Value("#{counter.total+42}")
+    private Integer value;</pre>
+		</li>
+        <li>Regular expression matching<pre class="prettyprint" data-lang="java">
+    @Value("#{admin.email matches '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.com'}")
+    private String email;</pre>
+		</li>
+        <li>Collection manipulation<pre class="prettyprint" data-lang="xml">
+    &lt;property name="chosenCity" value="#{cities[2]}" /&gt;</pre>
+		</li>
+      </ul>	
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Abstract Definition (Bean)</h2>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+    &lt;bean id="defBean" class="somepackage.AbstractComponent" user="sys" password="sys" abstract="true"/&gt;
+	
+    &lt;!-- instantiate bean "defBean" --&gt;
+    &lt;bean id="ABean" parent="defBean" url="http://localhost:808/abc/"/&gt;
+
+    &lt;!-- override password" --&gt;
+    &lt;bean id="BBean" parent="defBean" url="http://localhost:808/abc/" password="abc"/&gt;
+
+    &lt;!-- override user and password --&gt;
+    &lt;bean id="CBean" parent="defBean" url="http://localhost:808/abc/" user="admin" password="xyz" /&gt;
+	
+&lt;/beans&gt;</pre>
+	
     </article>
   </slide>
 
