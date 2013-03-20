@@ -1,1 +1,4 @@
 http://htmlpreview.github.com/?https://github.com/arnosthavelka/presentation/blob/master/devday/automated_testing/template.html
+
+http://arnosthavelka.github.com/presentation/devday/automated_testing/template.html
+http://arnosthavelka.github.com/presentation/devday/spring_hints/template.html
