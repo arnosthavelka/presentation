@@ -353,19 +353,78 @@ public class CustomBean {
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
 
-    &lt;bean id="defBean" class="somepackage.AbstractComponent" user="sys" password="sys" abstract="true"/&gt;
+    &lt;bean id="defBean" class="somepackage.AbstractComponent" p:user="sys" p:password="sys" abstract="true"/&gt;
 	
     &lt;!-- instantiate bean "defBean" --&gt;
-    &lt;bean id="ABean" parent="defBean" url="http://localhost:808/abc/"/&gt;
+    &lt;bean id="ABean" parent="defBean" p:url="http://localhost:808/abc/"/&gt;
 
     &lt;!-- override password" --&gt;
-    &lt;bean id="BBean" parent="defBean" url="http://localhost:808/abc/" password="abc"/&gt;
+    &lt;bean id="BBean" parent="defBean" p:url="http://localhost:808/abc/" p:password="abc"/&gt;
 
     &lt;!-- override user and password --&gt;
-    &lt;bean id="CBean" parent="defBean" url="http://localhost:808/abc/" user="admin" password="xyz" /&gt;
+    &lt;bean id="CBean" parent="defBean" p:url="http://localhost:808/abc/" p:user="admin" p:password="xyz" /&gt;
 	
 &lt;/beans&gt;</pre>
 	
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2><a href="http://blog.chariotsolutions.com/2012/01/spring-31-constructor-namespace.html">Namespace P</a></h2>
+    </hgroup>
+    <article class="smaller">
+		Class definition:
+		<pre class="prettyprint" data-lang="java">
+public class AuditManager {
+    private String message = "Default message";
+    private AuditDAO dao;
+}</pre>
+	Old way configuration (via element &lt;property/&gt;):
+	<pre class="prettyprint" data-lang="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+    &lt;bean id="auditManager" class="somepackage.AuditManager"&gt;
+        &lt;property name="message" value="Setter Value"/&gt;
+        &lt;property name="dao" ref="auditDAO"/&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;</pre>
+	New way configuration (via P namespace):
+	<pre class="prettyprint" data-lang="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans ... <b>xmlns:p="http://www.springframework.org/schema/p"</b>&gt;
+    &lt;bean id="auditManager" class="somepackage.AuditManager" <b>p:message="My Value" p:dao-ref="auditDAO"</b>/&gt;
+&lt;/beans&gt;</pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2><a href="http://blog.chariotsolutions.com/2012/01/spring-31-constructor-namespace.html">Namespace C</a></h2>
+    </hgroup>
+    <article class="smaller">
+		Class definition:
+		<pre class="prettyprint" data-lang="java">
+public class AuditManager {
+	
+	public AuditManager(String message, AuditDAO dao) {}
+}</pre>
+	Old way configuration (via element &lt;constructor-arg/&gt;):
+	<pre class="prettyprint" data-lang="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+    &lt;bean id="auditManager" class="somepackage.AuditManager"&gt;
+        &lt;constructor-arg name="message" value="Setter Value"/&gt;
+        &lt;constructor-arg name="dao" ref="auditDAO"/&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;</pre>
+	New way configuration (via C namespace):
+	<pre class="prettyprint" data-lang="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans ... <b>xmlns:c="http://www.springframework.org/schema/c"</b>&gt;
+    &lt;bean id="auditManager1" class="somepackage.AuditManager" <b>c:message="My Value" c:dao-ref="auditDAO"</b>/&gt;
+    &lt;bean id="auditManager2" class="somepackage.AuditManager" <b>c:_0="My Value" c:_1-ref="auditDAO"</b>/&gt;
+&lt;/beans&gt;</pre>
     </article>
   </slide>
 
