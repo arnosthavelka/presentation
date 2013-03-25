@@ -323,7 +323,7 @@ public class CustomBean {
     <article class="smaller">
 	  <ul>
         <li>Reference bean<pre class="prettyprint" data-lang="java">
-    @Value("${customBean.message}")
+    @Value("#{customBean.message}")
     private String foo;</pre>
 		</li>
         <li>Invoking methods, do mathematical, relational and logical operations on values<pre class="prettyprint" data-lang="java">
