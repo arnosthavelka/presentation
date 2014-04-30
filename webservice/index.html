@@ -52,14 +52,22 @@
 				</section>
 
 				<section>
-					<h2>Agenda</h2>
+					<h2>About me</h2>
 					<ol>
-						<li>Basic theory:
-							<ul>
-								<li>what is WS, standards JAX-WS, WS-I, Soap, Rest</li>
-								<li>basics of WSDL & XSD (simple type, complex type, enum, namespace, etc.)</li>
-							</ul>
+						<li>Part of ACE: since 6/2009</li>
+						<li>Job title: Solution Architect (Head of SW development)</li>
+						<li>Division: Public CZ</li>
+						<li>Certifications:<br/>
+							<img src="img/scjp.jpg" alt="Sun Certified Programmer for the Java Platform, Standard Edition 6 (5/2010)" style="-webkit-transform: rotate(180deg);"><br/>
+							<img src="img/ocwsd.png" alt="Oracle Certified Professional, Java EE 5 Web Services Developer (12/2010)" style="-webkit-transform: rotate(180deg);"><br/>
+							<img src="img/spring.jpg" alt="Spring Core 3.0 (7/2013)" style="-webkit-transform: rotate(180deg);"><br/>
 						</li>
+					</ol>
+				</section>
+				
+				<section>
+					<h2>TODO</h2>
+					<ol>
 						<li>Implementation of WS (java vs. spring)
 							<ul>
 								<li>prerequisites (WildFly, maven, Java 7, Spring 4, etc.)</li>
@@ -79,9 +87,10 @@
 				</section>
 
 				<section>
-					<h2>Basic theory</h2>
+					<h2>Agenda</h2>
 					<ol>
-						<li>TODO</li>
+						<li>Basic theory</li>
+						<li>WSDL & XSD</li>
 						<li>Implementation of WS (from the scratch)</li>
 						<li>Implementation of WS client</li>
 						<li>Testing WS (Java + SoapUI)</li>
@@ -89,20 +98,143 @@
 				</section>
 
 				<section>
-					<h2>About me</h2>
-					<ol>
-						<li>Part of ACE: since 6/2009</li>
-						<li>Job title: Solution Architect (Head of SW development)</li>
-						<li>Division: Public CZ</li>
-						<li>Certifications:<br/>
-							<img src="img/scjp.jpg" alt="Sun Certified Programmer for the Java Platform, Standard Edition 6 (5/2010)" style="-webkit-transform: rotate(180deg);"><br/>
-							<img src="img/ocwsd.png" alt="Oracle Certified Professional, Java EE 5 Web Services Developer (12/2010)" style="-webkit-transform: rotate(180deg);"><br/>
-							<img src="img/spring.jpg" alt="Spring Core 3.0 (7/2013)" style="-webkit-transform: rotate(180deg);"><br/>
+					<section>
+						<h2>1. Basic theory</h2>
+						<ol>
+							<li>Definition of webservice</li>
+							<li>JAX-WS</li>
+							<li>WS-I</li>
+							<li>WSDL (MEP, RPC vs. Document)</li>
+							<li>Advanced standards (MTOM, WS-*)</li>
+						</ol>
+					</section>
+					<section>
+						<h2>1.1 Definition of webservice</h2>
+						<ul>
+							<li><a href="http://en.wikipedia.org/wiki/Web_service" alt="Definition of webservice on Wikipedia">Wikipedia</a> defines webservice as 
+								<q>a software system designed to support interoperable machine-to-machine interaction over a network.</q></li>
+							<li>Basic types:
+								<ul>
+									<li><a href="http://en.wikipedia.org/wiki/SOAP" alt="Definition of Soap WS on Wikipedia">Soap</a> - Simple Object Access Protocol</li>
+									<li><a href="http://en.wikipedia.org/wiki/Representational_state_transfer" alt="Definition of Rest WS on Wikipedia">Rest</a> - Representational state transfer (out of scope)</li>
+								</ul>
+							</li>
+							<li><a href="http://ws-i.org" alt="Web of WS-I">WS-I Basic Profile</a> - defines basic rules to allow interoperability between different
+							systems, technologies, etc.</li>
+						</ul>
+						<aside class="notes">
+							<p>
+								<strong>Soap</strong> - XML-based, defined by WSDL
+								underlying protoco: HTTP/JMS
+							</p>
+							<p>
+								<strong>rest</strong> - no XML-based, no required interface definition<br/>
+								based on HTTP methods GET/PUT (update)/POST (insert)/DELETE<br/>
+								stateless, cacheable, etc.
+							</p>
+						</aside>
+					</section>
+					<section>
+						<h2>1.2 JAX-WS</h2>
+						<ul>
+							<li><a href="http://en.wikipedia.org/wiki/Java_API_for_XML_Web_Services" alt="Link of JAX-WS on Wikipedia">JAX-WS</a> (Java API for XML Web Services) is Java specification 
+							(<a href="http://jcp.org/en/jsr/detail?id=224" alt="Link to JSR-224">JSR-224</a>) of webservices.</li>
+							<li>Vendors: Metro project, CXF, Axis, Oracle Weblogic, etc.</li>
+							<li>Related technologies: JAXB, SAAJ, etc.</li>
+							<li>Specifications in JavaEE:
+								<table style="border: 1px solid white;">
+									<tr style="background-color: gray;">
+										<th>Name</th>
+										<th><a href="http://www.oracle.com/technetwork/java/javaee/tech/javaee5-jsp-135162.html" alt="List of technologies in JavaEE 5">JavaEE 5</a></th>
+										<th><a href="http://www.oracle.com/technetwork/java/javaee/tech/index.html" alt="List of technologies in JavaEE 6 & 7">JavaEE 6 & 7</a></th>
+									</tr>
+									<tr>
+										<td>JAX-WS</td>
+										<td>2.0</td>
+										<td>2.2</td>
+									</tr>
+									<tr>
+										<td>JAX-RPC</td>
+										<td>1.1</td>
+										<td>1.1</td>
+									</tr>
+									<tr>
+										<td>JAX-B</td>
+										<td>2.0</td>
+										<td>2.2</td>
+									</tr>
+									<tr>
+										<td>SOAP</td>
+										<td>1.2</td>
+										<td>1.2</td>
+									</tr>
+									<tr>
+										<td>WSDL</td>
+										<td>1.1</td>
+										<td>1.1</td>
+									</tr>
+								</table>
+							</li>
+					</section>
+					<section>
+						<h2>1.3 WSDL</h2>
+						<ul>
+							<li>WSDL is abbreviation of <q>Web Services Metadata for the Java Platform</q>.</li>
+							<li>MEP types:
+								<ul>
+									<li><strong>Request/response</strong> - the endpoint receives a message and sends a correlated message.</li>
+									<li>One-way - the endpoint receives a message.</li>
+									<li>Solicit-response - the endpoint sends a message and receives a correlated message.</li>
+									<li>Notification - the endpoint sends a message.</li>
+								</ul>
+							</li>
+							<li>WSDL style (see <a href="http://www.ibm.com/developerworks/library/ws-whichwsdl/">here</a>):
+								<ul>
+									<li>RPC/encoded</li>
+									<li>RPC/literal</li>
+									<li>Document/encoded</li>
+									<li><strong>Document/literal</strong> - The endpoint sends a message.</li>
+								</ul>
+							</li>
+						</ul>
+						<aside class="notes">
+							<p>
+								<strong>WSDL style</strong> - every style has its strengths or weaknesses (e.g. performance, readability, etc.).
+							</p>
+						</aside>
+					</section>
+					<section>
+						<h2>1.4 WS-I</h2>
+						<ul>
+							<li>It's a set of guidelines, best practices and test for interoperability.</li>
+							<li>Last version is 2.0, but frequently used is still version 1.2.</li>
 						</li>
-					</ol>
+					</section>
+					<section>
+						<h2>1.5 Advanced standards (MTOM, WS-*)</h2>
+						<ul>
+							<li><strong>MTOM</strong> (<q>Message Transmission Optimization Mechanism</q>) - efficient sending binary data to and from WS, usually together with XOP (<q>XML-binary Optimized Packaging</q>)</li>
+							<li><strong>WS-Addressing</strong> - a standardized way of including message routing data within SOAP headers</li>
+							<li><strong>WS-Security</strong> - an extension to SOAP to apply security to Web services</li>
+							<li><strong>WS-ReliableMessaging</strong> - a protocol that allows SOAP messages to be reliably delivered between distributed applications</li>
+							<li>And more - WS-Trust, WS-Coordination , WS-Transaction, WS-MetadataExchange, etc.</li>
+						</li>
+					</section>
 				</section>
 				
-
+				<section>
+					<section>
+						<h2>2. WSDL & XSD</h2>
+						<ol>
+							<li>Namespace</li>
+							<li>WSDL structure</li>
+							<li>XSD Types (simple type, complex type)</li>
+							<li>XSD Attributes</li>
+							<li>XSD Enums</li>
+						</ol>
+					</section>
+				</section>
+				
 				<section>
 					<h1>THE END</h1>
 					<h3>Thank you!</h3>
