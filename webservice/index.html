@@ -80,7 +80,7 @@
 						<li>Testing WS (Java + SoapUI)
 							<ul>
 								<li>Integration test (including mocks)</li>
-								<li>SoapUI test</li>
+								<li>SoapUI test (URL, properties file, mocks, etc.)</li>
 							</ul>
 						</li>
 					</ol>
@@ -213,7 +213,8 @@
 					<section>
 						<h2>1.5 Advanced standards (MTOM, WS-*)</h2>
 						<ul>
-							<li><strong>MTOM</strong> (<q>Message Transmission Optimization Mechanism</q>) - efficient sending binary data to and from WS, usually together with XOP (<q>XML-binary Optimized Packaging</q>)</li>
+							<li><strong>MTOM</strong> (<q>Message Transmission Optimization Mechanism</q>) - efficient sending binary data to and from WS, usually together with XOP (<q>XML-binary Optimized Packaging</q>). 
+							Annotation has threshold to define size for using MTOM/XOP (otherwise it is sent normally).</li>
 							<li><strong>WS-Addressing</strong> - a standardized way of including message routing data within SOAP headers</li>
 							<li><strong>WS-Security</strong> - an extension to SOAP to apply security to Web services</li>
 							<li><strong>WS-ReliableMessaging</strong> - a protocol that allows SOAP messages to be reliably delivered between distributed applications</li>
