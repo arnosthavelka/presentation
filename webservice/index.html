@@ -45,7 +45,7 @@
 				<section>
 					<h1>WEB SERVICES (SOAP)</h1>
 					<h3>Implementation with JAX-WS & Spring</h3>
-					<p>[Internal training in ACE Academy]</p>
+					<p>[Internal training by ACE Academy]</p>
 					<p>
 						<small>Created by <a href="mailto:arnost.havelka@asseco-ce.com">Havelka Arnošt</a></small>
 					</p>
@@ -54,7 +54,7 @@
 				<section>
 					<h2>About me</h2>
 					<ol>
-						<li>Part of ACE: since 6/2009</li>
+						<li>ACE employee: since 6/2009</li>
 						<li>Job title: Solution Architect (Head of SW development)</li>
 						<li>Division: Public CZ</li>
 						<li>Certifications:<br/>
@@ -110,7 +110,7 @@
 						</ol>
 					</section>
 					<section>
-						<h2>1.1 Definition of webservice</h2>
+						<h3>1.1 Definition of webservice</h3>
 						<ul>
 							<li><a href="http://en.wikipedia.org/wiki/Web_service" alt="Definition of webservice on Wikipedia">Wikipedia</a> defines webservice as 
 								<q>a software system designed to support interoperable machine-to-machine interaction over a network.</q></li>
@@ -136,7 +136,7 @@
 						</aside>
 					</section>
 					<section>
-						<h2>1.2 JAX-WS</h2>
+						<h3>1.2 JAX-WS</h3>
 						<ul>
 							<li><a href="http://en.wikipedia.org/wiki/Java_API_for_XML_Web_Services" alt="Link of JAX-WS on Wikipedia">JAX-WS</a> (Java API for XML Web Services) is Java specification 
 							(<a href="http://jcp.org/en/jsr/detail?id=224" alt="Link to JSR-224">JSR-224</a>) of webservices.</li>
@@ -178,23 +178,23 @@
 							</li>
 					</section>
 					<section>
-						<h2>1.3 WSDL</h2>
+						<h3>1.3 WSDL</h3>
 						<ul>
 							<li>WSDL is abbreviation of <q>Web Services Metadata for the Java Platform</q>.</li>
 							<li>MEP types:
 								<ul>
-									<li><strong>Request/response</strong> - the endpoint receives a message and sends a correlated message.</li>
-									<li>One-way - the endpoint receives a message.</li>
-									<li>Solicit-response - the endpoint sends a message and receives a correlated message.</li>
-									<li>Notification - the endpoint sends a message.</li>
+									<li><strong style="color:yellow">Request/response</strong> - the endpoint receives a message and sends a correlated message.</li>
+									<li><strong>One-way</strong> - the endpoint receives a message.</li>
+									<li><strong>Solicit-response</strong> - the endpoint sends a message and receives a correlated message.</li>
+									<li><strong>Notification</strong> - the endpoint sends a message.</li>
 								</ul>
 							</li>
 							<li>WSDL style (see <a href="http://www.ibm.com/developerworks/library/ws-whichwsdl/">here</a>):
 								<ul>
-									<li>RPC/encoded</li>
-									<li>RPC/literal</li>
-									<li>Document/encoded</li>
-									<li><strong>Document/literal</strong> - The endpoint sends a message.</li>
+									<li><strong>RPC/encoded</strong> - contains method name in request XML, but not WS-I compliant</li>
+									<li><strong>RPC/literal</strong> - contains method name in request XML and WS-I compliant</li>
+									<li><strong>Document/encoded</strong> - not WS-I compliant and not used</li>
+									<li><strong style="color:yellow">Document/literal (wrapped)</strong> - WS-I compliant, valid-able, but more complicated</li>
 								</ul>
 							</li>
 						</ul>
@@ -205,14 +205,14 @@
 						</aside>
 					</section>
 					<section>
-						<h2>1.4 WS-I</h2>
+						<h3>1.4 WS-I</h3>
 						<ul>
-							<li>It's a set of guidelines, best practices and test for interoperability.</li>
+							<li>It's a set of guidelines, best practices and test for interoperability (for heterogeneous systems).</li>
 							<li>Last version is 2.0, but frequently used is still version 1.2.</li>
 						</li>
 					</section>
 					<section>
-						<h2>1.5 Advanced standards (MTOM, WS-*)</h2>
+						<h3>1.5 Advanced standards (MTOM, WS-*)</h3>
 						<ul>
 							<li><strong>MTOM</strong> (<q>Message Transmission Optimization Mechanism</q>) - efficient sending binary data to and from WS, usually together with XOP (<q>XML-binary Optimized Packaging</q>). 
 							Annotation has threshold to define size for using MTOM/XOP (otherwise it is sent normally).</li>
@@ -228,15 +228,87 @@
 					<section>
 						<h2>2. WSDL & XSD</h2>
 						<ol>
-							<li>Namespace</li>
-							<li>WSDL structure</li>
 							<li>XSD Types (simple type, complex type)</li>
-							<li>XSD Attributes</li>
-							<li>XSD Enums</li>
+							<li>XSD Sequence + Attributes + Enums</li>
+							<li>XSD Groups</li>
+							<li>WSDL structure</li>
+							<li>Namespace</li>
 						</ol>
 					</section>
+
+					<section>
+						<h3>2.1 XSD Types (simple type, complex type)</h3>
+						<h4>Simple type</h4>
+						<pre><code class="xml"><xs:simpleType name="CustomChar">
+    <xs:annotation>
+        <xs:documentation xml:lang="cs">Documentation ...</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+        <xs:maxLength value="1"/>
+    </xs:restriction>
+</xs:simpleType></code></pre>
+						<h4>Complex type + extension</h4>
+						<pre><code class="xml"><xs:complexType name="ListItems">
+    <xs:complexContent>
+        <xs:extension base="CommonListAncestor">
+            <xs:sequence>
+                <xs:element name="item" type="ItemDefinition"  minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:extension>
+    </xs:complexContent>
+</xs:complexType></code></pre>
+					</section>
+
+					<section>
+						<h3>2.2 XSD Sequence + Attributes + Enums</h3>
+						<h4>Sequence + Attributes</h4>
+						<pre><code class="xml"><xs:complexType name="CustomFilter">
+    <xs:sequence>
+        <xs:element name="CodeInt" type="xs:int" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="CodeString" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+    </xs:sequence>
+    <xs:attribute name="FilterType" type="xs:string" default="SomeValue"></xs:attribute>
+    <xs:attribute name="Validate" type="xs:boolean" default="false"></xs:attribute>
+</xs:complexType></code></pre>
+						<h4>Enums</h4>
+						<pre><code class="xml"><xs:simpleType name="CustomEnum">
+    <xs:restriction base="xs:string">
+        <xs:enumeration value="Value1"></xs:enumeration>
+        <xs:enumeration value="Value2"></xs:enumeration>
+    </xs:restriction>
+</xs:simpleType></code></pre>
+					</section>
+
+					<section>
+						<h3>2.3 XSD Groups</h3>
+						<h4>Definition</h4>
+						<pre><code class="xml"><xs:group name="CustomGroup">
+    <xs:sequence>
+        <xs:element name="ElementA" type="xs:int"></xs:element>
+        <xs:element name="ElementB" type="xs:string" minOccurs="0" maxOccurs="1"></xs:element>
+    </xs:sequence>
+</xs:group></code></pre>
+						<h4>Usage</h4>
+						<pre><code class="xml"><xs:group name="SmsPolozkyCiselnikuSimpleFiltrGroup">
+    <xs:sequence>
+        <xs:element name="ElementC" type="xs:string"></xs:element>
+        <xs:group ref="CustomGroup"/>
+    </xs:sequence>
+</xs:group></code></pre>
+					</section>
+					
+					<section>
+						<h3>2.4 Namespace</h3>
+						TODO
+					</section>
+
+					<section>
+						<h3>2.5 WSDL structure</h3>
+						TODO
+					</section>
+
 				</section>
-				
+
 				<section>
 					<h1>THE END</h1>
 					<h3>Thank you!</h3>
