@@ -299,12 +299,69 @@
 					
 					<section>
 						<h3>2.4 Namespace</h3>
-						TODO
+						<h4>WSDL</h4>
+						<pre><code class="xml"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns="urn:com:asseco:csu:abc:v1:ws:Custom" 
+      xmlns:cty="urn:com:asseco:csu:abc:v1:type:Custom" 
+	  targetNamespace="urn:com:asseco:csu:abc:v1:ws:Custom"
+      xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+      name="SeznamObjektu">
+        
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="urn:com:asseco:abc:v1:type:Custom" schemaLocation="../xsd/CustomType.xsd"></xsd:import>
+        </xsd:schema>
+    </wsdl:types>
+	...
+</code></pre>
+						<h4>XSD</h4>
+						<pre><code class="xml"><?xml version="1.0"?>
+<xs:schema xmlns="urn:com:asseco:abc:v1:type:Custom" xmlns:common="urn:com:asseco:abc:v1:Common" targetNamespace="urn:com:asseco:abc:v1:type:Custom">
+    <xs:import namespace="urn:com:asseco:abc:v1:Common" schemaLocation="xsd/CommonTypy.xsd"></xs:import>
+
+	...
+</code></pre>
 					</section>
 
 					<section>
 						<h3>2.5 WSDL structure</h3>
-						TODO
+<pre><code class="xml"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns="urn:com:asseco:abc:v1:ws:Custom" xmlns:cty="urn:com:asseco:abc:v1:type:Custom" targetNamespace="urn:com:asseco:abc:v1:ws:Custom">
+
+    <wsdl:types>
+        <xsd:import namespace="urn:com:asseco:abc:v1:type:Custom" schemaLocation="../xsd/CustomType.xsd"></xsd:import>
+    </wsdl:types>
+
+    <wsdl:message name="AbcRequest">
+        <wsdl:part element="cty:AbcRequest" name="request"/>
+    </wsdl:message>
+    <wsdl:message name="AbcResponse">
+        <wsdl:part element="cty:AbcResponse" name="response"/>
+    </wsdl:message>
+
+    <wsdl:portType name="CustomPortType">
+        <wsdl:operation name="AbcMethod">
+            <wsdl:input message="AbcRequest"/>
+            <wsdl:output message="AbcResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="CustomBinding" type="CustomPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="AbcMethod">
+            <soap:operation soapAction="AbcMethod"/>
+            <wsdl:input><soap:body use="literal"/></wsdl:input>
+            <wsdl:output><soap:body use="literal"/></wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="CustomWS">
+        <wsdl:port binding="CustomBinding" name="CustomPortService">
+            <soap:address location="???"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
+</code></pre>
 					</section>
 
 				</section>
