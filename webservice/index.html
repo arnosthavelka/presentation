@@ -69,29 +69,13 @@
 				<section>
 					<h2>TODO</h2>
 					<ol>
-						<li>JAX-WS annotations
-							<ul>
-								<li>@Webservice + @WebServiceProvider</li>
-								<li>@WebServiceClient</li>
-								<li>@HandlerChain + @MTOM</li>
-							</ul>
-						</li>
-						<li>Implementation of WS (java vs. spring)
-							<ul>
-								<li>prerequisites (WildFly, maven, Java 7, Spring 4, etc.)</li>
-								<li>contract last from Java - hello world example</li>
-								<li>contract first from WSDL - calculator example</li>
-							</ul>
-						</li>
-						<li>Implementation of WS client (java vs. spring)</li>
-						<li>Testing WS (Java + SoapUI)
+						<li>Testing WS (SoapUI)
 							<ul>
 								<li>Integration test (including mocks)</li>
 								<li>SoapUI test (URL, properties file, mocks, etc.)</li>
 							</ul>
 						</li>
-						<li>Exposing WS in different environments (JBoss/WildFly, Tomcat, Spring boot, etc.)</li>
-						<li>Advanced topics (Provider, handler, MTOM, WS-Addressing, etc.)</li>
+						<li>Exposing WS in different environments (JBoss/WildFly, Tomcat, Spring boot, Endpoint publisher, etc.)</li>
 					</ol>
 				</section>
 
@@ -380,34 +364,288 @@
 						<h2>3. JAX-WS Annotations</h2>
 						<ol>
 							<li>Overview</li>
-							<li>@Webservice + @WebServiceProvider</li>
-							<li>@WebServiceClient</li>
-							<li>@HandlerChain + @MTOM</li>
+							<li>Exposing WS (server side)</li>
+							<li>Consuming WS (client side)</li>
+							<li>Advanced issues</li>
 						</ol>
 					</section>
 
 					<section>
 						<h3>3.1 Overview</h3>
-						<h4>Simple type</h4>
-						TODO
-					</section>
-					
-				</section>
-
-				<section>
+						<h4 align="left">Basic annotations are:</h4>
+						<ul>
+							<li><strong>@Webservice</strong> - expose WS with embedded mashalling (done by the server)</li>
+							<li><strong>@WebServiceProvider</strong> - expose WS, but handle service completely (from XML request to XML response)</li>
+							<li><strong>@WebServiceClient</strong> - consume/call WS</li>
+							<li><strong>@HandlerChain</strong> - get access to message content (e.g. for logging, authorization, modification, etc.)</li>
+							<li><strong>@MTOM</strong> - serve/consume bigger content as attachments (instead of encoded text)</li>
+						</ul>
+					</section>			
 					<section>
-						<h2>4. Implementation of WS</h2>
+						<h3>3.2 Exposing WS (server side)</h3>
 						<ol>
-							<li>Overview</li>
-							<li>Contract First - Calculator</li>
-							<li>Contract Last - Hello World</li>
+							<li>Contract Last - implementation from Java</li>
+							<li>Contract First - implementation from WSDL</li>
+							<li>Complex processing - processing SOAP message</li>
 						</ol>
 					</section>
 
 					<section>
-						<h3>4.1 Overview</h3>
-						<h4>Simple type</h4>
-						TODO
+						<h3>3.2.1 Contract Last(Server Side)</h3>
+						<h4 align="left">@Webservice</h4>
+						<pre><code class="java">@WebService(serviceName = "HelloService", portName = "HelloPort", 
+			targetNamespace = "urn:com:asseco:aha:training:ws:v1")
+public class HelloWebService implements HelloService{
+
+	@WebMethod
+	public String sayHello(String name) {
+		return String.format("Spring say: Hello %s!", name);
+	}
+
+}</code></pre>
+					</section>
+					<section>
+						<h3>3.2.2 Contract First (Server Side)</h3>
+						<h4 align="left">@Webservice</h4>
+						<pre><code class="java">@WebService(endpointInterface = "com.asseco.aha.training.ws.v1.HelloService")
+public class HelloWebService implements HelloService{
+
+	@WebMethod
+	public String sayHello(String name) {
+		return String.format("Spring say: Hello %s!", name);
+	}
+
+}</code></pre>
+					</section>
+					<section>
+						<h3>3.2.3 Complex Processing (Server Side)</h3>
+						<h4 align="left">@WebServiceProvider</h4>
+						<pre><code class="java">@javax.xml.ws.ServiceMode(value = javax.xml.ws.Service.Mode.MESSAGE)
+@WebServiceProvider(wsdlLocation = "wsdl/ws-training-provider.wsdl", serviceName = "...", portName = "...", targetNamespace = "...")
+public class ProviderWebService implements Provider<SOAPMessage> {
+
+
+	@Override
+	public SOAPMessage invoke(SOAPMessage request) {
+		...
+	}</code></pre>
+						<h4 align="left">Service modes:</h4>
+						<ul>
+							<li>MESSAGE - complete message</li>
+							<li>PAYLOAD - payload only</li>
+						</ul>
+					</section>
+					
+					<section>
+						<h3>3.3 Consuming WS (client side)</h3>
+						<ol>
+							<li>Generated client - done by JAX-WS RI</li>
+							<li>Runtime client - runtime customization</li>
+							<li>Spring client - spring way</li>
+						</ol>
+					</section>
+					<section>
+						<h3>3.3.1 Generated client (Client Side)</h3>
+						<pre><code class="java">public class HelloWorldClient{
+    public static void main(String[] args) throws Exception {
+ 		URL url = new URL("http://localhost:8080/ws-server-as/CalculatorWebService?WSDL");
+		QName qname = new QName("http://ws.server.ws.training.aha.asseco.com/", "CalculatorWebServiceService");
+
+		WsTraining service = new WsTraining(url, qname);
+		WsTrainingPortType calc = service.getPort(WsTrainingPortType.class);
+
+		AddRequest ar = new AddRequest();
+		List<Integer> inputs = ar.getNumber();
+		inputs.add(5);
+		inputs.add(2);
+
+		AddResponse response = calc.add(ar);
+		Assert.assertEquals(7, response.getResult());
+ 
+    }
+ 
+}</code></pre>
+					</section>
+					<section>
+						<h3>3.3.2 Runtime client (Client Side)</h3>
+						<pre><code class="java">public class HelloWorldClient{
+ 
+    public static void main(String[] args) throws Exception {
+ 
+		URL url = new URL("http://localhost:8080/ws-server-as/HelloWebService?WSDL");
+        QName qname = new QName("http://ws.server.ws.training.aha.asseco.com/", "HelloWebServiceService");
+ 
+        Service service = Service.create(url, qname);
+        HelloWorld hello = service.getPort(HelloWorld.class);
+ 
+        System.out.println(hello.sayHello("Arny"));
+ 
+    }
+ 
+}</code></pre>
+					</section>
+					<section>
+						<h3>3.3.3 Spring client (Client Side)</h3>
+						<pre><code class="xml"><beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+    <bean id="smsKlasWS" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean" >
+		&lt;property name="portName" value="AbcPort"/&gt;
+		&lt;property name="serviceName" value="AbcService"/&gt;
+		&lt;property name="namespaceUri" value="com.asseco.aha.training.ws.v1"/&gt;
+		&lt;property name="serviceInterface" value="com.asseco.aha.training.ws.v1.AbcService"/&gt;
+		&lt;property name="wsdlDocumentUrl" value="${endpoints.abcService}?wsdl"/&gt;
+		&lt;property name="lookupServiceOnStartup" value="false"/&gt;
+        <property name="customProperties">
+            <util:map>
+                <entry key="javax.xml.ws.client.receiveTimeout">
+                    <value type="java.lang.Integer">300000</value>
+                </entry>
+            </util:map>
+        </property>
+    </bean>
+</beans></code></pre>
+					</section>
+
+					<section>
+						<h3>3.4 Advanced Issues</h3>
+						<ol>
+							<li>Handler Chain</li>
+							<li>MTOM</li>
+							<li>WS-Addressing</li>
+						</ol>
+					</section>
+					<section>
+						<h3>3.4.1 Handler Chain</h3>
+						Handler definition:
+						<pre><code class="java">public class WsLoggingHandler implements SOAPHandler&lt;SOAPMessageContext&gt; {
+    @Override
+    public boolean handleMessage(SOAPMessageContext context) {
+        ...
+    }
+}</code></pre>
+						XML definition:
+						<pre><code class="xml"><?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<javaee:handler-chains xmlns:javaee="http://java.sun.com/xml/ns/javaee"	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <javaee:handler-chain>
+        <javaee:handler>
+            <javaee:handler-class>com.asseco.aha...util.WsLoggingHandler</javaee:handler-class>
+        </javaee:handler>
+    </javaee:handler-chain>
+</javaee:handler-chains></code></pre>
+						Usage:
+						<pre><code class="java">@WebService(...)
+@HandlerChain(file = "/handler-chain.xml")
+public class CalculatorWebService implements WsTrainingPortType {
+    ...
+}</code></pre>
+					</section>
+
+					<section>
+						<h3>3.4.2 MTOM</h3>
+						Service:
+						<pre><code class="java">@WebService
+@MTOM(threshold = 1024)
+public class LoremWebService {
+    ...
+}</code></pre>
+						Client:
+						<pre><code class="java">@Test
+public void testCalc() throws MalformedURLException {
+    URL url = new URL("http://localhost:8080/ws-server-as/CalculatorWebService?WSDL");
+    QName qname = new QName("http://ws.server.ws.training.aha.asseco.com/", "CalculatorWebServiceService");
+
+    Service service = Service.create(url, qname);
+    WsTrainingPortType calc = 
+	    service.getPort(WsTrainingPortType.class, new MTOMFeature());
+
+    ...
+}</code></pre>
+					</section>
+
+					<section>
+						<h3>3.4.3 WS-Addressing</h3>
+						Service:
+						<pre><code class="java">@WebService
+@Addressing(true, false) // enabled , required
+public class HelloWebService {
+    ...
+}</code></pre>
+						Request:
+						<pre><code class="xml">POST http://localhost:8080/ws-server-as/HelloWebService HTTP/1.1
+SOAPAction: ""
+...
+
+<soapenv:Envelope ...>
+   <soapenv:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
+      <wsa:Action>http://ws.server.ws.training.aha.asseco.com/HelloWebService/sayHello</wsa:Action>
+      <wsa:ReplyTo><wsa:Address>http://localhost:8080/ws-server-as/EndpointService</wsa:Address></wsa:ReplyTo>
+	  <wsa:MessageID>12345</wsa:MessageID>
+   </soapenv:Header>
+   <soapenv:Body>
+      ...
+   </soapenv:Body>
+</soapenv:Envelope>
+</code></pre>
+					</section>
+
+				</section>
+
+				<section>
+					<section>
+						<h2>4. Implementation</h2>
+						<ol>
+							<li>Prerequisites</li>
+							<li>Build model</li>
+							<li>Implementation</li>
+							<li>Exercise</li>
+						</ol>
+					</section>
+
+					<section>
+						<h3>4.1 Prerequisites</h3>
+						<table style="border: 1px solid white;">
+							<tr style="background-color: gray;">
+								<th>Item</th>
+								<th>Tool/Framework</th>
+								<th>Version</th>
+							</tr>
+							<tr>
+								<td>Java</td>
+								<td>Oracle JDK</td>
+								<td>7</td>
+							</tr>
+							<tr>
+								<td>Build tool</td>
+								<td>Maven</td>
+								<td>3.x</td>
+							</tr>
+							<tr>
+								<td>IoC</td>
+								<td>Spring Framework</td>
+								<td>4</td>
+							</tr>
+							<tr>
+								<td>Applicarion Server</td>
+								<td>WildFly</td>
+								<td>8.1.x</td>
+							</tr>
+							<tr>
+								<td>Unit tests</td>
+								<td>JUnit</td>
+								<td>4.11</td>
+							</tr>
+							<tr>
+								<td>Logging</td>
+								<td>slf4j / log4j</td>
+								<td>1.7.x / 1.2.x</td>
+							</tr>
+							<tr>
+								<td>UI client</td>
+								<td>SoapUI</td>
+								<td>5.x</td>
+							</tr>
+						</table>
 					</section>
 					
 				</section>
