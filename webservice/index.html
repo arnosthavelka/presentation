@@ -69,12 +69,6 @@
 				<section>
 					<h2>TODO</h2>
 					<ol>
-						<li>Testing WS (SoapUI)
-							<ul>
-								<li>Integration test (including mocks)</li>
-								<li>SoapUI test (URL, properties file, mocks, etc.)</li>
-							</ul>
-						</li>
 						<li>Exposing WS as spring exporter</li>
 						<li>Exposing WS in different environments (JBoss/WildFly, Tomcat, Spring boot, Endpoint publisher, etc.)</li>
 					</ol>
@@ -86,9 +80,8 @@
 						<li>Basic theory</li>
 						<li>WSDL & XSD</li>
 						<li>JAX-WS annotations</li>
-						<li>Implementation of WS (from the scratch)</li>
-						<li>Implementation of WS client</li>
-						<li>Testing WS (Java + SoapUI)</li>
+						<li>Implementation (including testing)</li>
+						<li>Exposing WS in different setups</li>
 					</ol>
 				</section>
 
@@ -668,6 +661,53 @@ SOAPAction: ""
 						</ul>
 					</section>
 
+				</section>
+				
+				<section>
+					<section>
+						<h2>5. Exposing WS in different setups</h2>
+						<ol>
+							<li>Wildfly/JBoss</li>
+							<li>Tomcat</li>
+							<li>Spring boot (embedded Tomcat)</li>
+							<li>JAX-WS Endpoint</li>
+						</ol>
+					</section>
+
+					<section>
+						<h3>5.1 Wildfly/JBoss</h3>
+						<ul>
+							<li>WS itself (@WebService) works out of box (Wildfly is full AS)</li>
+							<li>Spring integration can be done in ancester (@PostConstruct inheritance works)</li>
+						</ul>
+					</section>
+					
+					<section>
+						<h2>5.2 Tomcat</h2>
+						<ul>
+							<li>Tomcat is web-container. Therefore we need to add JAX-WS runtime libraries into <strong>%tomcat_home%/lib</strong> (approx. 32 files).</li>
+							<li>Web application must contain:
+								<ul>
+									<li>Modify file <strong>web.xml</strong> to add listener <strong>WSServletContextListener</strong>.</li>
+									<li>Add file <strong>sun-jaxws.xml</strong> to defined exposed WS endpoints.</li>
+								</ul>
+							</li>
+							<li>Spring integration has to be done in every WS (@PostConstruct <strong>inheritance does not work</strong>)</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>5.3 Spring boot (embedded Tomcat)</h2>
+						<p>REST service is fine (working out of box), but SOAP service does not work for me!</p>
+					</section>
+
+					<section>
+						<h2>5.4 JAX-WS Endpoint</h2>
+						<p>TODO</p>
+						<pre><code class="java">public static void main(String[] args) {
+	   Endpoint.publish("http://localhost:9999/ws/calc", new CalculatorWebService());
+}</code></pre>
+					</section>
 				</section>
 				
 				<section>
