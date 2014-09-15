@@ -55,7 +55,7 @@
 					<h2>About me</h2>
 					<ol>
 						<li>ACE employee: since 6/2009</li>
-						<li>Job title: Solution Architect (Head of SW development)</li>
+						<li>Job title: Solution Architect / Head of SW development</li>
 						<li>Division: Public CZ</li>
 						<li>Certifications:<br/>
 							<img src="img/scjp.jpg" alt="Sun Certified Programmer for the Java Platform, Standard Edition 6 (5/2010)" style="-webkit-transform: rotate(180deg);">
@@ -66,13 +66,13 @@
 					</ol>
 				</section>
 				
-				<section>
+				<!--section>
 					<h2>TODO</h2>
 					<ol>
 						<li>Exposing WS as spring exporter</li>
 						<li>Exposing WS in different environments (JBoss/WildFly, Tomcat, Spring boot, Endpoint publisher, etc.)</li>
 					</ol>
-				</section>
+				</section-->
 
 				<section>
 					<h2>Agenda</h2>
@@ -649,7 +649,7 @@ SOAPAction: ""
 
 					<section>
 						<h2>4.3 Implementation</h2>
-						<p>Check source code ...</p>
+						<p>Check <a hrref "https://github.com/arnosthavelka/ws-training" alt="Souce code for lab">source code</a> ...</p>
 					</section>
 
 					<section>
@@ -698,12 +698,12 @@ SOAPAction: ""
 
 					<section>
 						<h2>5.3 Spring boot (embedded Tomcat)</h2>
-						<p>REST service is fine (working out of box), but SOAP service does not work for me!</p>
+						<p>REST service is fine (working out of box), but SOAP service does not work for me (up to now)!</p>
 					</section>
 
 					<section>
 						<h2>5.4 JAX-WS Endpoint</h2>
-						<p>TODO</p>
+						<!--p>TODO</p-->
 						<pre><code class="java">public static void main(String[] args) {
 	   Endpoint.publish("http://localhost:9999/ws/calc", new CalculatorWebService());
 }</code></pre>
