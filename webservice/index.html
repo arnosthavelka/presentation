@@ -128,7 +128,7 @@
 							<li><a href="http://en.wikipedia.org/wiki/Java_API_for_XML_Web_Services" alt="Link of JAX-WS on Wikipedia">JAX-WS</a> (Java API for XML Web Services) is Java specification 
 							(<a href="http://jcp.org/en/jsr/detail?id=224" alt="Link to JSR-224">JSR-224</a>) of webservices.</li>
 							<li>Vendors: Metro project, CXF, Axis, Oracle Weblogic, etc.</li>
-							<li>Related technologies: JAXB, SAAJ, etc.</li>
+							<li>Related technologies: JAX-B, SAAJ, etc.</li>
 							<li>Specifications in JavaEE:
 								<table style="border: 1px solid white;">
 									<tr style="background-color: gray;">
@@ -165,7 +165,7 @@
 							</li>
 					</section>
 					<section>
-						<h3>1.3 WSDL</h3>
+						<h3>1.3 WSDL - Basics [1/2]</h3>
 						<ul>
 							<li>WSDL is abbreviation of <q>Web Services Metadata for the Java Platform</q>.</li>
 							<li>MEP types:
@@ -176,15 +176,17 @@
 									<li><strong>Notification</strong> - the endpoint sends a message.</li>
 								</ul>
 							</li>
-							<li>WSDL style (see <a href="http://www.ibm.com/developerworks/library/ws-whichwsdl/">here</a>):
-								<ul>
-									<li><strong>RPC/encoded</strong> - contains method name in request XML, but not WS-I compliant</li>
-									<li><strong>RPC/literal</strong> - contains method name in request XML and WS-I compliant</li>
-									<li><strong>Document/encoded</strong> - not WS-I compliant and not used</li>
-									<li><strong style="color:yellow">Document/literal (wrapped)</strong> - WS-I compliant, valid-able, but more complicated</li>
-								</ul>
-							</li>
 						</ul>
+					</section>
+					<section>
+						<h3>1.3 WSDL - Styles [2/2]</h3>				
+						<ul>
+							<li><strong>RPC/encoded</strong> - contains method name in request XML, but not WS-I compliant</li>
+							<li><strong>RPC/literal</strong> - contains method name in request XML and WS-I compliant</li>
+							<li><strong>Document/encoded</strong> - not WS-I compliant and not used</li>
+							<li><strong style="color:yellow">Document/literal (wrapped)</strong> - WS-I compliant, valid-able, but more complicated</li>
+						</ul>
+						<p align="left"><br/>For more details look <a href="http://www.ibm.com/developerworks/library/ws-whichwsdl/">here</a>.</p>
 						<aside class="notes">
 							<p>
 								<strong>WSDL style</strong> - every style has its strengths or weaknesses (e.g. performance, readability, etc.).
@@ -194,8 +196,9 @@
 					<section>
 						<h3>1.4 WS-I</h3>
 						<ul>
+							<li>It's an abbreviation (stands for) of Web Services Interoperability.</li>
 							<li>It's a set of guidelines, best practices and test for interoperability (for heterogeneous systems).</li>
-							<li>Last version is 2.0, but frequently used is still version 1.2.</li>
+							<li>Last version of basic profile is 2.0, but frequently used is still version 1.2.</li>
 						</li>
 					</section>
 					<section>
@@ -389,7 +392,7 @@
 						<h4 align="left">@Webservice</h4>
 						<pre><code class="java">@WebService(serviceName = "HelloService", portName = "HelloPort", 
 			targetNamespace = "urn:com:asseco:aha:training:ws:v1")
-public class HelloWebService implements HelloService{
+public class HelloWebService implements HelloService {
 
 	@WebMethod
 	public String sayHello(String name) {
@@ -402,7 +405,7 @@ public class HelloWebService implements HelloService{
 						<h3>3.2.2 Contract First (Server Side)</h3>
 						<h4 align="left">@Webservice</h4>
 						<pre><code class="java">@WebService(endpointInterface = "com.asseco.aha.training.ws.v1.HelloService")
-public class HelloWebService implements HelloService{
+public class HelloWebService implements HelloService {
 
 	@WebMethod
 	public String sayHello(String name) {
@@ -670,6 +673,7 @@ SOAPAction: ""
 							<li>Wildfly/JBoss</li>
 							<li>Tomcat</li>
 							<li>Spring boot (embedded Tomcat)</li>
+							<li>Spring exporter</li>
 							<li>JAX-WS Endpoint</li>
 						</ol>
 					</section>
@@ -678,7 +682,8 @@ SOAPAction: ""
 						<h3>5.1 Wildfly/JBoss</h3>
 						<ul>
 							<li>WS itself (@WebService) works out of box (Wildfly is full AS)</li>
-							<li>Spring integration can be done in ancester (@PostConstruct inheritance works)</li>
+							<li>Spring integration can be done in ancestor (@PostConstruct inheritance works)</li>
+							<li>AS modifies WSDLL (service name, target namespace, etc.) when not explicitly specified.</li>
 						</ul>
 					</section>
 					
@@ -698,11 +703,42 @@ SOAPAction: ""
 
 					<section>
 						<h2>5.3 Spring boot (embedded Tomcat)</h2>
-						<p>REST service is fine (working out of box), but SOAP service does not work for me (up to now)!</p>
+						<ul>
+							<li>REST service is fine (working out of box) - just define spring context and REST controller.
+								<pre><code class="java">@RestController
+public class HelloRestService {
+
+	@RequestMapping("/hello")
+	public String sayHello(String name) {
+	  ... 
+	}
+
+}</code></pre></li>
+							<li>However SOAP service does not work for me (up to now)!</li>
+						</ul>
 					</section>
 
 					<section>
-						<h2>5.4 JAX-WS Endpoint</h2>
+						<h2>5.4 Spring exporter</h2>
+						<ul>
+							<li>Easy to use, but not working in the same context as AS (aka same port).</li>
+							<li>Definition of the spring bean (exporter).
+						<pre><code class="xml"><beans xmlns="http://www.springframework.org/schema/beans" ...>
+  &lt;bean class="org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter" 
+        p:baseAddress="http://localhost:9999/myServices" /&gt;
+</beans></code></pre></li>
+							<li>WS has to be defined as spring bean.
+						<pre><code class="java">@Component
+@WebService(...)
+public class CalculatorWebService implements WsTrainingPortType {
+  ...
+}</code></pre></li>
+						</ul>
+						<p>
+					</section>
+
+					<section>
+						<h2>5.5 JAX-WS Endpoint</h2>
 						<!--p>TODO</p-->
 						<pre><code class="java">public static void main(String[] args) {
 	   Endpoint.publish("http://localhost:9999/ws/calc", new CalculatorWebService());
