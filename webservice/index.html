@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>WEB SERVICES with JAX-WS & Spring (in ACE Academy)</title>
+
+		<meta name="description" content="ACE traing of implementation web services in Java.">
+		<meta name="author" content="Havelka Arnošt">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>WEB SERVICES (SOAP)</h1>
+					<h3>Implementation with JAX-WS & Spring</h3>
+					<p>[Internal training by ACE Academy]</p>
+					<p>
+						<small>Created by <a href="mailto:arnost.havelka@asseco-ce.com">Havelka Arnošt</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>About me</h2>
+					<ol>
+						<li>ACE employee: since 6/2009</li>
+						<li>Job title: Solution Architect / Head of SW development</li>
+						<li>Division: Public CZ</li>
+						<li>Certifications:<br/>
+							<img src="img/scjp.jpg" alt="Sun Certified Programmer for the Java Platform, Standard Edition 6 (5/2010)" style="-webkit-transform: rotate(180deg);">
+							<img src="img/ocwsd.gif" alt="Oracle Certified Professional, Java EE 5 Web Services Developer (12/2010)" style="-webkit-transform: rotate(180deg);">
+							<img src="img/ocjpad.gif" alt="Oracle Certified Expert, Java EE 6 Java Persistence API Developer (5/2014)" style="-webkit-transform: rotate(180deg);"><br/>
+							<img src="img/spring.jpg" alt="Spring Core 3.0 (7/2013)" style="-webkit-transform: rotate(180deg);"><br/>
+						</li>
+					</ol>
+				</section>
+				
+				<!--section>
+					<h2>TODO</h2>
+					<ol>
+						<li>Exposing WS as spring exporter</li>
+						<li>Exposing WS in different environments (JBoss/WildFly, Tomcat, Spring boot, Endpoint publisher, etc.)</li>
+					</ol>
+					- difference between xsd:import and xsd:include (http://stackoverflow.com/questions/2357943/whats-the-difference-between-xsdinclude-and-xsdimport)
+				</section-->
+
+				<section>
+					<h2>Agenda</h2>
+					<ol>
+						<li>Basic theory</li>
+						<li>WSDL & XSD</li>
+						<li>JAX-WS annotations</li>
+						<li>Implementation (including testing)</li>
+						<li>Exposing WS in different setups</li>
+					</ol>
+				</section>
+
+				<section>
+					<section>
+						<h2>1. Basic theory</h2>
+						<ol>
+							<li>Definition of webservice</li>
+							<li>JAX-WS</li>
+							<li>WS-I</li>
+							<li>WSDL (MEP, RPC vs. Document)</li>
+							<li>Advanced standards (MTOM, WS-*)</li>
+						</ol>
+					</section>
+					<section>
+						<h3>1.1 Definition of webservice</h3>
+						<ul>
+							<li><a href="http://en.wikipedia.org/wiki/Web_service" alt="Definition of webservice on Wikipedia">Wikipedia</a> defines webservice as 
+								<q>a software system designed to support interoperable machine-to-machine interaction over a network.</q></li>
+							<li>Basic types:
+								<ul>
+									<li><a href="http://en.wikipedia.org/wiki/SOAP" alt="Definition of Soap WS on Wikipedia">Soap</a> - Simple Object Access Protocol</li>
+									<li><a href="http://en.wikipedia.org/wiki/Representational_state_transfer" alt="Definition of Rest WS on Wikipedia">Rest</a> - Representational state transfer (out of scope)</li>
+								</ul>
+							</li>
+							<li><a href="http://ws-i.org" alt="Web of WS-I">WS-I Basic Profile</a> - defines basic rules to allow interoperability between different
+							systems, technologies, etc.</li>
+						</ul>
+						<aside class="notes">
+							<p>
+								<strong>Soap</strong> - XML-based, defined by WSDL
+								underlying protoco: HTTP/JMS
+							</p>
+							<p>
+								<strong>rest</strong> - no XML-based, no required interface definition<br/>
+								based on HTTP methods GET/PUT (update)/POST (insert)/DELETE<br/>
+								stateless, cacheable, etc.
+							</p>
+						</aside>
+					</section>
+					<section>
+						<h3>1.2 JAX-WS</h3>
+						<ul>
+							<li><a href="http://en.wikipedia.org/wiki/Java_API_for_XML_Web_Services" alt="Link of JAX-WS on Wikipedia">JAX-WS</a> (Java API for XML Web Services) is Java specification 
+							(<a href="http://jcp.org/en/jsr/detail?id=224" alt="Link to JSR-224">JSR-224</a>) of webservices.</li>
+							<li>Vendors: Metro project, CXF, Axis, Oracle Weblogic, etc.</li>
+							<li>Related technologies: JAX-B, SAAJ, etc.</li>
+							<li>Specifications in JavaEE:
+								<table style="border: 1px solid white;">
+									<tr style="background-color: gray;">
+										<th>Name</th>
+										<th><a href="http://www.oracle.com/technetwork/java/javaee/tech/javaee5-jsp-135162.html" alt="List of technologies in JavaEE 5">JavaEE 5</a></th>
+										<th><a href="http://www.oracle.com/technetwork/java/javaee/tech/index.html" alt="List of technologies in JavaEE 6 & 7">JavaEE 6 & 7</a></th>
+									</tr>
+									<tr>
+										<td>JAX-WS</td>
+										<td>2.0</td>
+										<td>2.2</td>
+									</tr>
+									<tr>
+										<td>JAX-RPC</td>
+										<td>1.1</td>
+										<td>1.1</td>
+									</tr>
+									<tr>
+										<td>JAX-B</td>
+										<td>2.0</td>
+										<td>2.2</td>
+									</tr>
+									<tr>
+										<td>SOAP</td>
+										<td>1.2</td>
+										<td>1.2</td>
+									</tr>
+									<tr>
+										<td>WSDL</td>
+										<td>1.1</td>
+										<td>1.1</td>
+									</tr>
+								</table>
+							</li>
+					</section>
+					<section>
+						<h3>1.3 WSDL - Basics [1/2]</h3>
+						<ul>
+							<li>WSDL is abbreviation of <q>Web Services Metadata for the Java Platform</q>.</li>
+							<li>MEP types:
+								<ul>
+									<li><strong style="color:yellow">Request/response</strong> - the endpoint receives a message and sends a correlated message.</li>
+									<li><strong>One-way</strong> - the endpoint receives a message.</li>
+									<li><strong>Solicit-response</strong> - the endpoint sends a message and receives a correlated message.</li>
+									<li><strong>Notification</strong> - the endpoint sends a message.</li>
+								</ul>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>1.3 WSDL - Styles [2/2]</h3>				
+						<ul>
+							<li><strong>RPC/encoded</strong> - contains method name in request XML, but not WS-I compliant</li>
+							<li><strong>RPC/literal</strong> - contains method name in request XML and WS-I compliant</li>
+							<li><strong>Document/encoded</strong> - not WS-I compliant and not used</li>
+							<li><strong style="color:yellow">Document/literal (wrapped)</strong> - WS-I compliant, valid-able, but more complicated</li>
+						</ul>
+						<p align="left"><br/>For more details look <a href="http://www.ibm.com/developerworks/library/ws-whichwsdl/">here</a>.</p>
+						<aside class="notes">
+							<p>
+								<strong>WSDL style</strong> - every style has its strengths or weaknesses (e.g. performance, readability, etc.).
+							</p>
+						</aside>
+					</section>
+					<section>
+						<h3>1.4 WS-I</h3>
+						<ul>
+							<li>It's an abbreviation (stands for) of Web Services Interoperability.</li>
+							<li>It's a set of guidelines, best practices and test for interoperability (for heterogeneous systems).</li>
+							<li>Last version of basic profile is 2.0, but frequently used is still version 1.2.</li>
+						</li>
+					</section>
+					<section>
+						<h3>1.5 Advanced standards (MTOM, WS-*)</h3>
+						<ul>
+							<li><strong>MTOM</strong> (<q>Message Transmission Optimization Mechanism</q>) - efficient sending binary data to and from WS, usually together with XOP (<q>XML-binary Optimized Packaging</q>). 
+							Annotation has threshold to define size for using MTOM/XOP (otherwise it is sent normally).</li>
+							<li><strong>WS-Addressing</strong> - a standardized way of including message routing data within SOAP headers</li>
+							<li><strong>WS-Security</strong> - an extension to SOAP to apply security to Web services (XML Signature and XML Encryption)</li>
+							<li><strong>WS-ReliableMessaging</strong> - a protocol that allows SOAP messages to be reliably delivered between distributed applications</li>
+							<li><a href="http://en.wikipedia.org/wiki/List_of_web_service_specifications" alt="List of web service specifications on Wikipedia">And more</a> (e.g. WS-Trust, WS-Coordination , WS-Transaction, WS-MetadataExchange)</li>
+						</li>
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h2>2. WSDL & XSD</h2>
+						<ol>
+							<li>XSD Types (simple type, complex type)</li>
+							<li>XSD Sequence + Attributes + Enums</li>
+							<li>XSD Groups</li>
+							<li>WSDL structure</li>
+							<li>Namespace</li>
+						</ol>
+					</section>
+
+					<section>
+						<h3>2.1 XSD Types (simple type, complex type)</h3>
+						<h4>Simple type</h4>
+						<pre><code class="xml"><xs:simpleType name="CustomChar">
+    <xs:annotation>
+        <xs:documentation xml:lang="cs">Documentation ...</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+        <xs:maxLength value="1"/>
+    </xs:restriction>
+</xs:simpleType></code></pre>
+						<h4>Complex type + extension</h4>
+						<pre><code class="xml"><xs:complexType name="ListItems">
+    <xs:complexContent>
+        <xs:extension base="CommonListAncestor">
+            <xs:sequence>
+                <xs:element name="item" type="ItemDefinition"  minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:extension>
+    </xs:complexContent>
+</xs:complexType></code></pre>
+					</section>
+
+					<section>
+						<h3>2.2 XSD Sequence + Attributes + Enums</h3>
+						<h4>Sequence + Attributes</h4>
+						<pre><code class="xml"><xs:complexType name="CustomFilter">
+    <xs:sequence>
+        <xs:element name="CodeInt" type="xs:int" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="CodeString" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+    </xs:sequence>
+    <xs:attribute name="FilterType" type="xs:string" default="SomeValue"></xs:attribute>
+    <xs:attribute name="Validate" type="xs:boolean" default="false"></xs:attribute>
+</xs:complexType></code></pre>
+						<h4>Enums</h4>
+						<pre><code class="xml"><xs:simpleType name="CustomEnum">
+    <xs:restriction base="xs:string">
+        <xs:enumeration value="Value1"></xs:enumeration>
+        <xs:enumeration value="Value2"></xs:enumeration>
+    </xs:restriction>
+</xs:simpleType></code></pre>
+					</section>
+
+					<section>
+						<h3>2.3 XSD Groups</h3>
+						<h4>Definition</h4>
+						<pre><code class="xml"><xs:group name="CustomGroup">
+    <xs:sequence>
+        <xs:element name="ElementA" type="xs:int"></xs:element>
+        <xs:element name="ElementB" type="xs:string" minOccurs="0" maxOccurs="1"></xs:element>
+    </xs:sequence>
+</xs:group></code></pre>
+						<h4>Usage</h4>
+						<pre><code class="xml"><xs:group name="SmsPolozkyCiselnikuSimpleFiltrGroup">
+    <xs:sequence>
+        <xs:element name="ElementC" type="xs:string"></xs:element>
+        <xs:group ref="CustomGroup"/>
+    </xs:sequence>
+</xs:group></code></pre>
+					</section>
+					
+					<section>
+						<h3>2.4 Namespace</h3>
+						<h4>WSDL</h4>
+						<pre><code class="xml"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns="urn:com:asseco:csu:abc:v1:ws:Custom" 
+      xmlns:cty="urn:com:asseco:csu:abc:v1:type:Custom" 
+	  targetNamespace="urn:com:asseco:csu:abc:v1:ws:Custom"
+      xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+      name="SeznamObjektu">
+        
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="urn:com:asseco:abc:v1:type:Custom" schemaLocation="../xsd/CustomType.xsd"></xsd:import>
+        </xsd:schema>
+    </wsdl:types>
+	...
+</code></pre>
+						<h4>XSD</h4>
+						<pre><code class="xml"><?xml version="1.0"?>
+<xs:schema xmlns="urn:com:asseco:abc:v1:type:Custom" xmlns:common="urn:com:asseco:abc:v1:Common" targetNamespace="urn:com:asseco:abc:v1:type:Custom">
+    <xs:import namespace="urn:com:asseco:abc:v1:Common" schemaLocation="xsd/CommonTypy.xsd"></xs:import>
+
+	...
+</code></pre>
+					</section>
+
+					<section>
+						<h3>2.5 WSDL structure</h3>
+<pre><code class="xml"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns="urn:com:asseco:abc:v1:ws:Custom" xmlns:cty="urn:com:asseco:abc:v1:type:Custom" targetNamespace="urn:com:asseco:abc:v1:ws:Custom">
+
+    <wsdl:types>
+        <xsd:import namespace="urn:com:asseco:abc:v1:type:Custom" schemaLocation="../xsd/CustomType.xsd"></xsd:import>
+    </wsdl:types>
+
+    <wsdl:message name="AbcRequest">
+        <wsdl:part element="cty:AbcRequest" name="request"/>
+    </wsdl:message>
+    <wsdl:message name="AbcResponse">
+        <wsdl:part element="cty:AbcResponse" name="response"/>
+    </wsdl:message>
+
+    <wsdl:portType name="CustomPortType">
+        <wsdl:operation name="AbcMethod">
+            <wsdl:input message="AbcRequest"/>
+            <wsdl:output message="AbcResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="CustomBinding" type="CustomPortType">
+        &lt;soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/&gt;
+        <wsdl:operation name="AbcMethod">
+            &lt;soap:operation soapAction="AbcMethod"/&gt;
+            &lt;wsdl:input&gt;&lt;soap:body use="literal"/&gt;&lt;/wsdl:input&gt;
+            &lt;wsdl:output&gt;&lt;soap:body use="literal"/&gt;&lt;/wsdl:output&gt;
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="CustomWS">
+        <wsdl:port binding="CustomBinding" name="CustomPortService">
+            &lt;soap:address location="???"/&gt;
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
+</code></pre>
+					</section>
+
+				</section>
+
+				<section>
+					<section>
+						<h2>3. JAX-WS Annotations</h2>
+						<ol>
+							<li>Overview</li>
+							<li>Exposing WS (server side)</li>
+							<li>Consuming WS (client side)</li>
+							<li>Advanced issues</li>
+						</ol>
+					</section>
+
+					<section>
+						<h3>3.1 Overview</h3>
+						<h4 align="left">Basic annotations are:</h4>
+						<ul>
+							<li><strong>@Webservice</strong> - expose WS with embedded mashalling (done by the server)</li>
+							<li><strong>@WebServiceProvider</strong> - expose WS, but handle service completely (from XML request to XML response)</li>
+							<li><strong>@WebServiceClient</strong> - consume/call WS</li>
+							<li><strong>@HandlerChain</strong> - get access to message content (e.g. for logging, authorization, modification, etc.)</li>
+							<li><strong>@MTOM</strong> - serve/consume bigger content as attachments (instead of encoded text)</li>
+						</ul>
+					</section>			
+					<section>
+						<h3>3.2 Exposing WS (server side)</h3>
+						<ol>
+							<li>Contract Last - implementation from Java</li>
+							<li>Contract First - implementation from WSDL</li>
+							<li>Complex processing - processing SOAP message</li>
+						</ol>
+					</section>
+
+					<section>
+						<h3>3.2.1 Contract Last(Server Side)</h3>
+						<h4 align="left">@Webservice</h4>
+						<pre><code class="java">@WebService(serviceName = "HelloService", portName = "HelloPort", 
+			targetNamespace = "urn:com:asseco:aha:training:ws:v1")
+public class HelloWebService implements HelloService {
+
+	@WebMethod
+	public String sayHello(String name) {
+		return String.format("Spring say: Hello %s!", name);
+	}
+
+}</code></pre>
+					</section>
+					<section>
+						<h3>3.2.2 Contract First (Server Side)</h3>
+						<h4 align="left">@Webservice</h4>
+						<pre><code class="java">@WebService(endpointInterface = "com.asseco.aha.training.ws.v1.HelloService")
+public class HelloWebService implements HelloService {
+
+	@WebMethod
+	public String sayHello(String name) {
+		return String.format("Spring say: Hello %s!", name);
+	}
+
+}</code></pre>
+					</section>
+					<section>
+						<h3>3.2.3 Complex Processing (Server Side)</h3>
+						<h4 align="left">@WebServiceProvider</h4>
+						<pre><code class="java">@javax.xml.ws.ServiceMode(value = javax.xml.ws.Service.Mode.MESSAGE)
+@WebServiceProvider(wsdlLocation = "wsdl/ws-training-provider.wsdl", serviceName = "...", portName = "...", targetNamespace = "...")
+public class ProviderWebService implements Provider<SOAPMessage> {
+
+
+	@Override
+	public SOAPMessage invoke(SOAPMessage request) {
+		...
+	}</code></pre>
+						<h4 align="left">Service modes:</h4>
+						<ul>
+							<li>MESSAGE - complete message</li>
+							<li>PAYLOAD - payload only</li>
+						</ul>
+					</section>
+					
+					<section>
+						<h3>3.3 Consuming WS (client side)</h3>
+						<ol>
+							<li>Generated client - done by JAX-WS RI</li>
+							<li>Runtime client - runtime customization</li>
+							<li>Spring client - spring way</li>
+						</ol>
+					</section>
+					<section>
+						<h3>3.3.1 Generated client (Client Side)</h3>
+						<pre><code class="java">public class HelloWorldClient{
+    public static void main(String[] args) throws Exception {
+ 		URL url = new URL("http://localhost:8080/ws-server-as/CalculatorWebService?WSDL");
+		QName qname = new QName("http://ws.server.ws.training.aha.asseco.com/", "CalculatorWebServiceService");
+
+		WsTraining service = new WsTraining(url, qname);
+		WsTrainingPortType calc = service.getPort(WsTrainingPortType.class);
+
+		AddRequest ar = new AddRequest();
+		List<Integer> inputs = ar.getNumber();
+		inputs.add(5);
+		inputs.add(2);
+
+		AddResponse response = calc.add(ar);
+		Assert.assertEquals(7, response.getResult());
+ 
+    }
+ 
+}</code></pre>
+					</section>
+					<section>
+						<h3>3.3.2 Runtime client (Client Side)</h3>
+						<pre><code class="java">public class HelloWorldClient{
+ 
+    public static void main(String[] args) throws Exception {
+ 
+		URL url = new URL("http://localhost:8080/ws-server-as/HelloWebService?WSDL");
+        QName qname = new QName("http://ws.server.ws.training.aha.asseco.com/", "HelloWebServiceService");
+ 
+        Service service = Service.create(url, qname);
+        HelloWorld hello = service.getPort(HelloWorld.class);
+ 
+        System.out.println(hello.sayHello("Arny"));
+ 
+    }
+ 
+}</code></pre>
+					</section>
+					<section>
+						<h3>3.3.3 Spring client (Client Side)</h3>
+						<pre><code class="xml"><beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+    <bean id="smsKlasWS" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean" >
+		&lt;property name="portName" value="AbcPort"/&gt;
+		&lt;property name="serviceName" value="AbcService"/&gt;
+		&lt;property name="namespaceUri" value="com.asseco.aha.training.ws.v1"/&gt;
+		&lt;property name="serviceInterface" value="com.asseco.aha.training.ws.v1.AbcService"/&gt;
+		&lt;property name="wsdlDocumentUrl" value="${endpoints.abcService}?wsdl"/&gt;
+		&lt;property name="lookupServiceOnStartup" value="false"/&gt;
+        <property name="customProperties">
+            <util:map>
+                <entry key="javax.xml.ws.client.receiveTimeout">
+                    <value type="java.lang.Integer">300000</value>
+                </entry>
+            </util:map>
+        </property>
+    </bean>
+</beans></code></pre>
+					</section>
+
+					<section>
+						<h3>3.4 Advanced Issues</h3>
+						<ol>
+							<li>Handler Chain</li>
+							<li>MTOM</li>
+							<li>WS-Addressing</li>
+						</ol>
+					</section>
+					<section>
+						<h3>3.4.1 Handler Chain</h3>
+						Handler definition:
+						<pre><code class="java">public class WsLoggingHandler implements SOAPHandler&lt;SOAPMessageContext&gt; {
+    @Override
+    public boolean handleMessage(SOAPMessageContext context) {
+        ...
+    }
+}</code></pre>
+						XML definition:
+						<pre><code class="xml"><?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<javaee:handler-chains xmlns:javaee="http://java.sun.com/xml/ns/javaee"	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <javaee:handler-chain>
+        <javaee:handler>
+            <javaee:handler-class>com.asseco.aha...util.WsLoggingHandler</javaee:handler-class>
+        </javaee:handler>
+    </javaee:handler-chain>
+</javaee:handler-chains></code></pre>
+						Usage:
+						<pre><code class="java">@WebService(...)
+@HandlerChain(file = "/handler-chain.xml")
+public class CalculatorWebService implements WsTrainingPortType {
+    ...
+}</code></pre>
+					</section>
+
+					<section>
+						<h3>3.4.2 MTOM</h3>
+						Service:
+						<pre><code class="java">@WebService
+@MTOM(threshold = 1024)
+public class LoremWebService {
+    ...
+}</code></pre>
+						Client:
+						<pre><code class="java">@Test
+public void testCalc() throws MalformedURLException {
+    URL url = new URL("http://localhost:8080/ws-server-as/CalculatorWebService?WSDL");
+    QName qname = new QName("http://ws.server.ws.training.aha.asseco.com/", "CalculatorWebServiceService");
+
+    Service service = Service.create(url, qname);
+    WsTrainingPortType calc = 
+	    service.getPort(WsTrainingPortType.class, new MTOMFeature());
+
+    ...
+}</code></pre>
+					</section>
+
+					<section>
+						<h3>3.4.3 WS-Addressing</h3>
+						Service:
+						<pre><code class="java">@WebService
+@Addressing(true, false) // enabled , required
+public class HelloWebService {
+    ...
+}</code></pre>
+						Request:
+						<pre><code class="xml">POST http://localhost:8080/ws-server-as/HelloWebService HTTP/1.1
+SOAPAction: ""
+...
+
+<soapenv:Envelope ...>
+   <soapenv:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
+      <wsa:Action>http://ws.server.ws.training.aha.asseco.com/HelloWebService/sayHello</wsa:Action>
+      <wsa:ReplyTo><wsa:Address>http://localhost:8080/ws-server-as/EndpointService</wsa:Address></wsa:ReplyTo>
+	  <wsa:MessageID>12345</wsa:MessageID>
+   </soapenv:Header>
+   <soapenv:Body>
+      ...
+   </soapenv:Body>
+</soapenv:Envelope>
+</code></pre>
+					</section>
+
+				</section>
+
+				<section>
+					<section>
+						<h2>4. Implementation</h2>
+						<ol>
+							<li>Prerequisites</li>
+							<li>Build model</li>
+							<li>Implementation</li>
+							<li>Lab</li>
+						</ol>
+					</section>
+
+					<section>
+						<h3>4.1 Prerequisites</h3>
+						<table style="border: 1px solid white;">
+							<tr style="background-color: gray;">
+								<th>Item</th>
+								<th>Tool/Framework</th>
+								<th>Version</th>
+							</tr>
+							<tr>
+								<td>Java</td>
+								<td>Oracle JDK</td>
+								<td>7</td>
+							</tr>
+							<tr>
+								<td>Build tool</td>
+								<td>Maven</td>
+								<td>3.x</td>
+							</tr>
+							<tr>
+								<td>IoC</td>
+								<td>Spring Framework</td>
+								<td>4</td>
+							</tr>
+							<tr>
+								<td>Applicarion Server</td>
+								<td>WildFly</td>
+								<td>8.1.x</td>
+							</tr>
+							<tr>
+								<td>Unit testing</td>
+								<td>JUnit</td>
+								<td>4.11</td>
+							</tr>
+							<tr>
+								<td>Logging</td>
+								<td>slf4j / log4j</td>
+								<td>1.7.x / 1.2.x</td>
+							</tr>
+							<tr>
+								<td>Test client (UI)</td>
+								<td>SoapUI</td>
+								<td>5.x</td>
+							</tr>
+						</table>
+					</section>
+					
+					<section>
+						<h2>4.2 Build model</h2>
+						<img src="img/ws_traning_build_model.png" alt="Maven build model" style="-webkit-transform: rotate(180deg);">
+					</section>
+
+					<section>
+						<h2>4.3 Implementation</h2>
+						<p>Check <a href="https://github.com/arnosthavelka/ws-training" alt="Souce code for lab">source code</a> ...</p>
+					</section>
+
+					<section>
+						<h2>4.4 Lab (Exercise)</h2>
+						<ul>
+							<li>Write WS (contract last)</li>
+							<li>Write WS (contract first)</li>
+							<li>Write client</li>
+						</ul>
+					</section>
+
+				</section>
+				
+				<section>
+					<section>
+						<h2>5. Exposing WS in different setups</h2>
+						<ol>
+							<li>Wildfly/JBoss</li>
+							<li>Tomcat</li>
+							<li>Spring boot (embedded Tomcat)</li>
+							<li>Spring exporter</li>
+							<li>JAX-WS Endpoint</li>
+						</ol>
+					</section>
+
+					<section>
+						<h3>5.1 Wildfly/JBoss</h3>
+						<ul>
+							<li>WS itself (@WebService) works out of box (Wildfly is full AS)</li>
+							<li>Spring integration can be done in ancestor (@PostConstruct inheritance works)</li>
+							<li>AS modifies WSDLL (service name, target namespace, etc.) when not explicitly specified.</li>
+						</ul>
+					</section>
+					
+					<section>
+						<h2>5.2 Tomcat</h2>
+						<ul>
+							<li>Tomcat is web-container. Therefore we need to add JAX-WS runtime libraries into <strong>%tomcat_home%/lib</strong> (approx. 32 files).</li>
+							<li>JAX-WS library (previous bullet) does not log endpoints URLs.</li>
+							<li>Web application must contain:
+								<ul>
+									<li>Modify file <strong>web.xml</strong> to add listener <strong>WSServletContextListener</strong>.</li>
+									<li>Add file <strong>sun-jaxws.xml</strong> to defined exposed WS endpoints.</li>
+								</ul>
+							</li>
+							<li>Spring integration has to be done in every WS (@PostConstruct <strong>inheritance does not work</strong>)</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>5.3 Spring boot (embedded Tomcat)</h2>
+						<ul>
+							<li>REST service is fine (working out of box) - just define spring context and REST controller.
+								<pre><code class="java">@RestController
+public class HelloRestService {
+
+	@RequestMapping("/hello")
+	public String sayHello(String name) {
+	  ... 
+	}
+
+}</code></pre></li>
+							<li>However SOAP service does not work for me (up to now)!</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>5.4 Spring exporter</h2>
+						<ul>
+							<li>Easy to use, but not working in the same context as AS (aka same port).</li>
+							<li>Definition of the spring bean (exporter).
+						<pre><code class="xml"><beans xmlns="http://www.springframework.org/schema/beans" ...>
+  &lt;bean class="org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter" 
+        p:baseAddress="http://localhost:9999/myServices" /&gt;
+</beans></code></pre></li>
+							<li>WS has to be defined as spring bean.
+						<pre><code class="java">@Component
+@WebService(...)
+public class CalculatorWebService implements WsTrainingPortType {
+  ...
+}</code></pre></li>
+						</ul>
+						<p>
+					</section>
+
+					<section>
+						<h2>5.5 JAX-WS Endpoint</h2>
+						<!--p>TODO</p-->
+						<pre><code class="java">public static void main(String[] args) {
+	   Endpoint.publish("http://localhost:9999/ws/calc", new CalculatorWebService());
+}</code></pre>
+					</section>
+				</section>
+				
+				<section>
+					<h1>THE END</h1>
+					<h3>Thank you!</h3>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

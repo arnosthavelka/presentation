@@ -1,5 +1,10 @@
-http://htmlpreview.github.com/?https://github.com/arnosthavelka/presentation/blob/master/devday/automated_testing/template.html
+make HTML available - http://stackoverflow.com/questions/8446218/how-to-see-an-html-page-on-github-as-a-normal-rendered-html-page-to-see-preview
+direct  (from gh-pages branch) - http://arnosthavelka.github.com/presentation/devday/automated_testing/template.html
+preview (from master branch) - http://htmlpreview.github.com/?
 
+----------------------
 http://arnosthavelka.github.com/presentation/devday/automated_testing/template.html
 http://arnosthavelka.github.com/presentation/devday/spring_hints/template.html
 http://arnosthavelka.github.io/presentation/jprofiler/template.html
+http://arnosthavelka.github.io/presentation/webservice/index.html
+http://arnosthavelka.github.io/presentation/spring-advanced/index.html
