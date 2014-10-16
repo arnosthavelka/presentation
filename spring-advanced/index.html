@@ -68,33 +68,22 @@
 				<section>
 					<h2>Agenda</h2>
 					<ol>
-						<li>Spring basics - overview</li>
+						<li>Spring Core - Basics</li>
+						<li>Spring Core - Hints</li>
 						<li>BFPP & BPP</li>
-						<li>Spring Boot - basics</li>
+						<li>Testing</li>
 						<li>AOP</li>
 						<li>Persistence (JDBC/JPA/JTA and transaction)</li>
 						<li>Remoting & WS</li>
 						<li>JMS</li>
 						<li>JMX</li>
+						<li>Spring Boot - Basics</li>
 					</ol>
 				</section>
 				
 				<section>
 					<section>
-						<h2>1. Spring basics - overview</h2>
-						<p style="color:red">TODO</p>
-						<ol>
-							<li>Concept</li>
-							<li>Application configuration</li>
-							<li>Profiles</li>
-							<li>Scopes</li>
-							<li>Java Specifications (JSR-250, JSR-303 and JSR-330)</li>
-							<li>Classpath scanning - http://www.eclecticlogic.com/2014/09/01/classpath-scanning/</li>
-							<li>Testing</li>
-						</ol>
-					</section>
-					<section>
-						<h2>1.1 Concept</h2>
+						<h2>1. Spring Core - Basics</h2>
 						<ol>
 							<li>Overview</li>
 							<li>Inversion of Control</li>
@@ -102,10 +91,11 @@
 							<li>Namespace P and C</li>
 							<li>Abstract definition</li>
 							<li>SpEL</li>
+							<li>Java Specifications (JSR-250, JSR-303 and JSR-330)</li>
 						</ol>
 					</section>
 					<section>
-						<h2>1.1.1 Overview</h2>
+						<h2>1.1 Overview</h2>
 						<ul>
 							<li><strong>Goal</strong>:Provide comprehensive infrastructural support for developing enterprise Java applications</li>
 							<li><strong>Core support</strong>:
@@ -119,7 +109,7 @@
 						</ul>
 					</section>
 					<section>
-						<h2>1.1.2 Inversion of Control (IoC)</h2>
+						<h2>1.2 Inversion of Control (IoC)</h2>
 						<p align="left"><strong>Ioc</strong> is approach that is implemented by design pattern called <a href="http://en.wikipedia.org/wiki/Dependency_injection">Dependency injection</a>. 
 						It promotes programmatic to interfaces, improves testability, etc.</p>
 						<p>Property (setter) based</p>
@@ -139,7 +129,7 @@ public class MyService {
 }</code></pre>
 						</section>
 					<section>
-						<h2>1.1.3 Spring configuration</h2>
+						<h2>1.3 Spring configuration</h2>
 						<p>XML</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p"&gt;
@@ -160,7 +150,7 @@ public class Application {
 }</code></pre>
 					</section>
 					<section>
-						<h2>1.1.4 Namespace P and C</h2>
+						<h2>1.4 Namespace P and C</h2>
 						<p>Namespace P (for properties/setters)</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans ... xmlns:p="http://www.springframework.org/schema/p"&gt;
@@ -175,7 +165,7 @@ public class Application {
 &lt;/beans&gt;</code></pre>
 					</section>
 					<section>
-						<h2>1.1.5 Abstract definition</h2>
+						<h2>1.5 Abstract definition</h2>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
 
@@ -193,7 +183,7 @@ public class Application {
 &lt;/beans&gt;</code></pre>
 					</section>
 					<section>
-						<h2>1.1.6 SpEL</h2>
+						<h2>1.6 SpEL</h2>
 						<ul>
 							<li>Reference bean
 <pre><code class="java">@Value("#{customBean.message}")
@@ -214,7 +204,87 @@ private String email;</code></pre>
 							</li>
 						</ul>
 					</section>
-					
+					<section>
+						<h2>1.7 Java Specifications</h2>
+						<ol>
+							<li><a href="http://en.wikipedia.org/wiki/JSR_250" alt="Link to JSR-250">JSR-250</a> - Semantic concept</li>
+							<li><a href="http://en.wikipedia.org/wiki/Bean_Validation" alt="Link to JSR-303">JSR-303</a> - Bean Validation</li>
+							<li><a href="https://jcp.org/en/jsr/detail?id=330" alt="Link to JSR-330">JSR-330</a> - Dependency Injection for Java</li>
+						</ol>
+					</section>
+					<section>
+						<h2>1.7.1 JSR-250 - Semantic concept [1/2]</h2>
+						<p align="left"><a href="http://en.wikipedia.org/wiki/JSR_250" alt="Link to JSR-250">JSR-250</a> is a specification of annotations for common 
+						semantic concepts in the Java SE and Java EE platforms that apply across a variety of individual technologies.</p>
+						<table style="border: 1px solid gray;">
+							<tr style="background-color: gray;">
+								<th>Annotation</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<td>@Generated</td>
+								<td>Marks sources that have been generated</td>
+							</tr>
+							<tr>
+								<td>@Resource</td>
+								<td>Declares a reference to a resource (e.g. from JNDI, servlet context, etc.)</td>
+							</tr>
+							<tr>
+								<td>@PostConstruct</td>
+								<td>Do initialization</td>
+							</tr>
+							<tr>
+								<td>@PreDestroy</td>
+								<td>Do finalization</td>
+							</tr>
+							<tr>
+								<td>@RolesAllowed</td>
+								<td>Specifies the security roles permitted to access method(s) in an application</td>
+							</tr>
+						</table>
+					</section>
+					<section>
+						<h2>1.7.1 JSR-250 - Semantic concept [2/2]</h2>
+						<p align="left">Definition:</p>
+						<pre><code class="xml">&lt;context:annotation-config/&gt; &lt;!-- process DI, JSR-250, etc. --&gt;
+&lt;context:component-scan/&gt;    &lt;!-- same as annotation-config + scan packages to register beans --&gt;</code></pre>
+						<p align="left">Usage:</p>
+						<pre><code class="java">@Component
+public class MyService {
+  @Resource
+  private MyDao dao;
+  
+  @Value("${my_message}")
+  private String msg;
+  
+  @PostConstruct
+  private void init() {
+    msg = "N/A";
+  }
+}</code></pre>
+					</section>
+					<section>
+						<h2>1.7.2 JSR-303 - Bean Validation</h2>
+						<p style="color:red">TODO</p>
+					</section>
+					<section>
+						<h2>1.7.3 JSR-330 - Dependency Injection for Java</h2>
+						<p style="color:red">TODO</p>
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h2>2. Spring Core - Hints</h2>
+						<p style="color:red">TODO</p>
+						<ol>
+							<li>Concept</li>
+							<li>Application configuration</li>
+							<li>Profiles</li>
+							<li>Scopes</li>
+							<li>Classpath scanning - http://www.eclecticlogic.com/2014/09/01/classpath-scanning/</li>
+						</ol>
+					</section>
 					<section>
 						<h2>1.2 Application configuration</h2>
 						<ol>
@@ -410,7 +480,7 @@ public class UserDAOMock implements UserDAO {
 					<p style="color:red">TODO</p>
 					<ol>
 						<li>http://www.justinleegrant.com/?p=489</li>
-						<li>aaa</li>
+						<li>@RefreshScope - refresh beans by calling localhost:8080/refresh</li>
 						<li>aaa</li>
 						<li>aaa</li>
 					</ol>
