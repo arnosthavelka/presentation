@@ -515,6 +515,7 @@ public class UserDAOMock implements UserDAO {
 					</section>
 					<section>
 						<h2>2.3.2 XML Configuration</h2>
+						<p>Single bean:</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
 
@@ -523,6 +524,13 @@ public class UserDAOMock implements UserDAO {
     &lt;bean id="sessinService" scope="session"&gt;
         &lt;aop:scoped-proxy/&gt;
     &lt;/bean&gt;
+
+&lt;/beans&gt;</code></pre>
+						<p>All beans:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;context:component-scan base-package="x.y.z" scoped-proxy="interfaces¦target_class" /&gt;
 
 &lt;/beans&gt;</code></pre>
 					</section>
