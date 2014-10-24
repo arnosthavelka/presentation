@@ -711,7 +711,7 @@ for (BeanDefinition bd : beans) {
 					</section>
 					<section>
 						<h2>3.2.3 Factory Bean</h2>
-						<p align="left">FactoryBean definition:</p>
+						<p align="left">FactoryBean implementation:</p>
 						<pre><code class="java">public class MyFactoryBean implements FactoryBean&lt;MyService&gt; {
   // ... instantiate ClientService class as clientService...
   
@@ -731,23 +731,61 @@ for (BeanDefinition bd : beans) {
 &lt;/beans&gt;</code></pre>
 					</section>
 					<section>
-						<h2>3.3 BFPP [container-2 - 10] - e.g. configuration place-holder (PropertyPlaceholderConfigurer)</h2>
-						<p style="color:red">TODO</p>
+						<h2>3.3 BFPP - overview [1/2]</h2>
 						<ol>
-							<li>aaa</li>
-							<li>aaa</li>
-							<li>aaa</li>
+							<li>Called after bean definition is loaded, but before bean is instantiated.</li>
+							<li>Useful for applying modifications on some beans or groups of beans.</li>
+							<li>Just implement interface <i>BeanFactoryPostProcessor</i></li>
+							<li>Example: <i>PropertyPlaceholderConfigurer</i></li>
 						</ol>
 					</section>
 					<section>
-						<h2>3.4 BPP [container-2 - 13] - e.g. JSR-250 (CommonAnnotationBeanPostProcessor)</h2>
-						<p style="color:red">TODO</p>
+						<h2>3.3 BFPP - usage [2/2]</h2>
+						<p align="left">BFPP implementation:</p>
+						<pre><code class="java">public class MyBfpp implements BeanFactoryPostProcessor {
+  public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    String[] beanNames = beanFactory.getBeanDefinitionNames();
+	...
+  }
+}</code></pre>
+						<p align="left">Spring definition:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;bean id="myBfpp" class="abc.MyBfpp" /&gt;
+
+&lt;/beans&gt;</code></pre>
+					</section>
+					<section>
+						<h2>3.4 BPP - overview [1/2]</h2>
 						<ol>
-							<li>aaa</li>
-							<li>aaa</li>
-							<li>aaa</li>
+							<li>Can modify bean instance in any way.</li>
+							<li>Just implement interface <i>BeanPostProcessor</i></li>
+							<li>Example: <i>BeanValidationPostProcessor</i> (for JSR-303), <i>CommonAnnotationBeanPostProcessor</i> (for JSR-250), <i>RequiredAnnotationBeanPostProcessor</i>, etc.</li>
 						</ol>
 					</section>
+					<section>
+						<h2>3.4 BPP - usage [2/2]</h2>
+						<p align="left">BPP implementation:</p>
+						<pre><code class="java">public class MyBpp implements BeanPostProcessor {
+  @Override
+  public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    ...
+  }
+
+  @Override
+  public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    ...
+  }
+}</code></pre>
+						<p align="left">Spring definition:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;bean id="myBpp" class="abc.MyBpp" /&gt;
+
+&lt;/beans&gt;</code></pre>
+					</section>					
 				</section>
 
 				<section>
