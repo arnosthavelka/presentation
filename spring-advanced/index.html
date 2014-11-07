@@ -911,12 +911,27 @@ for (BeanDefinition bd : beans) {
 					</section>
 					<section>
 						<h2>11.3 Externalize configuration with Spring Boot</h2>
-						<p style="color:red">TODO</p>
-						<ol>
-							<li>http://altfatterz.blogspot.cz/2014/10/software-configuration-with-spring-boot.html</li>
-							<li>aaa</li>
-							<li>aaa</li>
-						</ol>
+						<p align="left">Default configuration:</p>
+						<pre><code class="java">java -jar spring-advanced-training.jar</code></pre>
+						<p align="left">Command line argument configuration:</p>
+						<pre><code class="java">java -jar spring-advanced-training.jar --hello.name=Richard</code></pre>
+						<p align="left">Configuration by system property:</p>
+						<pre><code class="java">java -Dhello.name="Sarah" -jar spring-advanced-training.jar</code></pre>
+						<p align="left">Configuration by OS variable:</p>
+						<pre><code class="java">set HELLO_NAME=Samuel
+						java -jar spring-advanced-training.jar</code></pre>						
+						<p align="left">Configuration profile/name:</p>
+						<pre><code class="java">java -jar spring-advanced-training.jar --spring.config.name=config</code></pre>
+						<aside class="notes">
+							<p>
+								Source: http://altfatterz.blogspot.cz/2014/10/software-configuration-with-spring-boot.html
+							</p>
+							<p>
+								<strong>rest</strong> - no XML-based, no required interface definition<br/>
+								based on HTTP methods GET/PUT (update)/POST (insert)/DELETE<br/>
+								stateless, cacheable, etc.
+							</p>
+						</aside>
 					</section>
 					<section>
 						<h2>11.4 Advanced configuration</h2>
