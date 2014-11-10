@@ -77,7 +77,7 @@
 						<li>Remoting & WS</li>
 						<li>JMS</li>
 						<li>JMX</li>
-						<li>Spring Boot - Basics</li>
+						<li>Spring Boot</li>
 					</ol>
 				</section>
 				
@@ -902,15 +902,47 @@ for (BeanDefinition bd : beans) {
 					</section>
 					<section>
 						<h2>11.2 REST simple example</h2>
-						<p style="color:red">TODO</p>
-						<ol>
-							<li>aaa</li>
-							<li>aaa</li>
-							<li>aaa</li>
-						</ol>
+						<p align="left">Spring Boot simple/basic configuration:</p>
+						<pre><code class="java">@Configuration
+@ComponentScan(basePackages = "com.asseco.aha.training.spring_advanced.sb")
+@EnableAutoConfiguration
+public class SpringBootApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootApplication.class, args);
+    }
+}</code></pre>
+						<p align="left">Simple REST implementation:</p>
+						<pre><code class="java">@RestController
+public class HelloController {
+
+    @Value("${hello.name:Arny}")
+    private String name;
+
+    @RequestMapping("/hello")
+    String hello() {
+        return String.format("Hello %s!", name);
+    }
+}</code></pre>
 					</section>
 					<section>
-						<h2>11.3 Externalize configuration with Spring Boot</h2>
+						<h2>11.3 Externalize configuration [1/2]</h2>
+						<h3>Priorities of external configuration</h3>
+						<ul>
+							<li>Command line arguments</li>
+							<li>Java System properties (<i>System.getProperties()</i>). </li>
+							<li>OS environment variables</li>
+							<li>JNDI attributes from <i>java:comp/env</i></li>
+							<li>A RandomValuePropertySource that only has properties in random.*</li>
+							<li>Application properties outside of your packaged jar (application.properties including YAML and profile variants)</li>
+							<li>Application properties packaged inside your jar (application.properties including YAML and profile variants)</li>
+							<li>@PropertySource annotations on your <i>@Configuration</i> classes</li>
+							<li>Default properties (specified using <i>SpringApplication.setDefaultProperties</i>)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>11.3 Externalize configuration [2/2]</h2>
+						<h3>Options to change configuration</h3>
 						<p align="left">Default configuration:</p>
 						<pre><code class="java">java -jar spring-advanced-training.jar</code></pre>
 						<p align="left">Command line argument configuration:</p>
@@ -919,9 +951,12 @@ for (BeanDefinition bd : beans) {
 						<pre><code class="java">java -Dhello.name="Sarah" -jar spring-advanced-training.jar</code></pre>
 						<p align="left">Configuration by OS variable:</p>
 						<pre><code class="java">set HELLO_NAME=Samuel
-						java -jar spring-advanced-training.jar</code></pre>						
-						<p align="left">Configuration profile/name:</p>
+java -jar spring-advanced-training.jar</code></pre>						
+						<p align="left">Configuration name:</p>
 						<pre><code class="java">java -jar spring-advanced-training.jar --spring.config.name=config</code></pre>
+						<p align="left">Configuration profile:</p>
+						<pre><code class="java">java -jar spring-advanced-training.jar --spring.profiles.active=xyz
+java -Dspring.profiles.active=xyz -jar spring-advanced-training.jar</code></pre>
 						<aside class="notes">
 							<p>
 								Source: http://altfatterz.blogspot.cz/2014/10/software-configuration-with-spring-boot.html
