@@ -507,6 +507,7 @@ public class UserDAOMock implements UserDAO {
 									<li><strong>Prototype</strong> - always new instance</li>
 									<li><strong>Request</strong> (for web) - an instance per HTTP request</li>
 									<li><strong>Session</strong> (for web) - an instance per HTTP session</li>
+									<li><strong>Flow</strong> (for Spring WebFlow) or <strong>Step</strong> (for Spring Batch) - special Spring scopes</li>
 									<li><strong>Custom</strong> (to be implemented) - an instance per custom rule</li>
 								</ul>
 							</li>
@@ -924,9 +925,16 @@ public class HelloController {
         return String.format("Hello %s!", name);
     }
 }</code></pre>
+						<aside class="notes">
+							<p>
+								<strong>rest</strong> - no XML-based, no required interface definition<br/>
+								based on HTTP methods GET/PUT (update)/POST (insert)/DELETE<br/>
+								stateless, cacheable, etc.
+							</p>
+						</aside>
 					</section>
 					<section>
-						<h2>11.3 Externalize configuration [1/2]</h2>
+						<h2>11.3 Externalize configuration [1/3]</h2>
 						<h3>Priorities of external configuration</h3>
 						<ul>
 							<li>Command line arguments</li>
@@ -941,8 +949,8 @@ public class HelloController {
 						</ul>
 					</section>
 					<section>
-						<h2>11.3 Externalize configuration [2/2]</h2>
-						<h3>Options to change configuration</h3>
+						<h2>11.3 Externalize configuration [2/3]</h2>
+						<h3>Options to change configuration [1/2]</h3>
 						<p align="left">Default configuration:</p>
 						<pre><code class="java">java -jar spring-advanced-training.jar</code></pre>
 						<p align="left">Command line argument configuration:</p>
@@ -952,30 +960,63 @@ public class HelloController {
 						<p align="left">Configuration by OS variable:</p>
 						<pre><code class="java">set HELLO_NAME=Samuel
 java -jar spring-advanced-training.jar</code></pre>						
-						<p align="left">Configuration name:</p>
-						<pre><code class="java">java -jar spring-advanced-training.jar --spring.config.name=config</code></pre>
-						<p align="left">Configuration profile:</p>
-						<pre><code class="java">java -jar spring-advanced-training.jar --spring.profiles.active=xyz
-java -Dspring.profiles.active=xyz -jar spring-advanced-training.jar</code></pre>
 						<aside class="notes">
 							<p>
 								Source: http://altfatterz.blogspot.cz/2014/10/software-configuration-with-spring-boot.html
-							</p>
-							<p>
-								<strong>rest</strong> - no XML-based, no required interface definition<br/>
-								based on HTTP methods GET/PUT (update)/POST (insert)/DELETE<br/>
-								stateless, cacheable, etc.
+								or http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
 							</p>
 						</aside>
 					</section>
 					<section>
-						<h2>11.4 Advanced configuration</h2>
-						<p style="color:red">TODO</p>
-						<ol>
-							<li>http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html(random, @PropertySource, profile config, YAML)</li>
-							<li>aaa</li>
-							<li>aaa</li>
-						</ol>
+						<h2>11.3 Externalize configuration [3/3]</h2>
+						<h3>Options to change configuration [2/2]</h3>
+						<p align="left">Configuration name:</p>
+						<pre><code class="java">java -jar spring-advanced-training.jar --spring.config.name=config</code></pre>
+						<p align="left">Configuration profile:</p>
+						<pre><code class="java">// via command line argument
+java -jar spring-advanced-training.jar --spring.profiles.active=xyz</code></pre>
+						<p align="left">or</p>
+						<pre><code class="java">// via JVM variable
+java -Dspring.profiles.active=xyz -jar spring-advanced-training.jar</code></pre>
+						<p align="left">Hard-coded by annotation @PropertySource:</p>
+						<pre><code class="java">@Configuration
+@PropertySource("file:D:/some path/custom_config.properties")
+@ComponentScan
+@EnableAutoConfiguration
+public class ConfigServiceApplication {
+  ...
+}</code></pre>
+						<small>Not applicable to YAML files (only for properties files).</small>
+					</section>
+					<section>
+						<h2>11.4 Random configuration</h2>
+						<p align="left">The <i>RandomValuePropertySource</i> is class  for injecting random values (e.g. String, integers and long). 
+						It's useful for testing. Example configuration is:</p>
+						<pre><code class="java">my.value=${random.value}
+my.number=${random.int}
+my.bignumber=${random.long}
+my.number.less.than.ten=${random.int(10)}
+my.number.in.range=${random.int[1024,65536]}</code></pre>
+						<small>Source: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html" alt="Source link">http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</a></small>
+					</section>
+					<section>
+						<h2>11.4 YAML configuration</h2>
+						<ul>
+							<li>new hierarchical configuration approach</li>
+							<li>discoverable as properties files (by <i>YamlPropertiesFactoryBean </i> and  <i>YamlMapFactoryBean </i>)</li>
+							<li>YML file can not use tabulators (just spaces)</li>
+						</ul>
+						<p align="left">YML file:</p>
+						<pre><code class="java">yaml:
+    foo:
+        value: Yaml foo value
+        name: Bruno
+    desc: Sample YAML configuration</code></pre>
+						<p align="left">Available in runtime as:</p>
+						<pre><code class="java">yaml.foo.value=Yaml foo value
+yaml.foo.name=Bruno
+yaml.desc=Sample YAML configuration</code></pre>
+						<small>Source: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html" alt="Source link">http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</a></small>
 					</section>
 					<section>
 						<h2>11.5 Actuator</h2>
