@@ -811,14 +811,196 @@ for (BeanDefinition bd : beans) {
 				</section>
 
 				<section>
-					<h2>5. Spring Boot - basics</h2>
-					<p style="color:red">TODO</p>
-					<ol>
-						<li>http://www.justinleegrant.com/?p=489</li>
-						<li>@RefreshScope - refresh beans by calling localhost:8080/refresh</li>
-						<li>aaa</li>
-						<li>aaa</li>
-					</ol>
+					<section>
+						<h2>5. Spring Boot</h2>
+						<p style="color:red">TODO</p>
+						<ol>
+							<li>Overview</li>
+							<li>REST simple example</li>
+							<li>Externalize configuration with Spring Boot</li>
+							<li>Advanced configuration</li>
+							<li>Actuator</li>
+							<li>A lot more...</li>
+						</ol>
+					</section>
+					<section>
+						<h2>5.1 Overview</h2>
+						<p align="left">Spring Boot represents a new development model on top of Spring framework. It introduces these main features:
+							<ul>
+								<li><strong>Starters</strong> - common groups of dependencies (e.g. web, JMS, remoting, etc.)</li>
+								<li><strong>Autoconfiguration</strong> - autoconfiguration with default behaviour defined simply by annotations</li>
+								<li><strong>Command-line interface (CLI)</strong> - run groovy scripts (as Spring application) simply as CLI</li>
+								<li><strong>Actuator</strong> - common management features (healthcheck, basic information, metrics, etc.)</li>
+							</ul>
+						</p>
+					</section>
+					<section>
+						<h2>5.2 Usage</h2>
+						<p align="left">Declare parent POM (from Spring Boot):</p>
+						<pre><code class="xml">&lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;1.1.8.RELEASE&lt;/version&gt;
+    &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
+&lt;/parent&gt;</code></pre>
+						<p align="left">Define desired dependencies:</p>
+						<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-rest&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+						<small align="left">Note: there's a lot of other available modules/dependencies (e.g. actuator, jdbc, jpa, jms, etc.).</small>
+					</section>
+					<section>
+						<h2>5.3 REST simple example</h2>
+						<p align="left">Spring Boot simple/basic configuration:</p>
+						<pre><code class="java">@Configuration
+@ComponentScan(basePackages = "com.asseco.aha.training.spring_advanced.sb")
+@EnableAutoConfiguration
+public class SpringBootApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootApplication.class, args);
+    }
+}</code></pre>
+						<p align="left">Simple REST implementation:</p>
+						<pre><code class="java">@RestController
+public class HelloController {
+
+    @Value("${hello.name:Arny}")
+    private String name;
+
+    @RequestMapping("/hello")
+    String hello() {
+        return String.format("Hello %s!", name);
+    }
+}</code></pre>
+						<aside class="notes">
+							<p>
+								<strong>rest</strong> - no XML-based, no required interface definition<br/>
+								based on HTTP methods GET/PUT (update)/POST (insert)/DELETE<br/>
+								stateless, cacheable, etc.
+							</p>
+						</aside>
+					</section>
+					<section>
+						<h2>5.4 Externalize configuration [1/3]</h2>
+						<h3>Priorities of external configuration</h3>
+						<ul>
+							<li>Command line arguments</li>
+							<li>Java System properties (<i>System.getProperties()</i>). </li>
+							<li>OS environment variables</li>
+							<li>JNDI attributes from <i>java:comp/env</i></li>
+							<li>A RandomValuePropertySource that only has properties in random.*</li>
+							<li>Application properties outside of your packaged jar</li>
+							<li>Application properties packaged inside your jar</li>
+							<li>@PropertySource annotations on your <i>@Configuration</i> classes</li>
+							<li>Default properties (specified using <i>SpringApplication.setDefaultProperties</i>)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>5.4 Externalize configuration [2/3]</h2>
+						<h3>Options to change configuration [1/2]</h3>
+						<p align="left">Default configuration:</p>
+						<pre><code class="java">java -jar spring-advanced-training.jar</code></pre>
+						<p align="left">Command line argument configuration:</p>
+						<pre><code class="java">java -jar spring-advanced-training.jar --hello.name=Richard</code></pre>
+						<p align="left">Configuration by system property:</p>
+						<pre><code class="java">java -Dhello.name="Sarah" -jar spring-advanced-training.jar</code></pre>
+						<p align="left">Configuration by OS variable:</p>
+						<pre><code class="java">set HELLO_NAME=Samuel
+java -jar spring-advanced-training.jar</code></pre>						
+						<aside class="notes">
+							<p>
+								Source: http://altfatterz.blogspot.cz/2014/10/software-configuration-with-spring-boot.html
+								or http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+							</p>
+						</aside>
+					</section>
+					<section>
+						<h2>5.4 Externalize configuration [3/3]</h2>
+						<h3>Options to change configuration [2/2]</h3>
+						<p align="left">Configuration name:</p>
+						<pre><code class="java">java -jar spring-advanced-training.jar --spring.config.name=config</code></pre>
+						<p align="left">Configuration profile:</p>
+						<pre><code class="java">// via command line argument
+java -jar spring-advanced-training.jar --spring.profiles.active=xyz</code></pre>
+						<p align="left">or</p>
+						<pre><code class="java">// via JVM variable
+java -Dspring.profiles.active=xyz -jar spring-advanced-training.jar</code></pre>
+						<p align="left">Hard-coded by annotation @PropertySource:</p>
+						<pre><code class="java">@Configuration
+@PropertySource("file:D:/some path/custom_config.properties")
+...
+public class ConfigServiceApplication {
+  ...
+}</code></pre>
+						<small>Not applicable to YAML files (only for properties files).</small>
+					</section>
+					<section>
+						<h2>5.5 Random configuration</h2>
+						<p align="left">The <i>RandomValuePropertySource</i> is class  for injecting random values (e.g. String, integers and long). 
+						It's useful for testing. Example configuration is:</p>
+						<pre><code class="java">my.value=${random.value}
+my.number=${random.int}
+my.bignumber=${random.long}
+my.number.less.than.ten=${random.int(10)}
+my.number.in.range=${random.int[1024,65536]}</code></pre>
+						<small>Source: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html" alt="Source link">http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</a></small>
+					</section>
+					<section>
+						<h2>5.6 YAML configuration</h2>
+						<ul>
+							<li>new hierarchical configuration approach</li>
+							<li>discoverable as properties files (by <i>YamlPropertiesFactoryBean </i> and  <i>YamlMapFactoryBean </i>)</li>
+							<li>YML file can not use tabulators (just spaces)</li>
+						</ul>
+						<p align="left">YML file:</p>
+						<pre><code class="java">yaml:
+    foo:
+        value: Yaml foo value
+        name: Bruno
+    desc: Sample YAML configuration</code></pre>
+						<p align="left">Available in runtime as:</p>
+						<pre><code class="java">yaml.foo.value=Yaml foo value
+yaml.foo.name=Bruno
+yaml.desc=Sample YAML configuration</code></pre>
+						<small>Source: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html" alt="Source link">http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</a></small>
+					</section>
+					<section>
+						<h2>5.7 Actuator</h2>
+						<p align="left">Actuator is Spring Boot extension to add management endpoints to the application.</p>
+						<ol>
+							<li><i>/beans</i> - the list of available/configured bean</li>
+							<li><i>/env</i> - environment properties</li>
+							<li><i>/dump</i> - the list of application threads with their stack trace</li>
+							<li><i>/health</i> - displays the current application health</li>
+							<li><i>/info</i> - displays application-specific information (<span style="color:red">TODO - example of adding info from manifest</span>)</li>
+							<li><i>/metrics</i> - the list of application metrics</li>
+							<li>Expose custom endpoint - see example <a href="http://www.javacodegeeks.com/2014/10/spring-boot-actuator-custom-endpoint-with-mvc-layer-on-top-of-it.html" alt="Example of Actuator custom endpoint implementation">here</a></li>
+						</ol>
+					</section>
+					<section>
+						<h2>5.8 A lot more...</h2>
+						<p align="left">Spring Boot offers more features, e.g.:</p>
+						<ol>
+							<li>CLI - command line program invoker (based on Groovy)</li>
+							<li>Cloud features
+								<ul>
+									<li>Eureka - handles service registration and discovery of services in a cluster</li>
+									<li>Hystrix - <span style="color:red">TODO</span></li>
+									<li>Zuul - is just a proxy to other services</li>
+									<li>Config server - load external configuration (e.g. from GIT)</li>
+									<li>@RefreshScope (part of confgi server) - refresh beans by calling localhost:8080/refresh</li>
+								</ul>
+							</li>
+							<li><span style="color:red">TODO</span>http://www.justinleegrant.com/?p=489</li>
+						</ol>
+					</section>
 				</section>
 
 				<section>
@@ -876,166 +1058,6 @@ for (BeanDefinition bd : beans) {
 						<li>aaa</li>
 						<li>aaa</li>
 					</ol>
-				</section>
-				<section>
-					<section>
-						<h2>11. Spring Boot</h2>
-						<p style="color:red">TODO</p>
-						<ol>
-							<li>Overview</li>
-							<li>REST simple example</li>
-							<li>Externalize configuration with Spring Boot</li>
-							<li>Advanced configuration</li>
-							<li>Actuator</li>
-							<li>CLI simple example</li>
-						</ol>
-					</section>
-					<section>
-						<h2>11.1 Overview</h2>
-						<p align="left">Spring Boot represents a new development model on top of Spring framework. It introduces these main features:
-							<ul>
-								<li><strong>Starters</strong> - common groups of dependencies (e.g. web, JMS, remoting, etc.)</li>
-								<li><strong>Autoconfiguration</strong> - autoconfiguration with default behaviour defined simply by annotations</li>
-								<li><strong>Command-line interface (CLI)</strong> - run groovy scripts (as Spring application) simply as CLI</li>
-								<li><strong>Actuator</strong> - common management features (healthcheck, basic information, metrics, etc.)</li>
-							</ul>
-						</p>
-					</section>
-					<section>
-						<h2>11.2 REST simple example</h2>
-						<p align="left">Spring Boot simple/basic configuration:</p>
-						<pre><code class="java">@Configuration
-@ComponentScan(basePackages = "com.asseco.aha.training.spring_advanced.sb")
-@EnableAutoConfiguration
-public class SpringBootApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(SpringBootApplication.class, args);
-    }
-}</code></pre>
-						<p align="left">Simple REST implementation:</p>
-						<pre><code class="java">@RestController
-public class HelloController {
-
-    @Value("${hello.name:Arny}")
-    private String name;
-
-    @RequestMapping("/hello")
-    String hello() {
-        return String.format("Hello %s!", name);
-    }
-}</code></pre>
-						<aside class="notes">
-							<p>
-								<strong>rest</strong> - no XML-based, no required interface definition<br/>
-								based on HTTP methods GET/PUT (update)/POST (insert)/DELETE<br/>
-								stateless, cacheable, etc.
-							</p>
-						</aside>
-					</section>
-					<section>
-						<h2>11.3 Externalize configuration [1/3]</h2>
-						<h3>Priorities of external configuration</h3>
-						<ul>
-							<li>Command line arguments</li>
-							<li>Java System properties (<i>System.getProperties()</i>). </li>
-							<li>OS environment variables</li>
-							<li>JNDI attributes from <i>java:comp/env</i></li>
-							<li>A RandomValuePropertySource that only has properties in random.*</li>
-							<li>Application properties outside of your packaged jar (application.properties including YAML and profile variants)</li>
-							<li>Application properties packaged inside your jar (application.properties including YAML and profile variants)</li>
-							<li>@PropertySource annotations on your <i>@Configuration</i> classes</li>
-							<li>Default properties (specified using <i>SpringApplication.setDefaultProperties</i>)</li>
-						</ul>
-					</section>
-					<section>
-						<h2>11.3 Externalize configuration [2/3]</h2>
-						<h3>Options to change configuration [1/2]</h3>
-						<p align="left">Default configuration:</p>
-						<pre><code class="java">java -jar spring-advanced-training.jar</code></pre>
-						<p align="left">Command line argument configuration:</p>
-						<pre><code class="java">java -jar spring-advanced-training.jar --hello.name=Richard</code></pre>
-						<p align="left">Configuration by system property:</p>
-						<pre><code class="java">java -Dhello.name="Sarah" -jar spring-advanced-training.jar</code></pre>
-						<p align="left">Configuration by OS variable:</p>
-						<pre><code class="java">set HELLO_NAME=Samuel
-java -jar spring-advanced-training.jar</code></pre>						
-						<aside class="notes">
-							<p>
-								Source: http://altfatterz.blogspot.cz/2014/10/software-configuration-with-spring-boot.html
-								or http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
-							</p>
-						</aside>
-					</section>
-					<section>
-						<h2>11.3 Externalize configuration [3/3]</h2>
-						<h3>Options to change configuration [2/2]</h3>
-						<p align="left">Configuration name:</p>
-						<pre><code class="java">java -jar spring-advanced-training.jar --spring.config.name=config</code></pre>
-						<p align="left">Configuration profile:</p>
-						<pre><code class="java">// via command line argument
-java -jar spring-advanced-training.jar --spring.profiles.active=xyz</code></pre>
-						<p align="left">or</p>
-						<pre><code class="java">// via JVM variable
-java -Dspring.profiles.active=xyz -jar spring-advanced-training.jar</code></pre>
-						<p align="left">Hard-coded by annotation @PropertySource:</p>
-						<pre><code class="java">@Configuration
-@PropertySource("file:D:/some path/custom_config.properties")
-@ComponentScan
-@EnableAutoConfiguration
-public class ConfigServiceApplication {
-  ...
-}</code></pre>
-						<small>Not applicable to YAML files (only for properties files).</small>
-					</section>
-					<section>
-						<h2>11.4 Random configuration</h2>
-						<p align="left">The <i>RandomValuePropertySource</i> is class  for injecting random values (e.g. String, integers and long). 
-						It's useful for testing. Example configuration is:</p>
-						<pre><code class="java">my.value=${random.value}
-my.number=${random.int}
-my.bignumber=${random.long}
-my.number.less.than.ten=${random.int(10)}
-my.number.in.range=${random.int[1024,65536]}</code></pre>
-						<small>Source: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html" alt="Source link">http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</a></small>
-					</section>
-					<section>
-						<h2>11.4 YAML configuration</h2>
-						<ul>
-							<li>new hierarchical configuration approach</li>
-							<li>discoverable as properties files (by <i>YamlPropertiesFactoryBean </i> and  <i>YamlMapFactoryBean </i>)</li>
-							<li>YML file can not use tabulators (just spaces)</li>
-						</ul>
-						<p align="left">YML file:</p>
-						<pre><code class="java">yaml:
-    foo:
-        value: Yaml foo value
-        name: Bruno
-    desc: Sample YAML configuration</code></pre>
-						<p align="left">Available in runtime as:</p>
-						<pre><code class="java">yaml.foo.value=Yaml foo value
-yaml.foo.name=Bruno
-yaml.desc=Sample YAML configuration</code></pre>
-						<small>Source: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html" alt="Source link">http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</a></small>
-					</section>
-					<section>
-						<h2>11.5 Actuator</h2>
-						<p style="color:red">TODO</p>
-						<ol>
-							<li>spring book - chapter 21.4</li>
-							<li>aaa</li>
-							<li>aaa</li>
-						</ol>
-					</section>
-					<section>
-						<h2>11.6 CLI simple example</h2>
-						<p style="color:red">TODO</p>
-						<ol>
-							<li>spring book - chapter 21.4</li>
-							<li>aaa</li>
-							<li>aaa</li>
-						</ol>
-					</section>
 				</section>
 
 				<section>
