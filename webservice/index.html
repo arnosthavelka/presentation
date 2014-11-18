@@ -15,7 +15,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 		<link rel="stylesheet" href="css/reveal.min.css">
-		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+		<link rel="stylesheet" href="css/theme/blood.css" id="theme">
 
 		<!-- For syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -45,7 +45,7 @@
 				<section>
 					<h1>WEB SERVICES (SOAP)</h1>
 					<h3>Implementation with JAX-WS & Spring</h3>
-					<p>[Internal training by ACE Academy]</p>
+					<p>[Internal training by ACE Academy] - V2</p>
 					<p>
 						<small>Created by <a href="mailto:arnost.havelka@asseco-ce.com">Havelka Arnošt</a></small>
 					</p>
@@ -128,8 +128,8 @@
 						<ul>
 							<li><a href="http://en.wikipedia.org/wiki/Java_API_for_XML_Web_Services" alt="Link of JAX-WS on Wikipedia">JAX-WS</a> (Java API for XML Web Services) is Java specification 
 							(<a href="http://jcp.org/en/jsr/detail?id=224" alt="Link to JSR-224">JSR-224</a>) of webservices.</li>
-							<li>Vendors: Metro project, CXF, Axis, Oracle Weblogic, etc.</li>
-							<li>Related technologies: JAX-B, SAAJ, etc.</li>
+							<li>Vendors: Metro project (reference implementation), CXF, Axis, Oracle Weblogic, etc.</li>
+							<li>Related technologies: JAX-B (XML binding), SAAJ (SOAP with Attachments API for Java), etc.</li>
 							<li>Specifications in JavaEE:
 								<table style="border: 1px solid white;">
 									<tr style="background-color: gray;">
@@ -199,7 +199,7 @@
 						<ul>
 							<li>It's an abbreviation (stands for) of Web Services Interoperability.</li>
 							<li>It's a set of guidelines, best practices and test for interoperability (for heterogeneous systems).</li>
-							<li>Last version of basic profile is 2.0, but frequently used is still version 1.2.</li>
+							<li>Last version of basic profile is 2.0. However usually used one is still version 1.2.</li>
 						</li>
 					</section>
 					<section>
@@ -209,7 +209,7 @@
 							Annotation has threshold to define size for using MTOM/XOP (otherwise it is sent normally).</li>
 							<li><strong>WS-Addressing</strong> - a standardized way of including message routing data within SOAP headers</li>
 							<li><strong>WS-Security</strong> - an extension to SOAP to apply security to Web services (XML Signature and XML Encryption)</li>
-							<li><strong>WS-ReliableMessaging</strong> - a protocol that allows SOAP messages to be reliably delivered between distributed applications</li>
+							<li><strong>WS-ReliableMessaging</strong> - a protocol that allows SOAP messages to be reliably delivered distributed system (between applications)</li>
 							<li><a href="http://en.wikipedia.org/wiki/List_of_web_service_specifications" alt="List of web service specifications on Wikipedia">And more</a> (e.g. WS-Trust, WS-Coordination , WS-Transaction, WS-MetadataExchange)</li>
 						</li>
 					</section>
@@ -219,6 +219,7 @@
 					<section>
 						<h2>2. WSDL & XSD</h2>
 						<ol>
+							<li>Overview</li>
 							<li>XSD Types (simple type, complex type)</li>
 							<li>XSD Sequence + Attributes + Enums</li>
 							<li>XSD Groups</li>
@@ -228,7 +229,13 @@
 					</section>
 
 					<section>
-						<h3>2.1 XSD Types (simple type, complex type)</h3>
+						<h2>2.1 Overview</h2>
+						<p align="left"><strong>WSDL</strong> - contract of SOAP WS. It defines (or includes) types, operations/methods, services, binding, etc.</p>
+						<p align="left"><strong>XSD</strong> - definition of XML types and elements</p>
+					</section>
+
+					<section>
+						<h3>2.2 XSD Types (simple type, complex type)</h3>
 						<h4>Simple type</h4>
 						<pre><code class="xml"><xs:simpleType name="CustomChar">
     <xs:annotation>
@@ -251,7 +258,7 @@
 					</section>
 
 					<section>
-						<h3>2.2 XSD Sequence + Attributes + Enums</h3>
+						<h3>2.3 XSD Sequence + Attributes + Enums</h3>
 						<h4>Sequence + Attributes</h4>
 						<pre><code class="xml"><xs:complexType name="CustomFilter">
     <xs:sequence>
@@ -271,7 +278,7 @@
 					</section>
 
 					<section>
-						<h3>2.3 XSD Groups</h3>
+						<h3>2.4 XSD Groups</h3>
 						<h4>Definition</h4>
 						<pre><code class="xml"><xs:group name="CustomGroup">
     <xs:sequence>
@@ -289,7 +296,7 @@
 					</section>
 					
 					<section>
-						<h3>2.4 Namespace</h3>
+						<h3>2.5 Namespace</h3>
 						<h4>WSDL</h4>
 						<pre><code class="xml"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wsdl:definitions xmlns="urn:com:asseco:csu:abc:v1:ws:Custom" 
@@ -312,10 +319,11 @@
 
 	...
 </code></pre>
+						<small align="left">Note: <i>xs:include</i> is for types in same namespace, <i>xs:import</i> is for types from different namespace.</small>
 					</section>
 
 					<section>
-						<h3>2.5 WSDL structure</h3>
+						<h3>2.6 WSDL structure</h3>
 <pre><code class="xml"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wsdl:definitions xmlns="urn:com:asseco:abc:v1:ws:Custom" xmlns:cty="urn:com:asseco:abc:v1:type:Custom" targetNamespace="urn:com:asseco:abc:v1:ws:Custom">
 
@@ -380,17 +388,19 @@
 						</ul>
 					</section>			
 					<section>
-						<h3>3.2 Exposing WS (server side)</h3>
+						<h3>3.2 Exposing WS</h3>
+						<h4>[Server side]</h4>
 						<ol>
 							<li>Contract Last - implementation from Java</li>
 							<li>Contract First - implementation from WSDL</li>
-							<li>Complex processing - processing SOAP message</li>
+							<li>Custom processing - custom processing of SOAP message</li>
 						</ol>
 					</section>
 
 					<section>
-						<h3>3.2.1 Contract Last(Server Side)</h3>
-						<h4 align="left">@Webservice</h4>
+						<h3>3.2.1 Contract Last</h3>
+						<h4>[Server side]</h4>
+						<p align="left">Use the annotation <strong>@WebService</strong> with all desired parameters (service name, port name, methods, etc.).</p>
 						<pre><code class="java">@WebService(serviceName = "HelloService", portName = "HelloPort", 
 			targetNamespace = "urn:com:asseco:aha:training:ws:v1")
 public class HelloWebService implements HelloService {
@@ -403,8 +413,9 @@ public class HelloWebService implements HelloService {
 }</code></pre>
 					</section>
 					<section>
-						<h3>3.2.2 Contract First (Server Side)</h3>
-						<h4 align="left">@Webservice</h4>
+						<h3>3.2.2 Contract First</h3>
+						<h4>[Server side]</h4>
+						<p align="left">Use the annotation <strong>@WebService</strong> only with definition of the generated interface.</p>
 						<pre><code class="java">@WebService(endpointInterface = "com.asseco.aha.training.ws.v1.HelloService")
 public class HelloWebService implements HelloService {
 
@@ -416,11 +427,13 @@ public class HelloWebService implements HelloService {
 }</code></pre>
 					</section>
 					<section>
-						<h3>3.2.3 Complex Processing (Server Side)</h3>
-						<h4 align="left">@WebServiceProvider</h4>
+						<h3>3.2.3 Custom Processing</h3>
+						<h4>[Server side]</h4>
+						<p align="left">Use the annotation <strong>@WebServiceProvider</strong> with all message parameters to be applied for.</p>
 						<pre><code class="java">@javax.xml.ws.ServiceMode(value = javax.xml.ws.Service.Mode.MESSAGE)
-@WebServiceProvider(wsdlLocation = "wsdl/ws-training-provider.wsdl", serviceName = "...", portName = "...", targetNamespace = "...")
-public class ProviderWebService implements Provider<SOAPMessage> {
+@WebServiceProvider(wsdlLocation = "wsdl/foo.wsdl", 
+    serviceName = "...", portName = "...", targetNamespace = "...")
+public class ProviderWebService implements Provider&lt;SOAPMessage&gt; {
 
 
 	@Override
@@ -435,15 +448,18 @@ public class ProviderWebService implements Provider<SOAPMessage> {
 					</section>
 					
 					<section>
-						<h3>3.3 Consuming WS (client side)</h3>
+						<h3>3.3 Consuming WS</h3>
+						<h4>[Client side]</h4>
 						<ol>
-							<li>Generated client - done by JAX-WS RI</li>
-							<li>Runtime client - runtime customization</li>
+							<li>Generated client - generated by JAX-WS RI</li>
+							<li>General client - provided by JAX-WS RI</li>
 							<li>Spring client - spring way</li>
 						</ol>
 					</section>
 					<section>
-						<h3>3.3.1 Generated client (Client Side)</h3>
+						<h3>3.3.1 Generated client</h3>
+						<h4>[Client side]</h4>
+						<p align="left">Use generated classes to create WS instance and get the port from there.</p>
 						<pre><code class="java">public class HelloWorldClient{
     public static void main(String[] args) throws Exception {
  		URL url = new URL("http://localhost:8080/ws-server-as/CalculatorWebService?WSDL");
@@ -465,12 +481,14 @@ public class ProviderWebService implements Provider<SOAPMessage> {
 }</code></pre>
 					</section>
 					<section>
-						<h3>3.3.2 Runtime client (Client Side)</h3>
+						<h3>3.3.2 Runtime client</h3>
+						<h4>[Client side]</h4>
+						<p align="left">Use <strong>Service</strong> classe to create WS instance and get the port from there.</p>
 						<pre><code class="java">public class HelloWorldClient{
  
     public static void main(String[] args) throws Exception {
  
-		URL url = new URL("http://localhost:8080/ws-server-as/HelloWebService?WSDL");
+        URL url = new URL("http://localhost:8080/ws-server-as/HelloWebService?WSDL");
         QName qname = new QName("http://ws.server.ws.training.aha.asseco.com/", "HelloWebServiceService");
  
         Service service = Service.create(url, qname);
@@ -483,7 +501,9 @@ public class ProviderWebService implements Provider<SOAPMessage> {
 }</code></pre>
 					</section>
 					<section>
-						<h3>3.3.3 Spring client (Client Side)</h3>
+						<h3>3.3.3 Spring client</h3>
+						<h4>[Client side]</h4>
+						<p align="left">Define client with Spring support.</p>
 						<pre><code class="xml"><beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
