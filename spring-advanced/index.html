@@ -853,7 +853,7 @@ for (BeanDefinition bd : beans) {
     &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
-						<small align="left">Note: there's a lot of other available modules/dependencies (e.g. actuator, jdbc, jpa, jms, etc.).</small>
+						<small align="left">Note: there's a lot of other available modules/dependencies (e.g. web, jpa, ws, batch, integration, actuator, mobile, etc.).</small>
 					</section>
 					<section>
 						<h2>5.3 REST simple example</h2>
@@ -991,14 +991,14 @@ yaml.desc=Sample YAML configuration</code></pre>
 							<li>CLI - command line program invoker (based on Groovy)</li>
 							<li>Cloud features
 								<ul>
-									<li>Eureka - handles service registration and discovery of services in a cluster</li>
-									<li>Hystrix - <span style="color:red">TODO</span></li>
-									<li>Zuul - is just a proxy to other services</li>
+									<li>Eureka - handles service registration and discovery of services in a cluster (for resilient mid-tier load balancing and failover)</li>
+									<li>Hystrix - is a latency and fault tolerance library (to isolate points of access to remote systems, services and 3rd party libraries, stop cascading failure, etc.)</li>
+									<li>Zuul - is just a proxy to other services (dynamic routing, monitoring, resiliency, security, etc.)</li>
 									<li>Config server - load external configuration (e.g. from GIT)</li>
 									<li>@RefreshScope (part of confgi server) - refresh beans by calling localhost:8080/refresh</li>
 								</ul>
 							</li>
-							<li><span style="color:red">TODO</span>http://www.justinleegrant.com/?p=489</li>
+							<li>Example of usage of Mongo DB is <a href="http://www.justinleegrant.com/?p=489" alt="Example of usage of Mongo DB">here</a>.</li>
 						</ol>
 					</section>
 				</section>
