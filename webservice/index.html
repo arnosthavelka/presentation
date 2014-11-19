@@ -367,7 +367,8 @@
 
 				<section>
 					<section>
-						<h2>3. JAX-WS Annotations</h2>
+						<h2>3. JAX-WS</h2>
+						<h3>[Annotations]</h3>
 						<ol>
 							<li>Overview</li>
 							<li>Exposing WS (server side)</li>
@@ -641,7 +642,7 @@ SOAPAction: ""
 							<tr>
 								<td>IoC</td>
 								<td>Spring Framework</td>
-								<td>4</td>
+								<td>4.1</td>
 							</tr>
 							<tr>
 								<td>Applicarion Server</td>
@@ -689,7 +690,8 @@ SOAPAction: ""
 				
 				<section>
 					<section>
-						<h2>5. Exposing WS in different setups</h2>
+						<h2>5. Exposing WS</h2>
+						<h3>[In different setups]</h3>
 						<ol>
 							<li>Wildfly/JBoss</li>
 							<li>Tomcat</li>
@@ -702,9 +704,9 @@ SOAPAction: ""
 					<section>
 						<h3>5.1 Wildfly/JBoss</h3>
 						<ul>
-							<li>WS itself (@WebService) works out of box (Wildfly is full AS)</li>
-							<li>Spring integration can be done in ancestor (@PostConstruct inheritance works)</li>
-							<li>AS modifies WSDLL (service name, target namespace, etc.) when not explicitly specified.</li>
+							<li>WS itself (<strong>@WebService</strong>) works out of box (Wildfly is full AS)</li>
+							<li>The integration of WS with Spring can be done in ancestor (<strong>@PostConstruct</strong> inheritance is working)</li>
+							<li>AS modifies WSDL (service name, target namespace, etc.) when not explicitly specified.</li>
 						</ul>
 					</section>
 					
@@ -712,19 +714,19 @@ SOAPAction: ""
 						<h2>5.2 Tomcat</h2>
 						<ul>
 							<li>Tomcat is web-container. Therefore we need to add JAX-WS runtime libraries into <strong>%tomcat_home%/lib</strong> (approx. 32 files).</li>
-							<li>JAX-WS library (previous bullet) does not log endpoints URLs.</li>
-							<li>Web application must contain:
+							<li>Web application must be modified as:
 								<ul>
 									<li>Modify file <strong>web.xml</strong> to add listener <strong>WSServletContextListener</strong>.</li>
 									<li>Add file <strong>sun-jaxws.xml</strong> to defined exposed WS endpoints.</li>
 								</ul>
 							</li>
-							<li>Spring integration has to be done in every WS (@PostConstruct <strong>inheritance does not work</strong>)</li>
+							<li>Spring integration (to WS) has to be done in every WS (@PostConstruct <strong>inheritance does not work</strong>)</li>
 						</ul>
 					</section>
 
 					<section>
-						<h2>5.3 Spring boot (embedded Tomcat)</h2>
+						<h2>5.3 Spring boot</h2>
+						<h3>[Embedded Tomcat]</h3>
 						<ul>
 							<li>REST service is fine (working out of box) - just define spring context and REST controller.
 								<pre><code class="java">@RestController
