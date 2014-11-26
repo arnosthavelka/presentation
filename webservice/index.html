@@ -951,8 +951,13 @@ public class CalculatorWebService implements WsTrainingPortType {
 					</section>
 					<section>
 						<h2>6.6 JAX-WS Endpoint</h2>
+						<ul>
+							<li>Easy to use (completely in our hands)</li>
+							<li>Probably no integration to Spring</li>
+						</ul>
 						<pre><code class="java">public static void main(String[] args) {
-	   Endpoint.publish("http://localhost:9999/ws/calc", new CalculatorWebService());
+    Endpoint.publish("http://localhost:9999/ws/calc", 
+        new CalculatorWebService());
 }</code></pre>
 					</section>
 				</section>
@@ -1011,8 +1016,8 @@ public class CalculatorWebService implements WsTrainingPortType {
 							<li>Overview</li>
 							<li>Principles</li>
 							<li>Methods</li>
-							<li>Communication Example</li>
-							<li>Implementation Example</li>
+							<li>HATOES</li>
+							<li>Implementation</li>
 						</ol>
 						<br/><br/>
 						<small>Based on <a href="http://en.wikipedia.org/wiki/Representational_state_transfer" alt="Description of REST on Wikipedia">Wikipedia</a> and <a href="http://www.restapitutorial.com/" alt="Web REST API Tutorial">REST API Tutorial</a></small>
@@ -1026,8 +1031,8 @@ public class CalculatorWebService implements WsTrainingPortType {
 								<li>Proper usage of HTTP features</li>
 								<li>All is about (stateless) resources (URI)</li>
 								<li>URL represents resource, not an action</li>
-								<li>Easy and efficient use. Nevertheless there's no enforced contract (IMHO disadvantage)</li>
-								<li>Support for multiple format (what client prefers)</li>
+								<li>Easy and efficient use, but without strict</li>
+								<li>Support for multiple format - what server accepts and client prefers (e.g. XML, JSON, CSV, TXT, etc.)</li>
 							</ul>
 						</p>
 					</section>
@@ -1085,7 +1090,34 @@ public class CalculatorWebService implements WsTrainingPortType {
 								<td>Provide documentation to exposed API (URL)</td>
 							</tr>
 						</table>
-						<small>More information <a href="http://www.restapitutorial.com/lessons/httpmethods.html" alt="Using HTTP Methods for RESTful Services">here</a>.</small>
+						<small>More information <a href="http://www.restapitutorial.com/lessons/httpmethods.html" alt="Using HTTP Methods for RESTful Services">here</a></small>
+					</section>
+					<section>
+						<h2>8.4 HATOES</h2>
+						<p align="left">Hypermedia as the Engine of Application State (<a href="http://en.wikipedia.org/wiki/HATEOAS" alt="Description of HATEOAS on Wikipedia">HATEOAS</a>) represents 
+						another network application architecture. The principle is that a client interacts with a network application entirely through hypermedia provided dynamically by application servers.</p>
+						<pre>Example request:<code class="xml">GET /book/12345 HTTP/1.1
+Host: coollibrary.com
+Accept: application/json
+...</code></pre>
+						<pre>Example response:<code class="xml">HTTP/1.1 200 OK
+Content-Type: application/json
+Response-Body:
+{"id": "54321", "title": "Jurassic Park", "author": "Michael Crichton", "status": "available",
+"links": [
+{"rel": "self", "method": "get",
+"href": "http://coollibrary.com/book/54321"},
+{"rel": "borrow", "method": "put",
+"href": "http://coollibrary.com/book/54321/borrow"},
+{"rel": "reserve", "method": "put",
+"href": "http://coollibrary.com/book/54321/reserve"},
+{"rel": "discard", "method": "delete",
+"href": "http://coollibrary.com/book/54321/discard"}
+]}</code></pre>
+					</section>
+					<section>
+						<h2>8.5 Implementation</h2>
+						<p>Check <a href="https://github.com/arnosthavelka/ws-training" alt="Souce code for lab">source code</a> ...</p>
 					</section>
 					
 				</section>
