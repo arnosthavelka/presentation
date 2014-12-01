@@ -600,7 +600,7 @@ public class User {
 public User userArny() {
     return new User("Arny");
 }</code></pre>
-						<pre>Spring error:<code class="properties">Caused by: o.s.b.BeanInstantiationException: Could not instantiate bean 
+						<pre>Spring error:<code class="xml">Caused by: o.s.b.BeanInstantiationException: Could not instantiate bean 
     class [com...config.User]: No default constructor found; 
         nested exception is java.lang.NoSuchMethodException: com.asseco.aha.training.spring_advanced.core.config.User.<init>()
 	    at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:85) ~[spring-beans-4.0.8.RELEASE.jar:4.0.8.RELEASE]
@@ -858,7 +858,7 @@ public class User {
 						<p style="color:red">TODO</p>
 						<ol>
 							<li>Overview</li>
-							<li>Basic Spring test</li>
+							<li>Spring configuration for testing</li>
 							<li>Usage of profiles (@ActiveProfiles, @IfProfileValue)</li>
 							<li>Special annotations (@Timed, @Repeat)</li>
 							<li>Springockito - https://bitbucket.org/kubek2k/springockito/wiki/Home + Milanuv mail</li>
@@ -872,6 +872,7 @@ public class User {
 							<li>Test Levels</li>
 							<li>Mocks & Stubs</li>
 							<li>Rules for writting tests</li>
+							<li>Unit tests</li>
 						</ol>
 					</section>
 					<section>
@@ -950,6 +951,74 @@ public class User {
 							<li>Only in test package</li>
 							<li>High test coverage != good tests</li>
 						</ul>
+					</section>
+					<section>
+						<h2>4.1.5 Unit tests</h2>
+						<ul>
+							<li>Usage of JUnit</li>
+							<li>Mocking - EasyMock + Mockito + PowerMock</li>
+							<li>Hamcrest - clearer syntax/declarations and customized assertion matchers</li>
+						</ul>
+					</section>
+					
+					<section>
+						<h2>4.2 Spring configuration for testing</h2>
+						<ol>
+							<li>Spring way</li>
+							<li>Spring Boot way (XML)</li>
+							<li>Spring Boot way (JavaConfig)</li>
+						</ol>
+					</section>
+					<section>
+						<h2>4.2.1 Spring way</h2>
+						<h4>Default XML location</h4>
+						<p align="left">Configuration:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;bean id="user" class="com...core.config.User" c:name="Michel"/&gt;
+
+&lt;/beans&gt;</code></pre>
+						<p align="left">Usage:</p>
+						<pre><code class="java">// path is com/asseco/aha/training/spring_advanced/core/config/XmlDefaultConfigTest-context.xml
+@ContextConfiguration
+@RunWith(SpringJUnit4ClassRunner.class)
+public class XmlDefaultConfigTest {
+    ...
+}</code></pre>
+					</section>
+					<section>
+						<h2>4.2.2 Spring Boot way (XML)</h2>
+						<h4>Define XML location</h4>
+						<p align="left">Configuration:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;bean id="user" class="com...core.config.User" c:name="Arny"/&gt;
+
+&lt;/beans&gt;</code></pre>
+						<p align="left">Usage:</p>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(locations = "classpath:spring/xml-config.xml")
+public class XmlDirectConfigTest {
+    ...
+}</code></pre>
+					</section>
+					<section>
+						<h2>4.2.3 Spring Boot way (JavaConfig)</h2>
+						<p align="left">Configuration:</p>
+						<pre><code class="Java">@Configuration
+@ComponentScan("com.asseco.aha.training.spring_advanced.core.config")
+@EnableAutoConfiguration
+public class JavaConfigApplication {
+    ...
+}</code></pre>
+						<p align="left">Usage:</p>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = JavaConfigApplication.class)
+public class JavaConfigTest {
+    ...
+}</code></pre>
 					</section>
 				</section>
 
