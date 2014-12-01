@@ -116,17 +116,17 @@
 						<p>Property (setter) based</p>
 						<pre><code class="java">@Service
 public class MyService {
-	@Autowired
-	private MyDao dao;
+    @Autowired
+    private MyDao dao;
 }</code></pre>
 						<p>Constructor based</p>
 						<pre><code class="java">@Service
 public class MyService {
-	private MyDao dao;
-	@Autowired
-	public MyService(MyDao dao) {
-		this.dao = dao;
-	}
+    private MyDao dao;
+    @Autowired
+    public MyService(MyDao dao) {
+      this.dao = dao;
+    }
 }</code></pre>
 						</section>
 					<section>
@@ -135,7 +135,7 @@ public class MyService {
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p"&gt;
   &lt;context:component-scan base-package="aha.poc" /&gt;
-  &lt;bean id="myService" class="somepackage.MyService" p:dao-ref="myDAO"/&gt;
+  &lt;bean id="customService" class="somepackage.MyService"/&gt;
 &lt;/beans&gt;</code></pre>
 						<p>JavaConfig</p>
 						<pre><code class="java">@Configuration
@@ -144,10 +144,10 @@ public class MyService {
 @EnableScheduling
 public class Application {
 
-  @Bean
-  public TaskScheduler taskExecutor() {
-    return new ThreadPoolTaskScheduler();
-  }
+    @Bean
+    public MyService customService() {
+      return new MyService();
+    }
 }</code></pre>
 					</section>
 					<section>
@@ -155,8 +155,8 @@ public class Application {
 						<p>Namespace P (for properties/setters)</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans ... xmlns:p="http://www.springframework.org/schema/p"&gt;
-  &lt;context:component-scan base-package="aha.poc" /&gt;
-  &lt;bean ... p:msg="Message value" p:dao-ref="myDAO"/&gt;
+    &lt;context:component-scan base-package="aha.poc" /&gt;
+    &lt;bean ... p:msg="Message value" p:dao-ref="myDAO"/&gt;
 &lt;/beans&gt;</code></pre>
 						<p>Namespace C (for constructors)</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -170,17 +170,19 @@ public class Application {
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
 
-  &lt;bean id="defBean" class="somepackage.AbstractComponent" p:user="sys" p:password="sys" abstract="true"/&gt;
+    &lt;bean id="defBean" class="somepackage.AbstractComponent" 
+        p:user="sys" p:password="sys" abstract="true"/&gt;
 	
-  &lt;!-- instantiate bean "defBean" --&gt;
-  &lt;bean id="ABean" parent="defBean" p:url="http://host:8080/abc/"/&gt;
+    &lt;!-- instantiate bean "defBean" --&gt;
+    &lt;bean id="ABean" parent="defBean" p:url="http://host:8080/abc/"/&gt;
 
-  &lt;!-- instantiate and override password" --&gt;
-  &lt;bean id="BBean" parent="defBean" p:password="abc" p:url="http://host:8080/abc/" /&gt;
+    &lt;!-- instantiate and override password" --&gt;
+    &lt;bean id="BBean" parent="defBean" p:password="abc" 
+        p:url="http://host:8080/abc/" /&gt;
 
-  &lt;!-- instantiate and override user and password --&gt;
-  &lt;bean id="CBean" parent="defBean" p:user="admin" p:password="xyz" p:url="http://host:8080/abc/" /&gt;
-	
+    &lt;!-- instantiate and override user and password --&gt;
+    &lt;bean id="CBean" parent="defBean" p:user="admin" 
+        p:password="xyz" p:url="http://host:8080/abc/" /&gt;
 &lt;/beans&gt;</code></pre>
 					</section>
 					<section>
@@ -252,22 +254,23 @@ private String email;</code></pre>
 						<p align="left">Usage:</p>
 						<pre><code class="java">@Component
 public class MyService {
-  @Resource
-  private MyDao dao;
+    @Resource
+    private MyDao dao;
   
-  @Value("${my_message}")
-  private String msg;
+    @Value("${my_message}")
+    private String msg;
   
-  @PostConstruct
-  private void init() {
-    msg = "N/A";
+    @PostConstruct
+    private void init() {
+      msg = "N/A";
   }
 }</code></pre>
 					</section>
 					<section>
 						<h2>1.7.2 JSR-303 - Bean Validation [1/2]</h2>
-						<p align="left"><a href="http://en.wikipedia.org/wiki/Bean_Validation">Bean Validation</a> (JSR-303) defines a metadata model and API for JavaBean validation. The metadata source is annotations, with the ability to override and extend the meta-data through the use of XML validation descriptors.</p>
-						<p align="left">Validator definition:</p>
+						<p align="left"><a href="http://en.wikipedia.org/wiki/Bean_Validation">Bean Validation</a> (JSR-303 for version 1.0 + JSR-349 for version 1.1) 
+						defines a metadata model and API for JavaBean validation. The metadata source is annotations, with the ability to override and extend the meta-data 
+						through the use of XML validation descriptors.</p>
 					</section>
 					<section>
 						<h2>1.7.2 JSR-303 - Bean Validation [2/2]</h2>
@@ -275,12 +278,12 @@ public class MyService {
 						<pre><code class="xml">&lt;bean id="val" class="o.s.v.beanvalidation.LocalValidatorFactoryBean" /&gt;</code></pre>
 						<p align="left">DTO definition:</p>
 						<pre><code class="java">public class AuditForm {
-  @NotNull
-  private Integer id;
-  @Past(message = "{basicValidationErrorNotPast}")
-  private Date platnostOd;
-  @Size(max = 10, message = "Username length exceeded!")
-  private String username;
+    @NotNull
+    private Integer id;
+    @Past(message = "{basicValidationErrorNotPast}")
+    private Date platnostOd;
+    @Size(max = 10, message = "Username length exceeded!")
+    private String username;
 }</code></pre>
 						<small>Resources are located in <i>${project}\src\main\resources\ValidationMessages.properties.</i></small>
 						<p align="left">Usage:</p>
@@ -288,17 +291,17 @@ public class MyService {
 private Validator validator;
 
 private &lt;D&gt; List&lt;String&gt; process(D dto) {
-  Set&lt;ConstraintViolation&lt;D&gt;&gt; validationResult = validator.validate(dto);
-  ...
+    Set&lt;ConstraintViolation&lt;D&gt;&gt; validationResult = validator.validate(dto);
+    ...
 }</code></pre>
 					</section>
 					<section>
 						<h2>1.7.3 JSR-330 - Dependency Injection for Java [1/2]</h2>
 						<p align="left"><a href="http://jcp.org/en/jsr/detail?id=330">JSR-330</a> is specification of Dependency Injection in java world. It was introduced in JavaEE 6 and supported from Spring 3.0.</p>
 						<pre><code class="xml">&lt;dependency&gt;
-  &lt;groupId&gt;javax.inject&lt;/groupId&gt;
-  &lt;artifactId&gt;javax.inject&lt;/artifactId&gt;
-  &lt;version&gt;1&lt;/version&gt;
+    &lt;groupId&gt;javax.inject&lt;/groupId&gt;
+    &lt;artifactId&gt;javax.inject&lt;/artifactId&gt;
+    &lt;version&gt;1&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 						<p align="left">Usage:
 							<ul>
@@ -347,7 +350,6 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 				<section>
 					<section>
 						<h2>2. Spring Core - Hints</h2>
-						<p style="color:red">TODO</p>
 						<ol>
 							<li>Application configuration</li>
 							<li>Profiles</li>
@@ -478,10 +480,10 @@ public class UserDAOMock implements UserDAO {
 &lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
 
     &lt;bean profile="dev"&gt;
-	&lt;jdbc:embedded-database id="dataSource"&gt;
-		&lt;jdbc:script location="classpath:com/bank/config/sql/schema.sql"/&gt;
-		&lt;jdbc:script location="classpath:com/bank/config/sql/test-data.sql"/&gt;
-	&lt;/jdbc:embedded-database&gt;
+        &lt;jdbc:embedded-database id="dataSource"&gt;
+            &lt;jdbc:script location="classpath:com/bank/config/sql/schema.sql"/&gt;
+            &lt;jdbc:script location="classpath:com/bank/config/sql/test-data.sql"/&gt;
+        &lt;/jdbc:embedded-database&gt;
     &lt;/bean&gt;
 
     &lt;bean profile="prod"&gt;
@@ -493,11 +495,13 @@ public class UserDAOMock implements UserDAO {
 					
 					<section>
 						<h2>2.3 Proxy for scope</h2>
-						<ol>
-							<li>Overview</li>
-							<li>XML Configuration</li>
-							<li>Annotation Configuration</li>
-						</ol>
+						<p>
+							<ol>
+								<li>Overview</li>
+								<li>XML Configuration</li>
+								<li>Annotation Configuration</li>
+							</ol>
+						</p>
 						<small>Source: <a href="http://stackoverflow.com/questions/4503606/annotation-equivalent-of-aopscoped-proxy" alt="Source link">http://stackoverflow.com/questions/4503606/annotation-equivalent-of-aopscoped-proxy</a></small>
 					</section>
 					<section>
@@ -551,6 +555,7 @@ public class WsService {
 public class PrivateService implement MyService {
   ...
 }</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/scope/ScopeApplication.java" alt="Example of proxy mode">ScopeApplication.java</a></small>
 					</section>
 					<section>
 						<h2>2.4 Classpath scanning</h2>
@@ -572,8 +577,57 @@ for (BeanDefinition bd : beans) {
 						<small>Source: <a href="http://www.eclecticlogic.com/2014/09/01/classpath-scanning/" alt="Source link">http://www.eclecticlogic.com/2014/09/01/classpath-scanning/</a></small>
 					</section>
 					<section>
-						<h2>2.5 Classpath scanning</h2>
-						<p style="color:red">TODO: http://java.dzone.com/articles/spring-component-scan-beans-no</p>
+						<h2>2.5 Component scan with no no-args constructor bean</h2>
+						<p>
+							<ol>
+								<li>Overview</li>
+								<li>Solution</li>
+								<li>Conclusion</li>
+							</ol>
+						</p>
+						<small>Source: <a href="http://java.dzone.com/articles/spring-component-scan-beans-no" alt="Source link">http://java.dzone.com/articles/spring-component-scan-beans-no</a></small>
+					</section>
+					<section>
+						<h2>2.5.1 Overview</h2>
+						<pre>Bean definition:<code class="java">@Component
+public class User {
+
+    public User(String name) {
+        ...
+    }
+}</code></pre>
+						<pre>Bean usage:<code class="java">@Bean
+public User userArny() {
+    return new User("Arny");
+}</code></pre>
+						<pre>Spring error:<code class="properties">Caused by: o.s.b.BeanInstantiationException: Could not instantiate bean 
+    class [com...config.User]: No default constructor found; 
+        nested exception is java.lang.NoSuchMethodException: com.asseco.aha.training.spring_advanced.core.config.User.<init>()
+	    at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:85) ~[spring-beans-4.0.8.RELEASE.jar:4.0.8.RELEASE]
+	    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1070) ~[spring-beans-4.0.8.RELEASE.jar:4.0.8.RELEASE]
+	    ... 16 common frames omitted
+</code></pre>
+					</section>
+					<section>
+						<h2>2.5.2 Solution</h2>
+						<pre>Modify bean definition:<code class="java">@Component
+public class User {
+
+    @Autowired
+    public User(@Value("") String name) {
+        ...
+    }
+}</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/config/JavaConfigApplication.java" alt="Example of proxy mode">JavaConfigApplication.java</a></small>
+					</section>
+					<section>
+						<h2>2.5.3 Conclusion</h2>
+						<ul>
+							<li>If component scanning is enabled, spring will try to create a bean even though a bean of that class has already been defined in the spring config xml.</li>
+							<li>However if the bean defined in the spring config file and the auto-discovered bean have the same name, spring will not to create a new bean while it does component scanning.</li>
+							<li>If a bean does not have a no-args constructor, at-least one of the constructors must be auto-wired.</li>
+							<li>If no constructor is auto-wired, spring will try to create an object using default no-args constructor.</li>
+						</ul>
 					</section>
 				</section>
 
@@ -1015,7 +1069,7 @@ yaml.desc=Sample YAML configuration</code></pre>
 							<li>Example <a href="https://github.com/joshlong/spring-doge-microservice" alt="Example project spring-doge-microservice">spring-doge-microservice</a></li>
 							<li>Example of <a href="http://www.justinleegrant.com/?p=489" alt="Example of usage of Mongo DB">usage of Mongo DB</a></li>
 							<li><a href="https://looksok.wordpress.com/2014/11/22/spring-boot-sslhttps-for-embedded-tomcat/" alt="Guide to setup HTTPS for embedded Tomcat">HTTPS for embedded Tomcat</a></li>
-							<li>aaa</li>
+							<li><a href="https://spring.io/blog/2014/11/23/bootiful-java-ee-support-in-spring-boot-1-2" alt="Guide to setup HTTPS for embedded Tomcat">"Bootiful" Java EE Support in Spring Boot 1.2</a></li>
 						</ul>
 					</section>
 				</section>
