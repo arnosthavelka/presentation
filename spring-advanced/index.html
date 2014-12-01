@@ -857,19 +857,99 @@ public class User {
 						<h2>4. Testing</h2>
 						<p style="color:red">TODO</p>
 						<ol>
+							<li>Overview</li>
 							<li>Basic Spring test</li>
 							<li>Usage of profiles (@ActiveProfiles, @IfProfileValue)</li>
 							<li>Special annotations (@Timed, @Repeat)</li>
 							<li>Springockito - https://bitbucket.org/kubek2k/springockito/wiki/Home + Milanuv mail</li>
 						</ol>
+						<small>See: my presentation of <a href="http://arnosthavelka.github.com/presentation/devday/automated_testing/template.html" alt="Link to presentation of automated testing">automated testing</a></small>
 					</section>
 					<section>
-						<h2>4.1 TODO</h2>
+						<h2>4.1 Overview</h2>
 						<ol>
-							<li>aaa</li>
-							<li>aaa</li>
-							<li>aaa</li>
+							<li>Test Types & Approaches</li>
+							<li>Test Levels</li>
+							<li>Mocks & Stubs</li>
+							<li>Rules for writting tests</li>
 						</ol>
+					</section>
+					<section>
+						<h2>4.1.1 Test Types & Approaches</h2>
+						<ol>
+							<li>Types:
+								<ul>
+									<li>Static (reviews, inspection, etc.)</li>
+									<li>Dynamic (execution of program againt test case)</li>
+								</ul>
+							</li>
+							<li>Approaches:
+								<ul>
+									<li>Black box (examining functionality without any knowledge of internal implementation)</li>
+									<li>White box(tests internal structures or workings of a program)</li>
+									<li>Gray box (executing tests at the user, or black-box level, with having knowledge of internal data structures and algorithms for purposes of designing tests)</li>
+								</ul>
+							</li>
+						</ol>
+					</section>
+					<section>
+						<h2>4.1.2 Test Levels</h2>
+						<ul>
+							<li>Unit (component testing)</li>
+							<li>Integration (testing interfaces between components against a software design)</li>
+							<li>System(tests a completely integrated system to verify that it meets its requirement)</li>
+							<li>Acceptance (UAT)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>4.1.3 Mocks & Stubs</h2>
+						<table style="border: 1px solid gray;">
+							<tr style="background-color: gray;">
+								<th></th>
+								<th>Advantages</th>
+								<th>Disadvantages</th>
+							</tr>
+							<tr>
+								<th style="border-top: 1px solid gray; background-color: silver;">Mock</th>
+								<td style="border-top: 1px solid gray;">
+									<ol>
+										<li>No additional class to maintain</li>
+										<li>Only relevant for the test</li>
+										<li>Test behavior and state</li>
+									</ol>
+								</td>
+								<td style="border-top: 1px solid gray;">
+									<ol>
+										<li>A little harder to understand (at first)</li>
+									</ol>
+								</td>
+							</tr>
+							<tr>
+								<th style="border-top: 1px solid gray; background-color: silver;">Stub</th>
+								<td style="border-top: 1px solid gray;">
+									<ol>
+										<li>Easy to implement and understand</li>
+										<li>Reusable</li>
+									</ol>
+								</td>
+								<td style="border-top: 1px solid gray;">
+									<ol>
+										<li>Needs update when the interface is changed</li>
+										<li>Must implement all methods</li>
+										<li>Refactoring can break other test (where the stub is reused)</li>
+									</ol>
+								</td>
+							</tr>
+						</table>
+					</section>
+					<section>
+						<h2>4.1.4 Rules for writting tests</h2>
+						<ul>
+							<li>Independency</li>
+							<li>Performance</li>
+							<li>Only in test package</li>
+							<li>High test coverage != good tests</li>
+						</ul>
 					</section>
 				</section>
 
