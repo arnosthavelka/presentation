@@ -600,17 +600,19 @@ public class User {
 public User userArny() {
     return new User("Arny");
 }</code></pre>
-						<pre>Spring error:<code class="xml">Caused by: o.s.b.BeanInstantiationException: Could not instantiate bean 
+						<pre>Spring error:<code>Caused by: o.s.b.BeanInstantiationException: Could not instantiate bean 
     class [com...config.User]: No default constructor found; 
-        nested exception is java.lang.NoSuchMethodException: com.asseco.aha.training.spring_advanced.core.config.User.<init>()
+        nested exception is java.lang.NoSuchMethodException: com.asseco.aha.training.spring_advanced.core.config.User.&lt;init&gt;()
 	    at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:85) ~[spring-beans-4.0.8.RELEASE.jar:4.0.8.RELEASE]
 	    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1070) ~[spring-beans-4.0.8.RELEASE.jar:4.0.8.RELEASE]
 	    ... 16 common frames omitted
 </code></pre>
 					</section>
 					<section>
-						<h2>2.5.2 Solution</h2>
-						<pre>Modify bean definition:<code class="java">@Component
+						<h2>2.5.2 Solution [1/4]</h2>
+						<h4>Variant 1</h4>
+						<p align="left">Modify bean definition for autowiring with default values (annotations @Autowired and @Value).</p>
+						<pre>Spring Bean<code class="java">@Component
 public class User {
 
     @Autowired
@@ -619,6 +621,41 @@ public class User {
     }
 }</code></pre>
 						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/config/JavaConfigApplication.java" alt="Example of proxy mode">JavaConfigApplication.java</a></small>
+					</section>
+					<section>
+						<h2>2.5.2 Solution [2/4]</h2>
+						<h4>Variant 2</h4>
+						<p align="left">Just not define POJO as Spring Bean. It will be marked as bean by JavaConfig.</p>
+						<pre><code class="java">public class User {
+
+    public User(String name) {
+        ...
+    }
+}</code></pre>
+					</section>
+					<section>
+						<h2>2.5.2 Solution [3/4]</h2>
+						<h4>Variant 3</h4>
+						<p align="left">Remove component scan from JavaConfig.</p>
+						<pre><code class="java">@Configuration
+@EnableAutoConfiguration
+public class JavaConfigApplication {
+    ...
+}</code></pre>
+					</section>
+					<section>
+						<h2>2.5.2 Solution [4/4]</h2>
+						<h4>Variant 4</h4>
+						<p align="left">Use excludes in component scan.</p>
+						<pre><code class="java">@Configuration
+@ComponentScan(basePackages = { "com.asseco.aha.training.spring_advanced.core.config" }, 
+    excludeFilters = @ComponentScan.Filter(
+        type = FilterType.ANNOTATION, 
+        value = Component.class))
+@EnableAutoConfiguration
+public class JavaConfigApplication {
+    ...
+}</code></pre>
 					</section>
 					<section>
 						<h2>2.5.3 Conclusion</h2>
