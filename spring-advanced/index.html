@@ -1057,7 +1057,53 @@ public class JavaConfigTest {
     ...
 }</code></pre>
 					</section>
-				</section>
+
+					<section>
+						<h2>4.3 Usage of profiles (@ActiveProfiles, @IfProfileValue)</h2>
+						<ol>
+							<li>Profile Definition</li>
+							<li>@ActiveProfiles</li>
+							<li>Spring Boot way (JavaConfig)</li>
+						</ol>
+					</section>
+					<section>
+						<h2>4.3.1 Profile Definition</h2>
+						<p align="left">XML:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+    &lt;beans profile="richard"&gt;
+        &lt;bean id="userRichard" c:name="Richard" class="com...core.config.User" /&gt;
+    &lt;/beans&gt;
+  
+&lt;/beans&gt;</code></pre>
+						<p align="left">JavaConfig:</p>
+						<pre><code class="java">@Configuration
+@Profile("richard")
+public class RichardConfig {
+
+    @Bean
+    public User userArny() {
+        return new User("Richard");
+    }
+
+}</code></pre>
+					</section>					
+					<section>
+						<h2>4.3.2 @ActiveProfiles</h2>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(
+    classes = { MyConfig.class, RichardConfig.class, BarbaraConfig.class })
+@ActiveProfiles("richard")
+public class RichardConfigTest {
+
+    @Test
+    public void testHello() {
+        assertThat(user.getName(), equalTo("Richard"));
+    }
+}
+</code></pre>
+					</section>				</section>
 
 				<section>
 					<section>
