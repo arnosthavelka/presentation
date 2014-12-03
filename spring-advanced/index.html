@@ -620,7 +620,7 @@ public class User {
         ...
     }
 }</code></pre>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/config/JavaConfigApplication.java" alt="Example of proxy mode">JavaConfigApplication.java</a></small>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/config/JavaConfigApplication.java">JavaConfigApplication.java</a></small>
 					</section>
 					<section>
 						<h2>2.5.2 Solution [2/4]</h2>
@@ -854,7 +854,7 @@ public class JavaConfigApplication {
   &lt;bean id="myBfpp" class="abc.MyBfpp" /&gt;
 
 &lt;/beans&gt;</code></pre>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/postprocessor/PostProcessorApplication.java" alt="Example of proxy mode">PostProcessorApplication.java</a></small>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/postprocessor/PostProcessorApplication.java">PostProcessorApplication.java</a></small>
 					</section>
 					<section>
 						<h2>3.4 BPP - overview [1/2]</h2>
@@ -885,22 +885,22 @@ public class JavaConfigApplication {
   &lt;bean id="myBpp" class="abc.MyBpp" /&gt;
 
 &lt;/beans&gt;</code></pre>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/postprocessor/PostProcessorApplication.java" alt="Example of proxy mode">PostProcessorApplication.java</a></small>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/postprocessor/PostProcessorApplication.java">PostProcessorApplication.java</a></small>
 					</section>					
 				</section>
 
 				<section>
 					<section>
 						<h2>4. Testing</h2>
-						<p style="color:red">TODO</p>
 						<ol>
 							<li>Overview</li>
 							<li>Spring configuration for testing</li>
-							<li>Usage of profiles (@ActiveProfiles, @IfProfileValue)</li>
-							<li>Special annotations (@Timed, @Repeat)</li>
-							<li>Springockito - https://bitbucket.org/kubek2k/springockito/wiki/Home + Milanuv mail</li>
+							<li>Annotations for profile</li>
+							<li>Special annotations</li>
+							<li>TestWatcher</li>
+							<li>Springockito</li>
 						</ol>
-						<small>See: my presentation of <a href="http://arnosthavelka.github.com/presentation/devday/automated_testing/template.html" alt="Link to presentation of automated testing">automated testing</a></small>
+						<small>See: my presentation of <a href="http://arnosthavelka.github.com/presentation/devday/automated_testing/template.html" alt="Link to presentation of automated testing">automated testing</a> or <a href="http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/html/testing.html" alt="Spring documentation for testing">Spring documentation</a></small>
 					</section>
 					<section>
 						<h2>4.1 Overview</h2>
@@ -1023,6 +1023,7 @@ public class JavaConfigApplication {
 public class XmlDefaultConfigTest {
     ...
 }</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/XmlDefaultConfigTest.java">XmlDefaultConfigTest.java</a></small>
 					</section>
 					<section>
 						<h2>4.2.2 Spring way (XML)</h2>
@@ -1040,6 +1041,7 @@ public class XmlDefaultConfigTest {
 public class XmlDirectConfigTest {
     ...
 }</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/XmlDirectConfigTest.java">XmlDirectConfigTest.java</a></small>
 					</section>
 					<section>
 						<h2>4.2.3 Spring Boot way (JavaConfig)</h2>
@@ -1056,10 +1058,11 @@ public class JavaConfigApplication {
 public class JavaConfigTest {
     ...
 }</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/config/JavaConfigTest.java">JavaConfigTest.java</a></small>
 					</section>
 
 					<section>
-						<h2>4.3 Usage of profiles (@ActiveProfiles, @IfProfileValue)</h2>
+						<h2>4.3 Annotations for profile</h2>
 						<ol>
 							<li>Profile Definition</li>
 							<li>@ActiveProfiles</li>
@@ -1101,8 +1104,8 @@ public class RichardConfigTest {
     public void testHello() {
         assertThat(user.getName(), equalTo("Richard"));
     }
-}
-</code></pre>
+}</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/RichardConfigTest.java">RichardConfigTest.java</a></small>
 					</section>
 					<section>
 						<h2>4.3.3 @IfProfileValue</h2>
@@ -1117,9 +1120,77 @@ public class RichardConfigTest {
     public void testHello() {
         assertThat(user.getName(), not(equalTo("Arny")));
     }
-}
-</code></pre>
+}</code></pre>
 						<p align="left">Use profile by calling JVM with e.g. <i>-Dtest-group=training</i>. Annotation reflects JVM parameters, environments properties, etc.</p>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/BarbaraConfigTest.java">BarbaraConfigTest.java</a></small>
+					</section>
+
+					<section>
+						<h2>4.4 Special annotations</h2>
+						<ol>
+							<li>@Timed</li>
+							<li>@Repeat</li>
+						</ol>
+					</section>
+					<section>
+						<h2>4.4.1 @Timed</h2>
+						<p align="left">Indicates that the annotated test method must finish execution in a specified time period (in milliseconds).</p>
+						<pre><code class="java">@Test
+@Timed(millis = 10)
+public void testSpringTimeout() throws InterruptedException {
+    Thread.sleep(50);
+    assertThat(Boolean.TRUE, equalTo(1 == 1));
+}</code></pre>
+						<p align="left"><small>Note: spring annotation waits till the end to raise an exception. On the other hand JUnit solution raise the exception immediately when the test takes too long.</small></p>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/TimedAnnotationTest.java">TimedAnnotationTest.java</a></small>
+					</section>
+					<section>
+						<h2>4.4.2 @Repeat</h2>
+						<p align="left">Indicates that the annotated test method must be executed repeatedly.</p>
+						<pre><code class="java">@Test
+@Repeat(10)
+public void testRepeatAnnotation() {
+    assertThat(2, equalTo(1 + 1));
+}</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/RepeatAnnotationTest.java">RepeatAnnotationTest.java</a></small>
+					</section>
+
+					<section>
+						<h2>4.5 TestWatcher</h2>
+						<p align="left">Logging of test method can be done by TestWatcher clacc from JUnit.</p>
+						<pre><code class="java">/**
+ * Log method execution (start & stop).
+ */
+@Rule
+public TestRule watcher = new TestWatcher() {
+    protected void starting(Description description) {
+        LOG.debug("Starting test {}#{}", description.getTestClass().getSimpleName(), description.getMethodName());
+    }
+
+    protected void finished(Description description) {
+        LOG.debug("Finished test {}#{}", description.getTestClass().getSimpleName(), description.getMethodName());
+    }
+
+    protected void skipped(AssumptionViolatedException e, Description description) {
+        LOG.debug("Skipped test {}#{}", description.getTestClass(), description.getMethodName());
+    }
+
+};</code></pre>
+					</section>
+
+					<section>
+						<h2>4.6 Springockito</h2>
+						<p align="left">Springockito  is a small extension to spring that simplifies way of creation mockito mocks in the intergation tests' related context xml files.</p>
+						<p align="left">XML</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans ... xmlns:mockito="http://www.mockito.org/spring/mockito" xsi:schemaLocation="..." &gt;
+  &lt;mockito:mock id="myService" class="com.asseco.aha.training.spring_advanced.core.testing.HelloService" /&gt;
+&lt;/beans&gt;</code></pre>
+						<p align="left">Annotation</p>
+						<pre><code class="java">@ReplaceWithMock
+@Autowired
+private HelloService helloService;</code></pre>
+						<small>See: <a href="https://bitbucket.org/kubek2k/springockito/wiki/Home">Springockito WIKI</a></small>
 					</section>
 				</section>
 
