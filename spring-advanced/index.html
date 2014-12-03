@@ -1007,7 +1007,7 @@ public class JavaConfigApplication {
 						</ol>
 					</section>
 					<section>
-						<h2>4.2.1 Spring way</h2>
+						<h2>4.2.1 Spring way (XML)</h2>
 						<h4>Default XML location</h4>
 						<p align="left">Configuration:</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -1025,7 +1025,7 @@ public class XmlDefaultConfigTest {
 }</code></pre>
 					</section>
 					<section>
-						<h2>4.2.2 Spring Boot way (XML)</h2>
+						<h2>4.2.2 Spring way (XML)</h2>
 						<h4>Define XML location</h4>
 						<p align="left">Configuration:</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -1036,7 +1036,7 @@ public class XmlDefaultConfigTest {
 &lt;/beans&gt;</code></pre>
 						<p align="left">Usage:</p>
 						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(locations = "classpath:spring/xml-config.xml")
+@ContextConfiguration(locations = "classpath:spring/xml-config.xml")
 public class XmlDirectConfigTest {
     ...
 }</code></pre>
@@ -1063,7 +1063,7 @@ public class JavaConfigTest {
 						<ol>
 							<li>Profile Definition</li>
 							<li>@ActiveProfiles</li>
-							<li>Spring Boot way (JavaConfig)</li>
+							<li>@IfProfileValue</li>
 						</ol>
 					</section>
 					<section>
@@ -1103,7 +1103,25 @@ public class RichardConfigTest {
     }
 }
 </code></pre>
-					</section>				</section>
+					</section>
+					<section>
+						<h2>4.3.3 @IfProfileValue</h2>
+						<p align="left">Define test with <i>@IfProfileValue</i> annotation.</p>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = { MyConfig.class, BarbaraConfig.class })
+@ActiveProfiles("richard")
+public class RichardConfigTest {
+
+    @Test
+    @IfProfileValue(name = "test-group", values = { "training" })
+    public void testHello() {
+        assertThat(user.getName(), not(equalTo("Arny")));
+    }
+}
+</code></pre>
+						<p align="left">Use profile by calling JVM with e.g. <i>-Dtest-group=training</i>. Annotation reflects JVM parameters, environments properties, etc.</p>
+					</section>
+				</section>
 
 				<section>
 					<section>
