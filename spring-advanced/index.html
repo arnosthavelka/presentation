@@ -73,7 +73,6 @@
 						<li>BFPP & BPP</li>
 						<li>Testing</li>
 						<li>Spring Boot</li>
-						<li>Validation</li>
 						<li>Persistence</li>
 						<li>AOP</li>
 						<li>JMX</li>
@@ -1197,15 +1196,15 @@ private HelloService helloService;</code></pre>
 				<section>
 					<section>
 						<h2>5. Spring Boot</h2>
-						<p style="color:red">TODO</p>
 						<ol>
 							<li>Overview</li>
 							<li>REST simple example</li>
 							<li>Externalize configuration with Spring Boot</li>
 							<li>Advanced configuration</li>
-							<li>Actuator</li>
+							<li>Actuator - <span style="color:red">TODO - admin</span></li>
 							<li>A lot more...</li>
 							<li>Resources</li>
+							<li>Swagger - <span style="color:red">TODO - API + admin</span></li>
 						</ol>
 					</section>
 					<section>
@@ -1358,16 +1357,41 @@ yaml.desc=Sample YAML configuration</code></pre>
 					</section>
 					<section>
 						<h2>5.7 Actuator</h2>
+						<ul>
+							<li>Overview</li>
+							<li>Definition</li>
+							<li>Usage hints</li>
+						</ul>
+					</section>
+					<section>
+						<h2>5.7.1 Overview</h2>
 						<p align="left">Actuator is Spring Boot extension to add management endpoints to the application.</p>
 						<ol>
 							<li><i>/beans</i> - the list of available/configured bean</li>
 							<li><i>/env</i> - environment properties</li>
 							<li><i>/dump</i> - the list of application threads with their stack trace</li>
 							<li><i>/health</i> - displays the current application health</li>
-							<li><i>/info</i> - displays application-specific information (<span style="color:red">TODO - example of adding info from manifest</span>)</li>
+							<li><i>/info</i> - displays application-specific information</li>
 							<li><i>/metrics</i> - the list of application metrics</li>
 							<li>Expose custom endpoint - see example <a href="http://www.javacodegeeks.com/2014/10/spring-boot-actuator-custom-endpoint-with-mvc-layer-on-top-of-it.html" alt="Example of Actuator custom endpoint implementation">here</a></li>
 						</ol>
+					</section>
+					<section>
+						<h2>5.7.2 Definition</h2>
+						<p align="left">Add maven dependency (into pom.xml):</p>
+						<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+					</section>
+					<section>
+						<h2>5.7.2 Usage hints</h2>
+						<p align="left">Customize <strong>/info</strong> endpoint - modify <i>application.properties</i> file and add property with prefix "info", e.g.:</p>
+						<pre><code>info.build.name=${project.artifactId}
+info.build.version=${project.version}</code></pre>
+						<p align="left">Change management port - modify <i>application.properties</i> as:</p>
+						<pre><code>management.port=8081
+management.contextPath: /admin</code></pre>
 					</section>
 					<section>
 						<h2>5.8 A lot more...</h2>
@@ -1398,18 +1422,7 @@ yaml.desc=Sample YAML configuration</code></pre>
 				</section>
 				
 				<section>
-					<h2>6. Validation</h2>
-					<p style="color:red">TODO</p>
-					<ol>
-						<li>JSR-303 - spring integration</li>
-						<li>Valang (from Spring modules) - probably not</li>
-						<li>JSR-303/JSR-349 Bean Validation - http://docs.spring.io/spring/docs/4.1.x/spring-framework-reference/html/validation.html</li>
-						<li>aaa</li>
-					</ol>
-				</section>
-
-				<section>
-					<h2>7. Persistence</h2>
+					<h2>6. Persistence</h2>
 					<p style="color:red">TODO -  (JDBC/JPA/JTA and transaction)</p>
 					<ol>
 						<li>Spring @Transactional explained - http://doanduyhai.wordpress.com/2011/11/20/spring-transactional-explained/</li>
@@ -1420,7 +1433,7 @@ yaml.desc=Sample YAML configuration</code></pre>
 				</section>
 
 				<section>
-					<h2>8. AOP</h2>
+					<h2>7. AOP</h2>
 					<p style="color:red">TODO</p>
 					<ol>
 						<li>Tangling & scattering (DevDay presentation?)</li>
@@ -1431,7 +1444,7 @@ yaml.desc=Sample YAML configuration</code></pre>
 				</section>
 
 				<section>
-					<h2>9. Remoting & WS</h2>
+					<h2>8. Remoting & WS</h2>
 					<p style="color:red">TODO</p>
 					<ol>
 						<li>Overview</li>
@@ -1444,7 +1457,7 @@ yaml.desc=Sample YAML configuration</code></pre>
 				</section>
 
 				<section>
-					<h2>10. JMX</h2>
+					<h2>9. JMX</h2>
 					<p style="color:red">TODO</p>
 					<ol>
 						<li>Jolokia (expose JMX over HTTP) - http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-jmx.html</li>
