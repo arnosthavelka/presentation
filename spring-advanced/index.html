@@ -1201,7 +1201,8 @@ private HelloService helloService;</code></pre>
 							<li>REST simple example</li>
 							<li>Externalize configuration with Spring Boot</li>
 							<li>Advanced configuration</li>
-							<li>Actuator - <span style="color:red">TODO - admin</span></li>
+							<li>Actuator</li>
+							<li>Admin Interface</li>
 							<li>A lot more...</li>
 							<li>Resources</li>
 							<li>Swagger - <span style="color:red">TODO - API + admin</span></li>
@@ -1394,7 +1395,56 @@ info.build.version=${project.version}</code></pre>
 management.contextPath: /admin</code></pre>
 					</section>
 					<section>
-						<h2>5.8 A lot more...</h2>
+						<h2>5.8 Admin Interface</h2>
+						<ul>
+							<li>Overview</li>
+							<li>Server Application</li>
+							<li>Client Application</li>
+						</ul>
+					</section>
+					<section>
+						<h2>5.8.1 Overview</h2>
+						<p align="left">This application provides a simple GUI to administrate Spring Boot applications in some ways:</p>
+						<ul>
+							<li>Show name/id and version number</li>
+							<li>Show health status</li>
+							<li>Show details (e.g. JVM, metrics, properties, etc.)</li>
+							<li>Easy loggerlevel management</li>
+						</ul>
+					</section>
+					<section>
+						<h2>5.8.2 Server Application</h2>
+						<p align="left">Add maven dependency:</p>
+						<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.codecentric&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-admin-server&lt;/artifactId&gt;
+    &lt;version&gt;1.0.5+&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+						<p align="left">Add admin server annotation:</p>
+						<pre><code class="java">@Configuration
+@EnableAutoConfiguration
+@EnableAdminServer
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}</code></pre>
+					</section>
+					<section>
+						<h2>5.8.3 Client Application</h2>
+						<p align="left">Add maven dependency:</p>
+						<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.codecentric&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-admin-client&lt;/artifactId&gt;
+    &lt;version&gt;1.0.5+&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+						<p align="left">Modify application configuration (aka properties):</p>
+						<pre><code>info.id=${project.artifactId}
+spring.application.name=@pom.artifactId@
+spring.boot.admin.url=http://localhost:8085</code></pre>
+					</section>
+					<section>
+						<h2>5.9 A lot more...</h2>
 						<p align="left">Spring Boot offers more features, e.g.:</p>
 						<ol>
 							<li>CLI - command line program invoker (based on Groovy)</li>
@@ -1410,7 +1460,7 @@ management.contextPath: /admin</code></pre>
 						</ol>
 					</section>
 					<section>
-						<h2>5.9 Resources</h2>
+						<h2>5.10 Resources</h2>
 						<ul>
 							<li><a href="https://www.youtube.com/watch?v=VPtlZLdm7Nc" alt="Webinar on YouTube">Webinar: Building "Bootiful" Microservices with Spring Boot </a></li>
 							<li>Example <a href="https://github.com/joshlong/spring-doge-microservice" alt="Example project spring-doge-microservice">spring-doge-microservice</a></li>
