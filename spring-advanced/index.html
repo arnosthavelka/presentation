@@ -1479,29 +1479,163 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 				</section>
 				
 				<section>
-					<h2>6. Persistence</h2>
-					<p style="color:red">TODO -  (JDBC/JPA/JTA and transaction)</p>
-					<ol>
-						<li>Spring @Transactional explained - http://doanduyhai.wordpress.com/2011/11/20/spring-transactional-explained/</li>
-						<li>Spring @PersistenceContext/@PersistenceUnit explained - http://doanduyhai.wordpress.com/2011/11/21/spring-persistencecontext-explained/</li>
-						<li>aaa</li>
-						<li>aaa</li>
-					</ol>
+					<section>
+						<h2>6. Persistence</h2>
+						<ol>
+							<li>Goal</li>
+							<li>Transaction Theory</li>
+							<li>JDBC Template</li>
+							<li>JPA Configuration (XML + no persistence XML, JavaConfig) - http://www.baeldung.com/2011/12/13/the-persistence-layer-with-spring-3-1-and-jpa/</li>
+							<li>Hibernate statistics</li>
+							<li>Intelligent exception handling - ???</li>
+						</ol>
+					</section>
+					<section>
+						<h2>6. Persistence - TODO</h2>
+						<p style="color:red">TODO -  (JDBC/JPA/JTA and transaction)</p>
+						<ol>
+							<li>Transactional basics (phenomenons/isolation, propagation, definition in tests, Spring @Transactional explained - http://doanduyhai.wordpress.com/2011/11/20/spring-transactional-explained/)</li>
+							<li>In memory DB - including tests, loading scripts, etc.</li>
+							<li>Configuration with no persistence.xml </li>
+							<li>Spring Data?</li>
+							<li>Spring @PersistenceContext/@PersistenceUnit explained - http://doanduyhai.wordpress.com/2011/11/21/spring-persistencecontext-explained/</li>
+							<li>aaa</li>
+						</ol>
+					</section>
+					<section>
+						<h2>6.1 Goal</h2>
+						<ol>
+							<li>Hide away large amount of boilerplate codes</li>
+							<li>Separate business logic and technology configuration</li>
+							<li>Declarative transaction management (XML or annotations)</li>
+							<li>Automatic connection management (automatic acquire and release)</li>
+							<li>Intelligent exception handling</li>
+						</ol>
+					</section>
+					
+					<section>
+						<h2>6.2 Transaction Theory</h2>
+						<ol>
+							<li>ACID principle</li>
+							<li>Read phenomena</li>
+							<li>Isolation Levels</li>
+						</ol>
+					</section>
+					<section>
+						<h2>6.2.1 ACID principle</h2>
+						<ol>
+							<li><strong>Atomic</strong> - all operations (changes) are done or none</li>
+							<li><strong>Consistent</strong> - database integrity is honoured (no constraint is violated)</li>
+							<li><strong>Isolated</strong> - transaction are isolated form each other</li>
+							<li><strong>Durable</strong> - committed changes are permanent</li>
+						</ol>
+					</section>
+					<section>
+						<h2>6.2.2 Read phenomena</h2>
+						<p>
+							<ol>
+								<li><strong>Dirty reads</strong> - when a transaction is allowed to read data from a row that has been modified by another running transaction and not yet committed</li>
+								<li><strong>Non-repeatable reads</strong> - when during the course of a transaction, a row is retrieved twice and the values within the row differ between reads</li>
+								<li><strong>Phantom reads</strong> - when two identical queries are executed, and the collection of rows returned by the second query is different from the first</li>
+							</ol>
+						</p>
+						<small>See: <a href="http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Read_phenomena" alt="Link to Wikipeda with description of Phantom phenomena">Wikipedia</a></small>
+					</section>
+					<section>
+						<h2>6.2.3 Isolation Levels</h2>
+						<p>
+							<ol>
+								<li><strong>Read uncommitted</strong> (lowest isolation level)- allows Dirty read</li>
+								<li><strong>Read committed</strong> (default strategy) - does not allow Dirty read</li>
+								<li><strong>Repeatable read</strong> - does not allow Dirty read and prevents non-repeatable read</li>
+								<li><strong>Serializable</strong> (slowest) - prevents all phenomenons</li>
+							</ol>
+						</p>
+						<small>See: <a href="http://en.wikipedia.org/wiki/Isolation_(database_systems)#Isolation_levels" alt="Link to Wikipeda with description of Isolations levels">Wikipedia</a></small>
+					</section>
+
+					<section>
+						<h2>6.3 xyz</h2>
+						<ol>
+							<li>aaa</li>
+							<li>aaa</li>
+							<li>aaa</li>
+						</ol>
+					</section>
+					<section>
+						<h2>6.2.1 aaa</h2>
+						<ol>
+							<li><strong>Atomic</strong> - all operations (changes) are done or none</li>
+							<li><strong>Consistent</strong> - database integrity is honoured (no constraint is violated)</li>
+							<li><strong>Isolated</strong> - transaction are isolated form each other</li>
+							<li><strong>Durable</strong> - committed changes are permanent</li>
+						</ol>
+					</section>
+
+					<section>
+							<h2>6.x Intelligent exception handling</h2>
+							<p align="left">The idea is to hide technology exceptions (SQL, JDBC, JPA, Hibernate, iBatis, etc.) and re-throw independent Spring exceptions. To do so just add post-processor definition to spring configuration:</p>
+							<pre><code class="xml">&lt;!--  Post processor to apply translation of JPA specific exceptions 
+      upon objects annotated with @Repository annotation. --&gt;
+&lt;bean class="o.s.dao.annotation.PersistenceExceptionTranslationPostProcessor" /&gt;</code></pre>
+					</section>
 				</section>
 
 				<section>
 					<h2>7. AOP</h2>
 					<p style="color:red">TODO</p>
 					<ol>
+						<li>Overview</li>
 						<li>Tangling & scattering (DevDay presentation?)</li>
-						<li>aaa</li>
-						<li>aaa</li>
+						<li>Expression pattern</li>
+						<li>Example</li>
 						<li>aaa</li>
 					</ol>
 				</section>
 
 				<section>
-					<h2>8. Remoting & WS</h2>
+					<section>
+						<h2>8. JMX</h2>
+						<p style="color:red">TODO</p>
+						<ol>
+							<li>Overview</li>
+							<li>Jolokia (expose JMX over HTTP) - http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-jmx.html</li>
+							<li>Hibernate statistics</li>
+							<li>aaa</li>
+							<li>aaa</li>
+						</ol>
+					</section>
+					<section>
+							<h2>8.x Hibernate statistics</h2>
+							<p align="left">Define factory bean:</p>
+							<pre><code class="java">public class HibStatFactoryBean implements FactoryBean<Statistics> {
+    private HibernateEntityManagerFactory entityManagerFactory;
+    
+    @Autowired
+    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = (HibernateEntityManagerFactory) entityManagerFactory;
+    }
+	...
+}</code></pre>
+							<p align="left">Spring configuration:</p>
+							<pre><code class="xml">&lt;bean id="exporter" class="o.s.jmx.export.MBeanExporter" lazy-init="false"&gt;
+    &lt;property name="beans"&gt;
+        &lt;map&gt;
+            &lt;entry key="my-app:application=Statistics" value-ref="hibStatFB"/&gt;
+        &lt;/map&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+&lt;bean id="hibStatFB" class="abc.HibStatFactoryBean"
+    p:entityManagerFactory-ref="entityManagerFactory" /&gt;</code></pre>
+						<aside class="notes">
+							See: <a href="http://www.dzone.com/snippets/spring-jmx-sample">Spring JMX Sample Configuration (Hibernate & Ehcache Statistics)</a>
+						</aside>
+					</section>
+					
+				</section>
+
+				<section>
+					<h2>9. Remoting & WS</h2>
 					<p style="color:red">TODO</p>
 					<ol>
 						<li>Overview</li>
@@ -1511,17 +1645,6 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 					<aside class="notes">
 						<p>Spring documentation - http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/html/remoting.html</p>
 					</aside>
-				</section>
-
-				<section>
-					<h2>9. JMX</h2>
-					<p style="color:red">TODO</p>
-					<ol>
-						<li>Jolokia (expose JMX over HTTP) - http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-jmx.html</li>
-						<li>aaa</li>
-						<li>aaa</li>
-						<li>aaa</li>
-					</ol>
 				</section>
 
 				<section>
