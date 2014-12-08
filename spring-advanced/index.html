@@ -41,13 +41,16 @@
 		<div class="reveal">
 
 			<div class="slides">
-							<section>
+				<section>
 					<h1>Spring - Advanced</h1>
 					<h3>Advanced topics for Spring framework</h3>
 					<p>[Internal training by ACE Academy]</p>
 					<p>
 						<small>Created by <a href="http://cz.linkedin.com/in/arnosthavelka/">Havelka Arnošt</a></small>
 					</p>
+					<!-- 
+					<p class="fragment">text in sequence</p>
+					-->
 				</section>
 
 				<section>
@@ -1485,7 +1488,7 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 							<li>Goal</li>
 							<li>Transaction Theory</li>
 							<li>JDBC Template</li>
-							<li>JPA Configuration (XML + no persistence XML, JavaConfig) - http://www.baeldung.com/2011/12/13/the-persistence-layer-with-spring-3-1-and-jpa/</li>
+							<li>JPA Configuration (schema, XML + no persistence XML, JavaConfig) - http://www.baeldung.com/2011/12/13/the-persistence-layer-with-spring-3-1-and-jpa/</li>
 							<li>Hibernate statistics</li>
 							<li>Intelligent exception handling - ???</li>
 						</ol>
@@ -1494,9 +1497,10 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 						<h2>6. Persistence - TODO</h2>
 						<p style="color:red">TODO -  (JDBC/JPA/JTA and transaction)</p>
 						<ol>
-							<li>Transactional basics (phenomenons/isolation, propagation, definition in tests, Spring @Transactional explained - http://doanduyhai.wordpress.com/2011/11/20/spring-transactional-explained/)</li>
+							<li>Transactional basics (definition in tests, Spring @Transactional explained - http://doanduyhai.wordpress.com/2011/11/20/spring-transactional-explained/)</li>
 							<li>In memory DB - including tests, loading scripts, etc.</li>
 							<li>Configuration with no persistence.xml </li>
+							<li>Usage in tests</li>
 							<li>Spring Data?</li>
 							<li>Spring @PersistenceContext/@PersistenceUnit explained - http://doanduyhai.wordpress.com/2011/11/21/spring-persistencecontext-explained/</li>
 							<li>aaa</li>
@@ -1519,6 +1523,7 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 							<li>ACID principle</li>
 							<li>Read phenomena</li>
 							<li>Isolation Levels</li>
+							<li>Propagation Levels</li>
 						</ol>
 					</section>
 					<section>
@@ -1545,7 +1550,7 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 						<h2>6.2.3 Isolation Levels</h2>
 						<p>
 							<ol>
-								<li><strong>Read uncommitted</strong> (lowest isolation level)- allows Dirty read</li>
+								<li><strong>Read uncommitted</strong> (lowest isolation level) - allows Dirty read</li>
 								<li><strong>Read committed</strong> (default strategy) - does not allow Dirty read</li>
 								<li><strong>Repeatable read</strong> - does not allow Dirty read and prevents non-repeatable read</li>
 								<li><strong>Serializable</strong> (slowest) - prevents all phenomenons</li>
@@ -1553,7 +1558,27 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 						</p>
 						<small>See: <a href="http://en.wikipedia.org/wiki/Isolation_(database_systems)#Isolation_levels" alt="Link to Wikipeda with description of Isolations levels">Wikipedia</a></small>
 					</section>
-
+					<section>
+						<h2>6.2.4 Propagation Levels [1/2]</h2>
+						<p>
+							<ol>
+								<li><strong>REQUIRED</strong> (default) - If there’s an existing transaction in progress, the current method should run within this transaction. Otherwise, it should start a new transaction and run within its own transaction.</li>
+								<li><strong>REQUIRES_NEW</strong> - The current method must start a new transaction and run within its own transaction. If there’s an existing transaction in progress, it should be suspended.</li>
+								<li><strong>SUPPORTS</strong> - If there’s an existing transaction in progress, the current method can run within this transaction. Otherwise, it is not necessary to run within a transaction.</li>
+								<li><strong>NOT_SUPPORTED</strong> - The current method should not run within a transaction. If there’s an existing transaction in progress, it should be suspended.</li>
+							</ol>
+						</p>
+					</section>
+					<section>
+						<h2>6.2.4 Propagation Levels [2/2]</h2>
+						<p>
+							<ol>
+								<li><strong>MANDATORY</strong> - The current method must run within a transaction. If there’s no existing transaction in progress, an exception will be thrown.</li>
+								<li><strong>NEVER</strong> - The current method should not run within a transaction. If there’s an existing transaction in progress, an exception will be thrown.</li>
+								<li><strong>NESTED</strong> (unique Spring feature) - If there’s an existing transaction in progress, the current method should run within the nested transaction (supported by the JDBC 3.0 save point feature) of this transaction. Otherwise, it should start a new transaction and run within its own transaction.</li>
+							</ol>
+						</p>
+					</section>
 					<section>
 						<h2>6.3 xyz</h2>
 						<ol>
