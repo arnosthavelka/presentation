@@ -1487,10 +1487,8 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 						<ol>
 							<li>Goal</li>
 							<li>Transaction Theory</li>
-							<li>JDBC Template</li>
+							<li>JDBC</li>
 							<li>JPA Configuration (schema, XML + no persistence XML, JavaConfig) - http://www.baeldung.com/2011/12/13/the-persistence-layer-with-spring-3-1-and-jpa/</li>
-							<li>Hibernate statistics</li>
-							<li>Intelligent exception handling - ???</li>
 						</ol>
 					</section>
 					<section>
@@ -1580,30 +1578,126 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 						</p>
 					</section>
 					<section>
-						<h2>6.3 xyz</h2>
+						<h2>6.3 JDBC</h2>
 						<ol>
-							<li>aaa</li>
-							<li>aaa</li>
-							<li>aaa</li>
+							<li>Embedded H2 with Spring</li>
+							<li>Embedded H2 with Spring Boot</li>
+							<li>Loading SQL scripts</li>
+							<li>Loading Liquibase scripts</li>
+							<li>JDBC Template usage</li>
+							<li>Intelligent exception handling</li>
 						</ol>
 					</section>
 					<section>
-						<h2>6.2.1 aaa</h2>
-						<ol>
-							<li><strong>Atomic</strong> - all operations (changes) are done or none</li>
-							<li><strong>Consistent</strong> - database integrity is honoured (no constraint is violated)</li>
-							<li><strong>Isolated</strong> - transaction are isolated form each other</li>
-							<li><strong>Durable</strong> - committed changes are permanent</li>
-						</ol>
+						<h2>6.3.1 Embedded H2 with Spring</h2>
+						<pre><code class="xml">&lt;beans ... xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xsi:schemaLocation="... 
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd"&gt;
+    &lt;!-- Embedded (in-memory) database. --&gt;
+    &lt;jdbc:embedded-database id="dataSourceH2" type="HSQL"&gt;
+        &lt;jdbc:script location="classpath:schema.sql" encoding="UTF-8"/&gt;
+        &lt;jdbc:script location="classpath:data.sql" encoding="UTF-8"/&gt;
+    &lt;/jdbc:embedded-database&gt;
+&lt;/beans&gt;
+</code></pre>
 					</section>
+					<section>
+						<h2>6.3.2 Embedded H2 with Spring Boot</h2>
+						<p align="left">Maven dependency:</p>
+						<pre><code class="xml">&lt;dependency/&gt;
+    &lt;groupId/&gt;org.springframework.boot&lt;/groupId/&gt;
+    &lt;artifactId/&gt;spring-boot-starter-jdbc&lt;/artifactId/&gt;
+&lt;/dependency/&gt;</code></pre>
+						<p align="left">DB properties (in YML file):</p>
+						<pre><code>spring:
+    datasource:
+        platform:H2
+        url=jdbc:h2:mem
+        username=sa
+        password=
+        driverClassName=org.h2.Driver.class</code></pre>
+					</section>					<section>
+						<h2>6.3.3 Loading SQL scripts</h2>
+						<p align="left">Use these files on classpath (located in <i>src/main/resources</i> or <i>src/test/resources</i>):</p>
+						<ul>
+							<li><strong>schema.sql</strong> - load DB structures (create schema by DDL)</li>
+							<li><strong>data.sql</strong> - load DB data (by DML)</li>
+						</ul>
+						<p><small>See: project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jdbc/" alt="Link to example project on GitHub">sat-jdbc</a></small></p>
+					</section>
+					<section>
+						<h2>6.3.4 Loading Liquibase scripts</h2>
+						<p align="left">Maven dependency (plus dependency from chapter 6.3.2):</p>
+						<pre><code class="xml">&lt;dependency/&gt;
+    &lt;groupId/&gt;org.hsqldb&lt;/groupId/&gt;
+    &lt;artifactId/&gt;hsqldb&lt;/artifactId/&gt;
+    &lt;scope/&gt;runtime&lt;/scope/&gt;
+&lt;/dependency/&gt;</code></pre>
+						<p align="left">Use file <strong>/db/changelog/db.changelog-master.yaml</strong> on classpath 
+						(located in <i>src/main/resources</i> or <i>src/test/resources</i>) to load Liquibase script.</p>
+						<p><small>See: project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-liquibase/" alt="Link to example project on GitHub">sat-liquibase</a></small></p>
+					</section>
+					<section>
+						<h2>6.3.5 JDBC Template usage</h2>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = JdbcApplication.class)
+public class JdbcTests {
 
+    @Autowired
+    JdbcTemplate jt;
+
+    @Test
+    public void testCount() {
+        Integer count = jt.queryForObject("select count(*) from CATCIS", 
+            Integer.class);
+        assertThat(count, equalTo(7));
+    }
+
+}
+</code></pre>
+						<p><small>See: project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jdbc/src/test/java/com/asseco/aha/training/spring_advanced/jdbc/JdbcTests.java" alt="Link to example project on GitHub">JdbcTests.java</a> in project sat-jdbc</small></p>
+					</section>
 					<section>
-							<h2>6.x Intelligent exception handling</h2>
-							<p align="left">The idea is to hide technology exceptions (SQL, JDBC, JPA, Hibernate, iBatis, etc.) and re-throw independent Spring exceptions. To do so just add post-processor definition to spring configuration:</p>
-							<pre><code class="xml">&lt;!--  Post processor to apply translation of JPA specific exceptions 
+						<h2>6.3.6 Intelligent exception handling</h2>
+						<p align="left">The idea is to hide technology exceptions (SQL, JDBC, JPA, Hibernate, iBatis, etc.) and re-throw independent Spring exceptions. To do so just add post-processor definition to spring configuration:</p>
+						<pre><code class="xml">&lt;!--  Post processor to apply translation of JPA specific exceptions 
       upon objects annotated with @Repository annotation. --&gt;
 &lt;bean class="o.s.dao.annotation.PersistenceExceptionTranslationPostProcessor" /&gt;</code></pre>
 					</section>
+
+					<section>
+						<h2>6.4 JPA</h2>
+						<ol>
+							<li>Embedded H2 with Spring</li>
+							<li>Embedded H2 with Spring Boot</li>
+							<li>Loading SQL scripts</li>
+							<li>Loading Liquibase scripts</li>
+							<li>JDBC Template usage</li>
+							<li>Intelligent exception handling</li>
+						</ol>
+					</section>
+					<section>
+						<h2>6.4.1 Embedded H2 with Spring</h2>
+						<pre><code class="xml">&lt;!-- Usage of embedded (in-memory) database is described in the chapter 6.3.1. --&gt;
+
+&lt;bean id="transactionManagerH2" 
+    class="org.springframework.orm.jpa.JpaTransactionManager" p:entityManagerFactory-ref="entityManagerFactoryH2"/&gt;
+
+&lt;bean id="entityManagerFactoryH2" 
+    class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+    p:persistenceProviderClass="org.hibernate.ejb.HibernatePersistence" 
+    p:packagesToScan="com.asseco.aha.training.spring_advanced.jpa.domain"
+    p:dataSource-ref="dataSourceH2" 
+    p:jpaVendorAdapter-ref="jpaVendorAdapterH2"/&gt;
+
+&lt;bean id="jpaVendorAdapterH2" 
+    class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"&gt;
+    &lt;property name="database" value="HSQL" /&gt;
+    &lt;property name="showSql" value="true" /&gt;
+    &lt;property name="generateDdl" value="false" /&gt;
+&lt;/bean&gt;</code></pre>
+					</section>
+
 				</section>
 
 				<section>
