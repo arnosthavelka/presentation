@@ -77,6 +77,7 @@
 						<li>Testing</li>
 						<li>Spring Boot</li>
 						<li>Persistence</li>
+						<li>Rest</li>
 						<li>AOP</li>
 						<li>JMX</li>
 						<li>Remoting & WS</li>						
@@ -1507,14 +1508,15 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 					<section>
 						<h2>6.2 Transaction Theory</h2>
 						<ol>
-							<li>ACID principle</li>
-							<li>Read phenomena</li>
+							<li>ACID Principle</li>
+							<li>Read Phenomena</li>
 							<li>Isolation Levels</li>
 							<li>Propagation Levels</li>
+							<li>Proxy Phenomena</li>
 						</ol>
 					</section>
 					<section>
-						<h2>6.2.1 ACID principle</h2>
+						<h2>6.2.1 ACID Principle</h2>
 						<ol>
 							<li><strong>Atomic</strong> - all operations (changes) are done or none</li>
 							<li><strong>Consistent</strong> - database integrity is honoured (no constraint is violated)</li>
@@ -1523,7 +1525,7 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 						</ol>
 					</section>
 					<section>
-						<h2>6.2.2 Read phenomena</h2>
+						<h2>6.2.2 Read Phenomena</h2>
 						<p>
 							<ol>
 								<li><strong>Dirty reads</strong> - when a transaction is allowed to read data from a row that has been modified by another running transaction and not yet committed</li>
@@ -1565,6 +1567,22 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 								<li><strong>NESTED</strong> (unique Spring feature) - If there’s an existing transaction in progress, the current method should run within the nested transaction (supported by the JDBC 3.0 save point feature) of this transaction. Otherwise, it should start a new transaction and run within its own transaction.</li>
 							</ol>
 						</p>
+					</section>
+					<section>
+						<h2>6.2.5 Proxy Phenomena</h2>
+						<p align="left">Example:</p>
+						<pre><code class="java">@Transactional
+public City getCity(long id) {
+    audit("city", id);
+    ...
+    new RuntimeException("some exception is raised here");
+}
+
+@Transactional(propagation=Propagation.REQUIRES_NEW)
+public void audit(String entity, long id) {
+	// do some audit logic
+}</code></pre>
+						<p align="left">What happens? Is the audit record stored (by calling just method getCity())?</p>
 					</section>
 					<section>
 						<h2>6.3 JDBC</h2>
@@ -1699,7 +1717,7 @@ public class JdbcTests {
     &lt;groupId/&gt;org.springframework.boot&lt;/groupId/&gt;
     &lt;artifactId/&gt;spring-boot-starter-data-jpa&lt;/artifactId/&gt;
 &lt;/dependency/&gt;</code></pre>
-						<p align="left">DB properties (same as in chapter 6.3.2):</p>
+						<p align="left">Optional: DB properties (same as in chapter 6.3.2):</p>
 						<pre><code>spring:
     datasource:
         platform:H2
@@ -1937,6 +1955,129 @@ public class PersistenceJPAConfig{
 							<li>Explanation of <a href="http://doanduyhai.wordpress.com/2011/11/20/spring-transactional-explained/">Spring @Transactional</a></li>
 							<li>Explanation of <a href="http://doanduyhai.wordpress.com/2011/11/21/spring-persistencecontext-explained/">@PersistenceContext/@PersistenceUnit</a></li>
 						</ol>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>7. REST</h2>
+						<ol>
+							<li>Overview</li>
+							<li>Principles</li>
+							<li>Methods</li>
+							<li>Example</li>
+							<li>Check implementation</li>
+						</ol>
+						<br/><br/>
+						<small>Based on <a href="http://en.wikipedia.org/wiki/Representational_state_transfer" alt="Description of REST on Wikipedia">Wikipedia</a> and <a href="http://www.restapitutorial.com/" alt="Web REST API Tutorial">REST API Tutorial</a></small>
+					</section>
+
+					<section>
+						<h2>7.1 Overview</h2>
+						<p align="left"><strong>Representational state transfer</strong> known as REST is a new architecture approach to create web services.</p>
+						<p align="left">The concept is based on:
+							<ul>
+								<li>Proper usage of HTTP features</li>
+								<li>All is about (stateless) resources (URI)</li>
+								<li>URL represents resource, not an action</li>
+								<li>Easy and efficient use, but without strict</li>
+								<li>Support for multiple format - what server accepts and client prefers (e.g. XML, JSON, CSV, TXT, etc.)</li>
+							</ul>
+						</p>
+					</section>
+
+					<section>
+						<h2>7.2 Principles</h2>
+						<ul>
+							<li><strong>Uniform interface</strong>
+								<ul>
+									<li>Resource-Based</li>						
+									<li>Manipulation of Resources Through Representations</li>						
+									<li>Self-descriptive Messages</li>						
+									<li>Hypermedia as the Engine of Application State (<a href="http://en.wikipedia.org/wiki/HATEOAS" alt="Description of HATEOAS on Wikipedia">HATEOAS</a>)</li>						
+								</ul>
+							</li>
+							<li><strong>Client–server</strong> - the separation of clients from servers.</li>
+							<li><strong>Stateless</strong> - no state is hold on server-side.</li>
+							<li><strong>Cacheable</strong> - clients can cache responses.</li>
+							<li><strong>Layered system</strong> - clients do not know whether they are connected directly to the end server (or not).</li>
+							<li><strong>Code on demand (optional)</strong> - servers can temporarily extend or customize the functionality of a client by the transfer of executable code (Java applets, JS, etc.).</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>7.3 Methods</h2>
+						<table style="border: 1px solid white;">
+							<tr style="background-color: gray;">
+								<th>Operation</th>
+								<th>HTTP Method</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<td>Create/Insert</td>
+								<td>POST</td>
+								<td>Creates a new resource</td>
+							</tr>
+							<tr>
+								<td>Read/Select</td>
+								<td>GET</td>
+								<td>Retrieves a resource</td>
+							</tr>
+							<tr>
+								<td>Update</td>
+								<td>PUT</td>
+								<td>Updates an existing resource</td>
+							</tr>
+							<tr>
+								<td>Delete/Remove</td>
+								<td>DELETE</td>
+								<td>Deletes a resource</td>
+							</tr>
+							<tr>
+								<td>Document API</td>
+								<td>OPTION</td>
+								<td>Provide documentation to exposed API (URL)</td>
+							</tr>
+						</table>
+						<small>More information <a href="http://www.restapitutorial.com/lessons/httpmethods.html" alt="Using HTTP Methods for RESTful Services">here</a></small>
+					</section>					
+
+					<section>
+						<h2>7.4 Example</h2>
+						<pre><code class="java">@RequestMapping(
+    value = "/{id}",
+    method = RequestMethod.GET,
+    produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+public List&lt;City&gt; list(@PathVariable String country,
+                       @PathParam("sorting") String sorting) {
+    List&lt;City&gt; data = cityService.list(country, sorting);
+    if (data.size() == 0) {
+        throw new NoItemFoundException(String.format("No city for country %s was  found!", country));
+    }
+    return data;
+}
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class NoItemFoundException extends RuntimeException { ... }</code></pre>
+					</section>
+					
+					<section>
+						<h2>7.5 Check implementation</h2>
+						<ol>
+							<li>Application (commented code, Spring Boot initialization)</li>
+							<li>Controller
+								<ul>
+									<li>Spring annotations (@RequestMapping, @PathVariable, @PathParam, @RequestBody, etc.)</li>
+									<li>Consuming/producing defined MIME types (JSON/XML)</li>
+									<li>@JsonView Annotation</li>
+									<li>CRUD operations</li>
+									<li>Exception handling</li>
+								</ul>
+							</li>
+							<li>Unit tests (RestTemplate, integration test, repository)</li>
+							<li>SoapUI tests (CRUD operations, JSON/XML, etc.)</li>
+						</ol>
+						<p><small>See: project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-rest/" alt="Link to example project on GitHub">sat-rest</a></small></p>
 					</section>
 				</section>
 
