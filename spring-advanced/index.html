@@ -56,9 +56,9 @@
 				<section>
 					<h2>About me</h2>
 					<ol>
-						<li>ACE employee: since 6/2009</li>
-						<li>Job title: Solution Architect / Head of SW development</li>
-						<li>Division: Public CZ</li>
+						<li>Job title: <strong>Solution Architect / Head of SW development</strong></li>
+						<li>Division: <strong>Public CZ</strong></li>
+						<li>ACE employment: <strong>6/2009-12/2014</strong></li>
 						<li>Certifications:<br/>
 							<img src="img/scjp.jpg" alt="Sun Certified Programmer for the Java Platform, Standard Edition 6 (5/2010)">
 							<img src="img/ocwsd.gif" alt="Oracle Certified Professional, Java EE 5 Web Services Developer (12/2010)">
@@ -78,10 +78,7 @@
 						<li>Spring Boot</li>
 						<li>Persistence</li>
 						<li>Rest</li>
-						<li>AOP</li>
 						<li>JMX</li>
-						<li>Remoting & WS</li>						
-						
 					</ol>
 				</section>
 				
@@ -136,15 +133,15 @@ public class MyService {
 						<h2>1.3 Spring configuration</h2>
 						<p>XML</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;beans xmlns="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p"&gt;
-  &lt;context:component-scan base-package="aha.poc" /&gt;
-  &lt;bean id="customService" class="somepackage.MyService"/&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"&gt;
+
+    &lt;context:component-scan base-package="aha.poc" /&gt;
+
+    &lt;bean id="customService" class="somepackage.MyService"/&gt;
 &lt;/beans&gt;</code></pre>
 						<p>JavaConfig</p>
 						<pre><code class="java">@Configuration
 @ComponentScan(basePackages = "aha.poc")
-@EnableAutoConfiguration
-@EnableScheduling
 public class Application {
 
     @Bean
@@ -252,8 +249,10 @@ private String email;</code></pre>
 					<section>
 						<h2>1.7.1 JSR-250 - Semantic concept [2/2]</h2>
 						<p align="left">Definition:</p>
-						<pre><code class="xml">&lt;context:annotation-config/&gt; &lt;!-- process DI, JSR-250, etc. --&gt;
-&lt;context:component-scan/&gt;    &lt;!-- same as annotation-config + scan packages to register beans --&gt;</code></pre>
+						<pre><code class="xml">&lt;!-- process DI, JSR-250, etc. --&gt;
+&lt;context:annotation-config/&gt;
+&lt;!-- same as annotation-config + scan packages to register beans --&gt;
+&lt;context:component-scan/&gt;</code></pre>
 						<p align="left">Usage:</p>
 						<pre><code class="java">@Component
 public class MyService {
@@ -370,6 +369,10 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 					</section>			
 					<section>
 						<h2>2.1.1 Place holder</h2>
+						<ul>
+							<li>Usage of system property (${my.env})</li>
+							<li>Usage of default values</li>
+						</ul>
 <pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
 
@@ -386,7 +389,6 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 						<p align="left">Bean definition:</p>
 						<pre><code class="java">@Component
 public class CustomBean {
-    @Value("${some-config-item}")
     private String message = "default message";
 }</code></pre>
 						<p align="left">Define overridden rule:</p>
@@ -566,7 +568,7 @@ public class PrivateService implement MyService {
 						<p align="left"><strong>Solution</strong>: use <i>ClassPathScanningCandidateComponentProvider</i>.</p>
 						<pre><code class="java">ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
 // Filter to include only classes that have a particular annotation.
-provider.addIncludeFilter(new AnnotationTypeFilter(MyAnnotation.class));
+provider.addIncludeFilter(new AnnotationTypeFilter(MyAnnotation.clasz));
 // Find classes in the given package (or subpackages)
 Set&lt;BeanDefinition&gt; beans = provider.findCandidateComponents("com.xyz.abc");
 for (BeanDefinition bd : beans) {
@@ -649,7 +651,7 @@ public class JavaConfigApplication {
 					<section>
 						<h2>2.5.2 Solution [4/4]</h2>
 						<h4>Variant 4</h4>
-						<p align="left">Use excludes in component scan.</p>
+						<p align="left">Use excluding feature in component scan.</p>
 						<pre><code class="java">@Configuration
 @ComponentScan(basePackages = { "com.asseco.aha.training.spring_advanced.core.config" }, 
     excludeFilters = @ComponentScan.Filter(
@@ -684,13 +686,13 @@ public class JavaConfigApplication {
 					<section>
 						<h2>3.1 Spring life-cycle</h2>
 						<ol>
-							<li>Schema</li>
+							<li>Life-cycle Schema</li>
 							<li>Bean initialization order</li>
 							<li>Bean disposal order</li>
 						</ol>
 					</section>
 					<section>
-						<h2>3.1.1 Spring Life-cycle Schema</h2>
+						<h2>3.1.1 Life-cycle Schema</h2>
 						<svg style="width:100%; height:450px;">
 							<text x="280" y="30">Definition of application context</text>
 							<line x1="470" y1="35" x2="470" y2="80" stroke="#000000" stroke-width="2"/>
@@ -754,6 +756,15 @@ public class JavaConfigApplication {
 					<section>
 						<h2>3.2 Factory bean</h2>
 						<ol>
+							<li>Overview</li>
+							<li>Factory Methods</li>
+							<li>POJOs as Factory Beans</li>
+							<li>Factory Bean</li>
+						</ol>
+					</section>
+					<section>
+						<h2>3.2.1 Overview</h2>
+						<ol>
 							<li>Factory Methods
 								<ul>
 									<li>Simple usage for static methods (the old singletons)</li>
@@ -773,7 +784,7 @@ public class JavaConfigApplication {
 						</ol>
 					</section>
 					<section>
-						<h2>3.2.1 Factory Methods</h2>
+						<h2>3.2.2 Factory Methods</h2>
 						<p align="left">Class definition:</p>
 						<pre><code class="java">public class OldSingleton {
 						
@@ -794,7 +805,7 @@ public class JavaConfigApplication {
 &lt;/beans&gt;</code></pre>
 					</section>
 					<section>
-						<h2>3.2.2 POJOs as Factory Beans</h2>
+						<h2>3.2.3 POJOs as Factory Beans</h2>
 						<p align="left">POJO definition:</p>
 						<pre><code class="java">public class PojoFactory {
 						
@@ -812,7 +823,7 @@ public class JavaConfigApplication {
 &lt;/beans&gt;</code></pre>
 					</section>
 					<section>
-						<h2>3.2.3 Factory Bean</h2>
+						<h2>3.2.4 Factory Bean</h2>
 						<p align="left">FactoryBean implementation:</p>
 						<pre><code class="java">public class MyFactoryBean implements FactoryBean&lt;MyService&gt; {
   // ... instantiate ClientService class as clientService...
@@ -845,10 +856,11 @@ public class JavaConfigApplication {
 						<h2>3.3 BFPP - usage [2/2]</h2>
 						<p align="left">BFPP implementation:</p>
 						<pre><code class="java">public class MyBfpp implements BeanFactoryPostProcessor {
-  public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-    String[] beanNames = beanFactory.getBeanDefinitionNames();
-	...
-  }
+    public void postProcessBeanFactory(
+      ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        String[] beanNames = beanFactory.getBeanDefinitionNames();
+        ...
+    }
 }</code></pre>
 						<p align="left">Spring definition:</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -920,7 +932,7 @@ public class JavaConfigApplication {
 						<ol>
 							<li>Types:
 								<ul>
-									<li>Static (reviews, inspection, etc.)</li>
+									<li>Static (e.g. review of documentation, inspection, etc.)</li>
 									<li>Dynamic (execution of program againt test case)</li>
 								</ul>
 							</li>
@@ -1039,7 +1051,7 @@ public class XmlDefaultConfigTest {
 
 &lt;/beans&gt;</code></pre>
 						<p align="left">Usage:</p>
-						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
 @ContextConfiguration(locations = "classpath:spring/xml-config.xml")
 public class XmlDirectConfigTest {
     ...
@@ -1049,15 +1061,14 @@ public class XmlDirectConfigTest {
 					<section>
 						<h2>4.2.3 Spring Boot way (JavaConfig)</h2>
 						<p align="left">Configuration:</p>
-						<pre><code class="Java">@Configuration
-@ComponentScan("com.asseco.aha.training.spring_advanced.core.config")
-@EnableAutoConfiguration
+						<pre><code class="java">@SpringBootApplication
+//@ComponentScan("com.asseco.aha.training.spring_advanced.core.config")
 public class JavaConfigApplication {
     ...
 }</code></pre>
 						<p align="left">Usage:</p>
-						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = JavaConfigApplication.class)
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = JavaConfigApplication.clasz)
 public class JavaConfigTest {
     ...
 }</code></pre>
@@ -1097,9 +1108,9 @@ public class RichardConfig {
 					</section>					
 					<section>
 						<h2>4.3.2 @ActiveProfiles</h2>
-						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
 @SpringApplicationConfiguration(
-    classes = { MyConfig.class, RichardConfig.class, BarbaraConfig.class })
+    classes = { MyConfig.clasz, RichardConfig.clasz, BarbaraConfig.clasz })
 @ActiveProfiles("richard")
 public class RichardConfigTest {
 
@@ -1113,8 +1124,8 @@ public class RichardConfigTest {
 					<section>
 						<h2>4.3.3 @IfProfileValue</h2>
 						<p align="left">Define test with <i>@IfProfileValue</i> annotation.</p>
-						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { MyConfig.class, BarbaraConfig.class })
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = { MyConfig.clasz, BarbaraConfig.clasz })
 @ActiveProfiles("richard")
 public class RichardConfigTest {
 
@@ -1183,7 +1194,7 @@ public TestRule watcher = new TestWatcher() {
 
 					<section>
 						<h2>4.6 Springockito</h2>
-						<p align="left">Springockito  is a small extension to spring that simplifies way of creation mockito mocks in the intergation tests' related context xml files.</p>
+						<p align="left">Springockito  is a small extension to spring that simplifies way of creation mockito mocks in the integration tests' related context xml files.</p>
 						<p align="left">XML</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans ... xmlns:mockito="http://www.mockito.org/spring/mockito" xsi:schemaLocation="..." &gt;
