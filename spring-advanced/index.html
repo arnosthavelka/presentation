@@ -77,7 +77,7 @@
 						<li>Testing</li>
 						<li>Spring Boot</li>
 						<li>Persistence</li>
-						<li>Rest</li>
+						<li>REST (Spring MVC)</li>
 						<li>JMX</li>
 					</ol>
 				</section>
@@ -1239,7 +1239,7 @@ private HelloService helloService;</code></pre>
 						<pre><code class="xml">&lt;parent&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
-    &lt;version&gt;1.1.8.RELEASE&lt;/version&gt;
+    &lt;version&gt;1.2.0.RELEASE&lt;/version&gt;
     &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
 &lt;/parent&gt;</code></pre>
 						<p align="left">Define desired dependencies:</p>
@@ -1252,7 +1252,7 @@ private HelloService helloService;</code></pre>
     &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
-						<small align="left">Note: there's a lot of other available modules/dependencies (e.g. web, jpa, ws, batch, integration, actuator, mobile, etc.).</small>
+						<p align="left"><small>Note: there's a lot of other available modules/dependencies (e.g. web, jpa, ws, batch, integration, actuator, mobile, etc.).</small></p>
 					</section>
 					<section>
 						<h2>5.3 REST simple example</h2>
@@ -1361,13 +1361,13 @@ my.number.in.range=${random.int[1024,65536]}</code></pre>
 						<p align="left">YML file:</p>
 						<pre><code class="java">yaml:
     foo:
-        value: Yaml foo value
+        value: foo value
         name: Bruno
-    desc: Sample YAML configuration</code></pre>
+    desc: Sample configuration</code></pre>
 						<p align="left">Available in runtime as:</p>
-						<pre><code class="java">yaml.foo.value=Yaml foo value
+						<pre><code class="java">yaml.foo.value=foo value
 yaml.foo.name=Bruno
-yaml.desc=Sample YAML configuration</code></pre>
+yaml.desc=Sample configuration</code></pre>
 						<small>Source: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html" alt="Source link">http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</a></small>
 					</section>
 					<section>
@@ -1458,7 +1458,7 @@ public class Application {
     &lt;artifactId&gt;spring-boot-starter-admin-client&lt;/artifactId&gt;
     &lt;version&gt;1.0.5+&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
-						<p align="left">Modify application configuration (aka properties):</p>
+						<p align="left">Modify application configuration (aka any form of the property file):</p>
 						<pre><code>info.id=${project.artifactId}
 spring.application.name=@pom.artifactId@
 spring.boot.admin.url=http://localhost:8085</code></pre>
@@ -1550,10 +1550,10 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 						<h2>6.2.3 Isolation Levels</h2>
 						<p>
 							<ol>
-								<li><strong>Read uncommitted</strong> (lowest isolation level) - allows Dirty read</li>
-								<li><strong>Read committed</strong> (default strategy) - does not allow Dirty read</li>
-								<li><strong>Repeatable read</strong> - does not allow Dirty read and prevents non-repeatable read</li>
-								<li><strong>Serializable</strong> (slowest) - prevents all phenomenons</li>
+								<li><strong>READ_UNCOMMITTED</strong> (lowest level) - allows Dirty read</li>
+								<li><strong>READ_COMMITTED</strong> (default) - does not allow Dirty read</li>
+								<li><strong>REPEATABLE_READ</strong> - does not allow Dirty read and prevents non-repeatable read</li>
+								<li><strong>SERIALIZABLE</strong> (slowest) - prevents all phenomenons</li>
 							</ol>
 						</p>
 						<small>See: <a href="http://en.wikipedia.org/wiki/Isolation_(database_systems)#Isolation_levels" alt="Link to Wikipeda with description of Isolations levels">Wikipedia</a></small>
@@ -1580,8 +1580,8 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 						</p>
 					</section>
 					<section>
-						<h2>6.2.5 Proxy Phenomena</h2>
-						<p align="left">Example:</p>
+						<h2>6.2.5 Question</h2>
+						<p align="left">Sample code:</p>
 						<pre><code class="java">@Transactional
 public City getCity(long id) {
     audit("city", id);
@@ -1593,7 +1593,7 @@ public City getCity(long id) {
 public void audit(String entity, long id) {
 	// do some audit logic
 }</code></pre>
-						<p align="left">What happens? Is the audit record stored (by calling just method getCity())?</p>
+						<p align="left">What's the propagation level in method audit? Is the audit record stored or not (by calling method <i>getCity</i>)?</p>
 					</section>
 					<section>
 						<h2>6.3 JDBC</h2>
@@ -1607,12 +1607,12 @@ public void audit(String entity, long id) {
 						</ol>
 					</section>
 					<section>
-						<h2>6.3.1 Embedded H2 with Spring</h2>
+						<h2>6.3.1 Embedded HSQL with Spring</h2>
 						<pre><code class="xml">&lt;beans ... xmlns:jdbc="http://www.springframework.org/schema/jdbc"
     xsi:schemaLocation="... 
         http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd"&gt;
     &lt;!-- Embedded (in-memory) database. --&gt;
-    &lt;jdbc:embedded-database id="dataSourceH2" type="HSQL"&gt;
+    &lt;jdbc:embedded-database id="dataSourceHSQL" type="HSQL"&gt;
         &lt;jdbc:script location="classpath:schema.sql" encoding="UTF-8"/&gt;
         &lt;jdbc:script location="classpath:data.sql" encoding="UTF-8"/&gt;
     &lt;/jdbc:embedded-database&gt;
@@ -1621,7 +1621,7 @@ public void audit(String entity, long id) {
 					</section>
 					<section>
 						<h2>6.3.2 Embedded H2 with Spring Boot</h2>
-						<p align="left">Maven dependency:</p>
+						<p align="left">Maven dependency (+ dependency for JDBC driver - e.g. hsqldb):</p>
 						<pre><code class="xml">&lt;dependency/&gt;
     &lt;groupId/&gt;org.springframework.boot&lt;/groupId/&gt;
     &lt;artifactId/&gt;spring-boot-starter-jdbc&lt;/artifactId/&gt;
@@ -1648,9 +1648,8 @@ public void audit(String entity, long id) {
 						<h2>6.3.4 Loading Liquibase scripts</h2>
 						<p align="left">Maven dependency (plus dependency from chapter 6.3.2):</p>
 						<pre><code class="xml">&lt;dependency/&gt;
-    &lt;groupId/&gt;org.hsqldb&lt;/groupId/&gt;
-    &lt;artifactId/&gt;hsqldb&lt;/artifactId/&gt;
-    &lt;scope/&gt;runtime&lt;/scope/&gt;
+    &lt;groupId/&gt;org.liquibase&lt;/groupId/&gt;
+    &lt;artifactId/&gt;liquibase-core&lt;/artifactId/&gt;
 &lt;/dependency/&gt;</code></pre>
 						<p align="left">Use file <strong>/db/changelog/db.changelog-master.yaml</strong> on classpath 
 						(located in <i>src/main/resources</i> or <i>src/test/resources</i>) to load Liquibase script.</p>
@@ -1658,17 +1657,18 @@ public void audit(String entity, long id) {
 					</section>
 					<section>
 						<h2>6.3.5 JDBC Template usage</h2>
-						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = JdbcApplication.class)
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = JdbcApplication.clasz)
 public class JdbcTests {
 
     @Autowired
     JdbcTemplate jt;
 
+    private static final String SQL = "select count(*) from CATCIS";
+	
     @Test
     public void testCount() {
-        Integer count = jt.queryForObject("select count(*) from CATCIS", 
-            Integer.class);
+        Integer count = jt.queryForObject(SQL, Integer.clasz);
         assertThat(count, equalTo(7));
     }
 
@@ -1701,20 +1701,20 @@ public class JdbcTests {
 						<img src="img/jpa_diagram.png" alt="Component diagram of JPA components">
 					</section>
 					<section>
-						<h2>6.4.2 Embedded H2 with Spring</h2>
+						<h2>6.4.2 Embedded HSQL with Spring</h2>
 						<pre><code class="xml">&lt;!-- Usage of embedded (in-memory) database is described in the chapter 6.3.1. --&gt;
 
-&lt;bean id="transactionManagerH2" 
-    class="org.springframework.orm.jpa.JpaTransactionManager" p:entityManagerFactory-ref="entityManagerFactoryH2"/&gt;
+&lt;bean id="transactionManagerHSQL" 
+    class="org.springframework.orm.jpa.JpaTransactionManager" p:entityManagerFactory-ref="entityManagerFactoryHSQL"/&gt;
 
-&lt;bean id="entityManagerFactoryH2" 
+&lt;bean id="entityManagerFactoryHSQL" 
     class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
     p:persistenceProviderClass="org.hibernate.ejb.HibernatePersistence" 
     p:packagesToScan="com.asseco.aha.training.spring_advanced.jpa.domain"
-    p:dataSource-ref="dataSourceH2" 
-    p:jpaVendorAdapter-ref="jpaVendorAdapterH2"/&gt;
+    p:dataSource-ref="dataSourceHSQL" 
+    p:jpaVendorAdapter-ref="jpaVendorAdapterHSQL"/&gt;
 
-&lt;bean id="jpaVendorAdapterH2" 
+&lt;bean id="jpaVendorAdapterHSQL" 
     class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"&gt;
     &lt;property name="database" value="HSQL" /&gt;
     &lt;property name="showSql" value="true" /&gt;
@@ -1799,8 +1799,8 @@ public class City implements Serializable {
 					</section>
 					<section>
 						<h2>6.4.5.3 Simple Queries</h2>
-						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = JpaApplication.class)
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = JpaApplication.clasz)
 @Transactional(readOnly = true)
 public class QueryTests extends AbstractCityTests {
 
@@ -1826,8 +1826,8 @@ public class QueryTests extends AbstractCityTests {
 					</section>
 					<section>
 						<h2>6.4.5.4 Named Queries</h2>
-						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = JpaApplication.class)
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = JpaApplication.clasz)
 @Transactional(readOnly = true)
 public class NamedQueryTests extends AbstractCityTests {
 
@@ -1888,7 +1888,7 @@ public class CrudTests extends AbstractCityTests {
 					</section>
 					<section>
 						<h2>6.4.5.6 Dynamic Queries [2/2]</h2>
-						<p align="left">Extend interface <i>JpaSpecificationExecutor&lt;T&gt;</i> in your repository. Key words <i>and</i>, <i>or</i>, etc. are used from utility class <i>Specifications</i>.</p>
+						<p align="left">Extend interface <i>JpaSpecificationExecutor&lt;T&gt;</i> in your repository. Key words <i>where</i>, <i>and</i>, <i>or</i> and <i>not</i> are used from utility class <i>Specifications</i>.</p>
 						<pre><code class="java">@Test
 public void testCitiesWithoutStateInUsa() {
     List&lt;City&gt; result = cityRepository.findAll(
@@ -1899,8 +1899,16 @@ public void testCitiesWithoutStateInUsa() {
 						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/asseco/aha/training/spring_advanced/jpa/DynamicQueryTests.java" alt="Link to test example on GitHub">DynamicQueryTests.java</a> in project sat-jpa</small></p>
 					</section>
 					<section>
-						<h2>6.4.6 JavaConfig [1/3]</h2>
-						<p align="left">Datasource and intelligent exception handling:</p>
+						<h2>6.4.6 Configuration</h2>
+						<ol>
+							<li>Datasource & Error handling BPP</li>
+							<li>Entity Manager Factory</li>
+							<li>Transaction Manager</li>
+						</ol>
+					</section>
+					<section>
+						<h2>6.4.6.1 Datasource & Error handling</h2>
+						<p align="left">Datasource and intelligent exception handling (by BPP):</p>
 						<pre><code class="java">@Configuration
 @EnableTransactionManagement
 public class PersistenceJPAConfig{
@@ -1921,8 +1929,7 @@ public class PersistenceJPAConfig{
 						<p><small>See: <a href="http://www.baeldung.com/2011/12/13/the-persistence-layer-with-spring-3-1-and-jpa/" alt="Link to JavaConfig example">Spring 4 and JPA with Hibernate</a></small></p>
 					</section>
 					<section>
-						<h2>6.4.6 JavaConfig [2/3]</h2>
-						<p align="left">EntityManagerFactory:</p>
+						<h2>6.4.6.2 Entity Manager Factory</h2>
 						<pre><code class="java">public class PersistenceJPAConfig{
  
    @Bean
@@ -1947,8 +1954,7 @@ public class PersistenceJPAConfig{
 }</code></pre>
 					</section>
 					<section>
-						<h2>6.4.6 JavaConfig [3/3]</h2>
-						<p align="left">TransactionManager:</p>
+						<h2>6.4.6.3 Transaction Manager</h2>
 						<pre><code class="java">public class PersistenceJPAConfig {
    @Bean
    public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
@@ -1971,7 +1977,7 @@ public class PersistenceJPAConfig{
 
 				<section>
 					<section>
-						<h2>7. REST</h2>
+						<h2>7. REST (Spring MVC)</h2>
 						<ol>
 							<li>Overview</li>
 							<li>Principles</li>
