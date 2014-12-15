@@ -2117,43 +2117,82 @@ public List<City> list(
 				</section>
 
 				<section>
-					<h2>8. AOP</h2>
-					<p style="color:red">TODO</p>
-					<ol>
-						<li>Overview</li>
-						<li>Tangling & scattering (DevDay presentation?)</li>
-						<li>Expression pattern</li>
-						<li>Example</li>
-						<li>aaa</li>
-					</ol>
-				</section>
-
-				<section>
 					<section>
-						<h2>9. JMX</h2>
-						<p style="color:red">TODO</p>
+						<h2>8. JMX</h2>
 						<ol>
+							<li>Goals</li>
 							<li>Overview</li>
-							<li>Jolokia (expose JMX over HTTP) - http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-jmx.html</li>
+							<li>Spring way</li>
+							<li>Jolokia</li>
 							<li>Hibernate statistics</li>
-							<li>aaa</li>
-							<li>aaa</li>
 						</ol>
 					</section>
 					<section>
-							<h2>8.x Hibernate statistics</h2>
-							<p align="left">Define factory bean:</p>
-							<pre><code class="java">public class HibStatFactoryBean implements FactoryBean<Statistics> {
+						<h2>8.1 Goals</h2>
+						<ol>
+							<li>Allow monitoring JVM metrics of running application (e.g. jconcole, jvisualvm, etc.)</li>
+							<li>Gather information about application during runtime</li>
+							<li>Trigger operations inside the application</li>
+						</ol>
+					</section>
+					<section>
+						<h2>8.2 Overview</h2>
+						<ol>
+							<li>JMX is specified by <a href="https://jcp.org/en/jsr/detail?id=160" alt="Link to JSR-160">JSR-160</a></li>
+							<li>MBean is an object which allows operations on attributes or operations (management metadata).</li>
+							<li>The management metadata cab be exposed statically (by Java interface) or dynamically during runtime</li>
+						</ol>
+					</section>
+					<section>
+						<h2>8.3 Spring way</h2>
+						<p align="left">Define JMX exporter:</p>
+						<pre><code class="xml">&lt;context:mbean-export /&gt;</code></pre>
+						<p align="left">Spring configuration:</p>
+						<pre><code class="java">@Component
+@ManagedResource(description = "MBean about entity City")
+public class CityMBean {
+    ...
+	
+    @ManagedAttribute
+    public String getAuthor() {
+        return author;
+    }
+
+    @ManagedOperation(description = "Get City by ID")
+    public String getCityNameById(int id) {
+        ...
+    }
+
+}</code></pre>
+						<small>See: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-jmx.html">Managing JMX via Spring Boot</a></small>
+					</section>
+					<section>
+						<h2>8.4 Jolokia</h2>
+						<h3>Expose JMX over HTTP</h3>
+						<p align="left">Add maven dependency:</p>
+						<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.jolokia&lt;/groupId&gt;
+    &lt;artifactId&gt;jolokia-core&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+						<p align="left">Browse JMX via HTTP, e.g.:</p>
+						<pre><code>http://localhost:8080/jolokia/read/com.asseco.aha.training.sat-rest:name=cityMBean,type=CityMBean</code></pre>
+						<small>See: Jolokia's <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-jmx.html">spring integration</a> or <a href="http://www.jolokia.org/">home page</a></small>
+					</section>
+					<section>
+						<h2>8.5 Hibernate Statistics</h2>
+						<p style="color:red">TODO</p>
+						<p align="left">Define factory bean:</p>
+						<pre><code class="java">public class HibStatFactoryBean implements FactoryBean<Statistics> {
     private HibernateEntityManagerFactory entityManagerFactory;
-    
+
     @Autowired
     public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = (HibernateEntityManagerFactory) entityManagerFactory;
     }
-	...
+    ...
 }</code></pre>
-							<p align="left">Spring configuration:</p>
-							<pre><code class="xml">&lt;bean id="exporter" class="o.s.jmx.export.MBeanExporter" lazy-init="false"&gt;
+						<p align="left">Spring configuration:</p>
+						<pre><code class="xml">&lt;bean id="exporter" class="o.s.jmx.export.MBeanExporter" lazy-init="false"&gt;
     &lt;property name="beans"&gt;
         &lt;map&gt;
             &lt;entry key="my-app:application=Statistics" value-ref="hibStatFB"/&gt;
@@ -2162,11 +2201,23 @@ public List<City> list(
 &lt;/bean&gt;
 &lt;bean id="hibStatFB" class="abc.HibStatFactoryBean"
     p:entityManagerFactory-ref="entityManagerFactory" /&gt;</code></pre>
-						<aside class="notes">
-							See: <a href="http://www.dzone.com/snippets/spring-jmx-sample">Spring JMX Sample Configuration (Hibernate & Ehcache Statistics)</a>
-						</aside>
+					<aside class="notes">
+						See: <a href="http://www.dzone.com/snippets/spring-jmx-sample">Spring JMX Sample Configuration (Hibernate & Ehcache Statistics)</a>
+					</aside>
 					</section>
 					
+				</section>
+
+				<!--section>
+					<h2>9. AOP</h2>
+					<p style="color:red">TODO</p>
+					<ol>
+						<li>Overview</li>
+						<li>Tangling & scattering (DevDay presentation?)</li>
+						<li>Expression pattern</li>
+						<li>Example</li>
+						<li>aaa</li>
+					</ol>
 				</section>
 
 				<section>
@@ -2180,7 +2231,7 @@ public List<City> list(
 					<aside class="notes">
 						<p>Spring documentation - http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/html/remoting.html</p>
 					</aside>
-				</section>
+				</section-->
 
 				<section>
 					<h1>THE END</h1>
