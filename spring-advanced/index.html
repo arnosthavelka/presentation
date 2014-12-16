@@ -2125,6 +2125,7 @@ public List<City> list(
 							<li>Spring way</li>
 							<li>Jolokia</li>
 							<li>Hibernate statistics</li>
+							<li>Other Resources</li>
 						</ol>
 					</section>
 					<section>
@@ -2180,7 +2181,7 @@ public class CityMBean {
 					</section>
 					<section>
 						<h2>8.5 Hibernate Statistics</h2>
-						<p style="color:red">TODO</p>
+						<p style="color:red">Not finished</p>
 						<p align="left">Define factory bean:</p>
 						<pre><code class="java">public class HibStatFactoryBean implements FactoryBean<Statistics> {
     private HibernateEntityManagerFactory entityManagerFactory;
@@ -2201,9 +2202,15 @@ public class CityMBean {
 &lt;/bean&gt;
 &lt;bean id="hibStatFB" class="abc.HibStatFactoryBean"
     p:entityManagerFactory-ref="entityManagerFactory" /&gt;</code></pre>
-					<aside class="notes">
-						See: <a href="http://www.dzone.com/snippets/spring-jmx-sample">Spring JMX Sample Configuration (Hibernate & Ehcache Statistics)</a>
-					</aside>
+					</section>
+					<section>
+						<h2>6.5 Other Resources</h2>
+						<ol>
+							<li><a href="http://java.dzone.com/articles/enabling-jmx-hibernate-ehcache">Enabling JMX in Hibernate, Ehcache, Quartz, DBPC and Spring</a></li>
+							<li><a href="http://www.dzone.com/snippets/spring-jmx-sample">Spring JMX Sample Configuration (Hibernate & Ehcache Statistics)</a></li>
+							<li><a href="http://groovy.codehaus.org/Groovy+and+JMX">Groovy and JMX</a></li>
+							<li><a href="http://java.dzone.com/articles/exposing-pojo-jmx-mbean-easily">Exposing a POJO as a JMX MBean Easily With Spring</a></li>
+						</ol>
 					</section>
 					
 				</section>
