@@ -93,6 +93,7 @@
 							<li>Abstract definition</li>
 							<li>SpEL</li>
 							<li>Java Specifications (JSR-250, JSR-303 and JSR-330)</li>
+							<li>Running Spring Application</li>
 						</ol>
 					</section>
 					<section>
@@ -346,6 +347,72 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 							  <td>@Inject has no 'require' attribute</td>
 							</tr>
 						</table>	  						
+					</section>
+					<section>
+						<h2>1.8 Running Spring Application</h2>
+						<ol>
+							<li>Web application listener (XML)</li>
+							<li>Web application listener (JavaConfig)</li>
+							<li>Custom usage</li>
+							<li>WebApplicationInitializer (no web.xml)</li>
+						</ol>
+					</section>
+					<section>
+						<h2>1.8.1 Web application listener</h2>
+						<h3>[XML]</h3>
+						<p align="left">Add to web.xml:</p>
+						<pre><code class="xml">&lt;context-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;classpath*:META-INF/spring/app-cfg-*.xml&lt;/param-value&gt;
+&lt;/context-param&gt;
+&lt;listener&gt;
+    &lt;listener-class&gt;o.s.web.context.ContextLoaderListener&lt;/listener-class&gt;
+&lt;/listener&gt;</code></pre>
+					</section>
+					<section>
+						<h2>1.8.2 Web application listener</h2>
+						<h3>[JavaConfig]</h3>
+						<p align="left">Add to web.xml:</p>
+						<pre><code class="xml">&lt;context-param&gt;
+    &lt;param-name&gt;contextClass&lt;/param-name&gt;
+    &lt;param-value&gt;o.s.web.context.support.AnnotationConfigWebApplicationContext&lt;/param-value&gt;
+&lt;/context-param&gt;
+&lt;listener&gt;
+    &lt;listener-class&gt;o.s.web.context.ContextLoaderListener&lt;/listener-class&gt;
+&lt;/listener&gt;</code></pre>
+						<p align="left">Add some class with annotation <i>@Configuration</i></p>
+					</section>
+					<section>
+						<h2>1.8.3 Custom usage</h2>
+						<p align="left">XML configuration:</p>
+						<pre><code class="java">ApplicationContext ctx = 
+    new ClasspathXmlApplicationContext("one.ctx","two.ctx");
+}</code></pre>
+						<p align="left">JavaConfig:</p>
+						<pre><code class="java">ApplicationContext ctx = 
+    new AnnotationConfigApplicationContext(AppConfig.class);
+}</code></pre>
+					</section>
+					<section>
+						<h2>1.8.4 WebApplicationInitializer</h2>
+						<p align="left">Add dependency on Servlet API (version 3+) and implement WebApplicationInitializer as:</p>
+						<pre><code class="java">public class AppInitializer implements WebApplicationInitializer {
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        WebApplicationContext context = getContext();
+        servletContext.addListener(new ContextLoaderListener(context));
+        ServletRegistration.Dynamic dispatcher = servletContext.addServlet("DispatcherServlet", new DispatcherServlet(context));
+        dispatcher.setLoadOnStartup(1);
+        dispatcher.addMapping("/*");
+    }
+
+    private AnnotationConfigWebApplicationContext getContext() {
+        AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+        context.setConfigLocation("xxx.yyy.zzz.config");
+        return context;
+    }
+}</code></pre>
+						<p align="left">Add some class with annotation <i>@Configuration</i> to package <i>xxx.yyy.zzz.config</i></p>
 					</section>
 				</section>
 				
@@ -2123,6 +2190,7 @@ public List<City> list(
 							<li>Goals</li>
 							<li>Overview</li>
 							<li>Spring way</li>
+							<li>JConsole</li>
 							<li>Jolokia</li>
 							<li>Hibernate statistics</li>
 							<li>Other Resources</li>
@@ -2168,7 +2236,18 @@ public class CityMBean {
 						<small>See: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-jmx.html">Managing JMX via Spring Boot</a></small>
 					</section>
 					<section>
-						<h2>8.4 Jolokia</h2>
+						<h2>8.4 JConsole</h2>
+						<ol>
+							<li>Attach to local JVM process (PIC):<br/>
+								<i><small>jconsole 5353</small></i></li>
+							<li>Add custom library for classes not available in JDK (e.g. entity City): <br/>
+								<i><small>jconsole -J-Djava.class.path="%JAVA_HOME%\lib\jconsole.jar;%JAVA_HOME%\lib\tools.jar;%MY_PATH%\sat-rest.jar"</small></i><br/>
+								Note: use quotation (character ") on windows</li>
+							<li><a href="http://hibernate-jcons.sourceforge.net/index.html" alt="Link to Hibernate JConsole Plugin page"> Usage of Hibernate JConsole Plugin</a></li>
+						</ol>
+					</section>
+					<section>
+						<h2>8.5 Jolokia</h2>
 						<h3>Expose JMX over HTTP</h3>
 						<p align="left">Add maven dependency:</p>
 						<pre><code class="xml">&lt;dependency&gt;
@@ -2180,10 +2259,9 @@ public class CityMBean {
 						<small>See: Jolokia's <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-jmx.html">spring integration</a> or <a href="http://www.jolokia.org/">home page</a></small>
 					</section>
 					<section>
-						<h2>8.5 Hibernate Statistics</h2>
-						<p style="color:red">Not finished</p>
+						<h2>8.6 Hibernate Statistics</h2>
 						<p align="left">Define factory bean:</p>
-						<pre><code class="java">public class HibStatFactoryBean implements FactoryBean<Statistics> {
+						<pre><code class="java">public class HibStatFactoryBean implements FactoryBean&lt;Statistics&gt; {
     private HibernateEntityManagerFactory entityManagerFactory;
 
     @Autowired
