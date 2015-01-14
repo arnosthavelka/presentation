@@ -1860,9 +1860,12 @@ public class City implements Serializable {
 
     City findByNameAndCountryAllIgnoringCase(String name, String country);
 
+    // queries are defined by @NamedQuery (in the entity City)
     City findByName(String name);
-
     List&lt;City&gt; findByNameAndCountry(String name, String country);
+	
+    @Query("SELECT c FROM City c WHERE LOWER(c.name) = LOWER(:name)")
+    City retrieveByName(@Param("name") String name);
 }</code></pre>
 					</section>
 					<section>
@@ -1893,7 +1896,8 @@ public class QueryTests extends AbstractCityTests {
 						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/asseco/aha/training/spring_advanced/jpa/QueryTests.java" alt="Link to test example on GitHub">QueryTests.java</a> in project sat-jpa</small></p>
 					</section>
 					<section>
-						<h2>6.4.5.4 Named Queries</h2>
+						<h2>6.4.5.4 Named Queries [1/2]</h2>
+						<h4>Query definition by @NamedQuery in the entity</h4>
 						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
 @SpringApplicationConfiguration(classes = JpaApplication.clasz)
 @Transactional(readOnly = true)
@@ -1908,6 +1912,21 @@ public class NamedQueryTests extends AbstractCityTests {
     @Test
     public void testQueryCityAndCountry() {
         List&lt;City&gt; result = cityRepository.findByNameAndCountry("% %", "USA");
+        ...
+    }
+}</code></pre>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/asseco/aha/training/spring_advanced/jpa/NamedQueryTests.java" alt="Link to test example on GitHub">NamedQueryTests.java</a> in project sat-jpa</small></p>
+					</section>
+					<section>
+						<h2>6.4.5.4 Named Queries [2/2]</h2>
+						<h4>Query definition by @Query in the repository interface</h4>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = JpaApplication.clasz)
+@Transactional(readOnly = true)
+public class NamedQueryTests extends AbstractCityTests {
+    @Test
+    public void testInterfaceQueryRetrieveByName() {
+        City city = cityRepository.retrieveByName("prague");
         ...
     }
 
