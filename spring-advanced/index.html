@@ -94,6 +94,7 @@
 							<li>SpEL</li>
 							<li>Java Specifications (JSR-250, JSR-303 and JSR-330)</li>
 							<li>Running Spring Application</li>
+							<li>Spring Notification</li>
 						</ol>
 					</section>
 					<section>
@@ -413,6 +414,52 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
     }
 }</code></pre>
 						<p align="left">Add some class with annotation <i>@Configuration</i> to package <i>xxx.yyy.zzz.config</i></p>
+					</section>
+					<section>
+						<h2>1.9 Spring Notification</h2>
+						<ol>
+							<li>Definition of event & listener</li>
+							<li>Usage (send message)</li>
+						</ol>
+					</section>
+					<section>
+						<h2>1.9.1 Definition</h2>
+						<p align="left">Definition of event</p>
+						<pre><code class="java">public class CustomEvent extends ApplicationEvent {
+    private String msg;
+
+    public CustomEvent(Object source, final String msg) {
+        super(source);
+        this.msg = msg;
+    }
+
+    ...
+}</code></pre>
+						<p align="left">Definition of listener</p>
+						<pre><code class="java">@Component
+public class CustomListener implements ApplicationListener&lt;CustomEvent&gt; {
+    @Override
+    public void onApplicationEvent(CustomEvent ce) {
+        ...
+    }
+}
+</code></pre>
+					</section>
+					<section>
+						<h2>1.9.2 Usage</h2>
+						<p align="left">Definition of event</p>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = NotificationApplication.clasz)
+public class NotificationTest {
+
+    @Autowired
+    private ApplicationContext ctx;
+
+    @Test
+    public void contextLoads() {
+        ctx.publishEvent(new CustomEvent(ctx, "Test message"));
+    }
+}</code></pre>
 					</section>
 				</section>
 				
