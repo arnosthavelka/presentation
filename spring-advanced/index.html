@@ -421,6 +421,7 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 							<li>Definition of event & listener</li>
 							<li>Usage (send message)</li>
 						</ol>
+						<p><small>See: project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/" alt="Link to example project on GitHub">sat-core</a></small></p>
 					</section>
 					<section>
 						<h2>1.9.1 Definition</h2>
@@ -444,6 +445,7 @@ public class CustomListener implements ApplicationListener&lt;CustomEvent&gt; {
     }
 }
 </code></pre>
+						<p><small>See: package <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/notification" alt="Link to example project on GitHub">notification </a> in the project sat-core</small></p>
 					</section>
 					<section>
 						<h2>1.9.2 Usage</h2>
@@ -460,6 +462,7 @@ public class NotificationTest {
         ctx.publishEvent(new CustomEvent(ctx, "Test message"));
     }
 }</code></pre>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/notification/NotificationTest.java" alt="Link to example project on GitHub">NotificationTest.java</a> in project sat-core</small></p>
 					</section>
 				</section>
 				
