@@ -71,7 +71,7 @@
 				<section>
 					<h2>Agenda</h2>
 					<ol>
-						<li>Spring Core - Basics</li>
+						<li>Spring&nbsp;Core&nbsp;-&nbsp;Basics</li>
 						<li>Spring Core - Hints</li>
 						<li>BFPP & BPP</li>
 						<li>Testing</li>
@@ -794,7 +794,7 @@ public class JavaConfigApplication {
 					<section>
 						<h2>3. BFPP & BPP</h2>
 						<ol>
-							<li>Spring life-cycle</li>
+							<li>Spring&nbsp;lifecycle</li>
 							<li>Factory bean</li>
 							<li>BFPP</li>
 							<li>BPP</li>
@@ -1026,7 +1026,7 @@ public class JavaConfigApplication {
 						<h2>4. Testing</h2>
 						<ol>
 							<li>Overview</li>
-							<li>Spring configuration for testing</li>
+							<li>Spring&nbsp;configuration&nbsp;for&nbsp;testing</li>
 							<li>Annotations for profile</li>
 							<li>Special annotations</li>
 							<li>TestWatcher</li>
@@ -1330,6 +1330,7 @@ private HelloService helloService;</code></pre>
 						<h2>5. Spring Boot</h2>
 						<ol>
 							<li>Overview</li>
+							<li>Usage</li>
 							<li>REST simple example</li>
 							<li>Externalize configuration with Spring Boot</li>
 							<li>Advanced configuration</li>
@@ -1617,7 +1618,7 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 						<h2>6. Persistence</h2>
 						<ol>
 							<li>Goal</li>
-							<li>Transaction Theory</li>
+							<li>Transaction&nbsp;Theory</li>
 							<li>JDBC</li>
 							<li>JPA</li>
 							<li>Other Resources</li>
@@ -2120,7 +2121,8 @@ public class PersistenceJPAConfig{
 							<li>Principles</li>
 							<li>Methods</li>
 							<li>REST Example</li>
-							<li>Swagger Documentation</li>
+							<li>Swagger&nbsp;Documentation</li>
+							<li>HATEOAS</li>
 							<li>Check implementation</li>
 						</ol>
 						<br/><br/>
@@ -2225,7 +2227,7 @@ class NoItemFoundException extends RuntimeException { ... }</code></pre>
 @ApiResponses(value = { 
   @ApiResponse(code = 200, message = "Successful retrieval of the list of cities (with simple detail)")
 })
-public List<City> list(
+public List&lt;City&gt; list(
   @ApiParam(name = "country", required = false) @PathParam("country") String country,
   @ApiParam(name = "sorting", required = false) @PathParam("sorting") String sorting) {
 	return cityService.list(country, sorting);
@@ -2233,7 +2235,28 @@ public List<City> list(
 						<p><small>See: <a href="http://swagger.io/" alt="Link to Swagger home page">Swagger home page</a></small></p>
 					</section>
 					<section>
-						<h2>7.6 Check implementation</h2>
+						<h2>7.6 HATEOAS</h2>
+						<p align="left">Define resource:</p>
+						<pre><code class="java">public class CityResource extends Resource&lt;City&gt; {
+
+    public CityResource(City entity) {
+        super(entity, linkTo(methodOn(CityHateoasController.class).item(entity.getId())).withSelfRel(), linkTo(
+            CityHateoasController.class).slash(entity.getId()).withRel("delete"));
+        }
+}</code></pre>
+						<p align="left">Define controller method:</p>
+						<pre><code class="java">@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { "application/hal+json" })
+public CityResource item(@PathVariable("id") long id) {
+    // retrieve data
+    City city = cityService.item(id);
+    // prepare resource
+    return assembler.toResource(city);
+}</code></pre>
+						<p><small>See: project <a href="https://github.com/spring-projects/spring-hateoas" alt="Link to project on GitHub">spring-hateoas</a>
+						    and example in the class <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-rest/src/main/java/com/asseco/aha/training/spring_advanced/rest/rest/CityHateoasController.java">CityHateoasController</a> (project <i>sat-rest</i>)</small></p>
+					</section>
+					<section>
+						<h2>7.7 Check implementation</h2>
 						<ol>
 							<li>Application (commented code, Spring Boot initialization)</li>
 							<li>Controller
