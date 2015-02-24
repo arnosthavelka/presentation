@@ -418,13 +418,13 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 					<section>
 						<h2>1.9 Spring Notification</h2>
 						<ol>
-							<li>Definition of event & listener</li>
+							<li>Definition&nbsp;of&nbsp;event&nbsp;&&nbsp;listener</li>
 							<li>Usage (send message)</li>
 						</ol>
-						<p><small>See: project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/" alt="Link to example project on GitHub">sat-core</a></small></p>
+						<p><small>See: <a href="https://spring.io/blog/2015/02/11/better-application-events-in-spring-framework-4-2" alt="Better application events in Spring Framework 4.2">Blog post</a> and project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/" alt="Link to example project on GitHub">sat-core</a></small></p>
 					</section>
 					<section>
-						<h2>1.9.1 Definition</h2>
+						<h2>1.9.1 Definition (before Spring 4.2)</h2>
 						<p align="left">Definition of event</p>
 						<pre><code class="java">public class CustomEvent extends ApplicationEvent {
     private String msg;
@@ -434,7 +434,6 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
         this.msg = msg;
     }
 
-    ...
 }</code></pre>
 						<p align="left">Definition of listener</p>
 						<pre><code class="java">@Component
@@ -448,7 +447,7 @@ public class CustomListener implements ApplicationListener&lt;CustomEvent&gt; {
 						<p><small>See: package <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/notification" alt="Link to example project on GitHub">notification </a> in the project sat-core</small></p>
 					</section>
 					<section>
-						<h2>1.9.2 Usage</h2>
+						<h2>1.9.2 Usage (before Spring 4.2)</h2>
 						<p align="left">Definition of event</p>
 						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
 @SpringApplicationConfiguration(classes = NotificationApplication.clasz)
@@ -460,6 +459,47 @@ public class NotificationTest {
     @Test
     public void contextLoads() {
         ctx.publishEvent(new CustomEvent(ctx, "Test message"));
+    }
+}</code></pre>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/notification/NotificationTest.java" alt="Link to example project on GitHub">NotificationTest.java</a> in project sat-core</small></p>
+					</section>
+					<section>
+						<h2>1.9.3 Definition (Spring 4.2+)</h2>
+						<p align="left">Definition of event</p>
+						<pre><code class="java">public class CityEvent extends MyEvent&lt;City&gt; {
+    private boolean inEurope;
+
+    public CityEvent(Object source, final String inEurope) {
+        super(source);
+        this.inEurope = inEurope;
+    }
+
+}</code></pre>
+						<p align="left">Definition of listener</p>
+						<pre><code class="java">@Component
+public class CustomListener {
+    
+    @EventListener(condition = "#event.inEurope")
+    public void onApplicationEvent(MyEvent&lt;City&gt; event) {
+        ...
+    }
+}
+</code></pre>
+					</section>
+					<section>
+						<h2>1.9.4 Usage (Spring 4.2+)</h2>
+						<p align="left">Definition of event</p>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = NotificationApplication.clasz)
+public class NotificationTest {
+
+    @Autowired
+    private ApplicationContext ctx;
+
+    @Test
+    public void contextLoads() {
+        ctx.publishEvent(new CityEvent(ctx, true));
+        ctx.publishEvent(new CityEvent(ctx, false));
     }
 }</code></pre>
 						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/notification/NotificationTest.java" alt="Link to example project on GitHub">NotificationTest.java</a> in project sat-core</small></p>
