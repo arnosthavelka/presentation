@@ -2161,6 +2161,7 @@ public class PersistenceJPAConfig{
 							<li>Overview</li>
 							<li>Principles</li>
 							<li>Methods</li>
+							<li>Richardson&nbsp;Maturity&nbsp;Model</li>
 							<li>REST Example</li>
 							<li>Swagger&nbsp;Documentation</li>
 							<li>HATEOAS</li>
@@ -2214,17 +2215,22 @@ public class PersistenceJPAConfig{
 							<tr>
 								<td>Create/Insert</td>
 								<td>POST</td>
-								<td>Creates a new resource</td>
+								<td>Create a new resource</td>
 							</tr>
 							<tr>
 								<td>Read/Select</td>
 								<td>GET</td>
-								<td>Retrieves a resource</td>
+								<td>Retrieve a resource</td>
 							</tr>
 							<tr>
 								<td>Update</td>
 								<td>PUT</td>
-								<td>Updates an existing resource</td>
+								<td>Update an existing resource</td>
+							</tr>
+							<tr>
+								<td>Update</td>
+								<td>PATCH</td>
+								<td>Update minor changes to an existing resource (e.g. one attribute)</td>
 							</tr>
 							<tr>
 								<td>Delete/Remove</td>
@@ -2238,10 +2244,42 @@ public class PersistenceJPAConfig{
 							</tr>
 						</table>
 						<small>More information <a href="http://www.restapitutorial.com/lessons/httpmethods.html" alt="Using HTTP Methods for RESTful Services">here</a></small>
+					</section>
+					
+					<section>
+						<h2>7.4 Richardson Maturity Model</h2>
+						<table style="border: 1px solid white;">
+							<tr style="background-color: gray;">
+								<th>Level</th>
+								<th>Name</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<td>0</td>
+								<td>RPC</td>
+								<td>Call requests against universal service endpoint</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>Resources</td>
+								<td>Call requests against specialized resource endpoint</td>
+							</tr>
+							<tr>
+								<td>2</td>
+								<td>HTTP Verbs</td>
+								<td>Use HTTP method when invoking the resource</td>
+							</tr>
+							<tr>
+								<td>3</td>
+								<td>Hypermedia Controls</td>
+								<td>Use HATEOAS when invoking the resource</td>
+							</tr>
+						</table>
+						<small>More information <a href="http://martinfowler.com/articles/richardsonMaturityModel.html" alt="Richardson Maturity Model">here</a></small>
 					</section>					
 
 					<section>
-						<h2>7.4 REST Example</h2>
+						<h2>7.5 REST Example</h2>
 						<pre><code class="java">@RequestMapping(
     value = "/{id}",
     method = RequestMethod.GET,
@@ -2260,7 +2298,7 @@ class NoItemFoundException extends RuntimeException { ... }</code></pre>
 					</section>
 					
 					<section>
-						<h2>7.5 Swagger Documentation</h2>
+						<h2>7.6 Swagger Documentation</h2>
 						<pre><code class="java">@RequestMapping(value = "/"})
 @ApiOperation(
   value = "Returns list of cities", notes = "Returns a list of found city details.", 
@@ -2276,7 +2314,7 @@ public List&lt;City&gt; list(
 						<p><small>See: <a href="http://swagger.io/" alt="Link to Swagger home page">Swagger home page</a></small></p>
 					</section>
 					<section>
-						<h2>7.6 HATEOAS</h2>
+						<h2>7.7 HATEOAS</h2>
 						<p align="left">Define resource:</p>
 						<pre><code class="java">public class CityResource extends Resource&lt;City&gt; {
 
@@ -2297,7 +2335,7 @@ public CityResource item(@PathVariable("id") long id) {
 						    and example in the class <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-rest/src/main/java/com/asseco/aha/training/spring_advanced/rest/rest/CityHateoasController.java">CityHateoasController</a> (project <i>sat-rest</i>)</small></p>
 					</section>
 					<section>
-						<h2>7.7 Check implementation</h2>
+						<h2>7.8 Check implementation</h2>
 						<ol>
 							<li>Application (commented code, Spring Boot initialization)</li>
 							<li>Controller
