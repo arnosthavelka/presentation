@@ -1377,6 +1377,7 @@ private HelloService helloService;</code></pre>
 							<li>Advanced configuration</li>
 							<li>Actuator</li>
 							<li>Admin Interface</li>
+							<li>CommandLineInterface</li>
 							<li>A lot more...</li>
 							<li>Other Resources</li>
 						</ol>
@@ -1623,7 +1624,28 @@ spring.application.name=@pom.artifactId@
 spring.boot.admin.url=http://localhost:8085</code></pre>
 					</section>
 					<section>
-						<h2>5.9 A lot more...</h2>
+						<h2>5.9 Command Line Interface</h2>
+						<p align="left">Used to run bean when Spring context is prepared and running (note it's not same as @PostConstruct). The order can be managed by annotation @Order.</p>
+						<pre><code class="java">@Component
+@Order(1)
+public class Hi implements CommandLineRunner {
+
+    /** Logger. */
+    private static final Logger LOG = LoggerFactory.getLogger(Hi.clasz);
+
+    @PostConstruct
+    void init() {
+        LOG.info("Initializing Hi bean ...");
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        LOG.info("Hi!");
+    }
+}</code></pre>
+					</section>
+					<section>
+						<h2>5.10 A lot more...</h2>
 						<p align="left">Spring Boot offers more features, e.g.:</p>
 						<ol>
 							<li>CLI - command line program invoker (based on Groovy)</li>
@@ -1639,7 +1661,7 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 						</ol>
 					</section>
 					<section>
-						<h2>5.10 Other Resources</h2>
+						<h2>5.11 Other Resources</h2>
 						<ul>
 							<li><a href="https://www.youtube.com/watch?v=VPtlZLdm7Nc" alt="Webinar on YouTube">Webinar: Building "Bootiful" Microservices with Spring Boot </a></li>
 							<li>Example <a href="https://github.com/joshlong/spring-doge-microservice" alt="Example project spring-doge-microservice">spring-doge-microservice</a></li>
