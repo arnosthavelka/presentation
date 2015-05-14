@@ -1064,19 +1064,19 @@ public class CalculatorWebService implements WsTrainingPortType {
 								<th>Description</th>
 							</tr>
 							<tr>
-								<td>Create/Insert</td>
-								<td>POST</td>
-								<td>Creates a new resource</td>
-							</tr>
-							<tr>
 								<td>Read/Select</td>
 								<td>GET</td>
 								<td>Retrieves a resource</td>
 							</tr>
 							<tr>
-								<td>Update</td>
+								<td>Update/Create</td>
 								<td>PUT</td>
-								<td>Updates an existing resource</td>
+								<td>Creates a new resource or updates an existing resource - idempotent</td>
+							</tr>
+							<tr>
+								<td>Create</td>
+								<td>POST</td>
+								<td>Creates a new subordinate resource (identified by the URI) - NOT idempotent</td>
 							</tr>
 							<tr>
 								<td>Delete/Remove</td>
