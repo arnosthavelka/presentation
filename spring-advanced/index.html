@@ -1503,7 +1503,7 @@ public class ConfigServiceApplication {
 						<h2>5.5 Random configuration</h2>
 						<p align="left">The <i>RandomValuePropertySource</i> is class  for injecting random values (e.g. String, integers and long). 
 						It's useful for testing. Example configuration is:</p>
-						<pre><code class="java">my.value=${random.value}
+						<pre><code>my.value=${random.value}
 my.number=${random.int}
 my.bignumber=${random.long}
 my.number.less.than.ten=${random.int(10)}
@@ -1518,13 +1518,13 @@ my.number.in.range=${random.int[1024,65536]}</code></pre>
 							<li>YML file can not use tabulators (just spaces)</li>
 						</ul>
 						<p align="left">YML file:</p>
-						<pre><code class="java">yaml:
+						<pre><code>yaml:
     foo:
         value: foo value
         name: Bruno
     desc: Sample configuration</code></pre>
 						<p align="left">Available in runtime as:</p>
-						<pre><code class="java">yaml.foo.value=foo value
+						<pre><code>yaml.foo.value=foo value
 yaml.foo.name=Bruno
 yaml.desc=Sample configuration</code></pre>
 						<small>Source: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html" alt="Source link">http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</a></small>
@@ -1536,6 +1536,7 @@ yaml.desc=Sample configuration</code></pre>
 								<li>Overview</li>
 								<li>Definition</li>
 								<li>Usage hints</li>
+								<li>Health Indicator</li>
 							</ul>
 						</p>
 						<small>See: <a href="https://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator">spring-boot-actuator</a> GIT repository</small>
@@ -1569,6 +1570,27 @@ info.build.version=${project.version}</code></pre>
 						<p align="left">Change management port - modify <i>application.properties</i> as:</p>
 						<pre><code>management.port=8081
 management.contextPath: /admin</code></pre>
+					</section>
+					<section>
+						<h2>5.7.3 Health Indicator</h2>
+						<p align="left">To add custom health indicator (or healthcheck) available on the endpoint <strong>/health</strong>, e.g. DB or JMS availability.</p>
+						<pre><code class="java">@Component
+public class HealthService extends AbstractHealthIndicator {
+    @Override
+    protected void doHealthCheck(Builder builder) throws Exception {
+        builder.up().withDetail("author", "Arny");
+    }
+}
+</code></pre>
+						<p align="left">Endpoint response:</p>
+						<pre><code>{
+    "status":"UP",
+    "healthService":{
+        "status":"UP",
+        "author":"Arny"
+    }, ...
+}</code></pre>
+						<p align="left"><small>Note: to see the custom information (as added in the example above) the the user must be authenticated or property <code>endpoints.health.sensitive</code> has to be set to <code>false</code>.</small></p>
 					</section>
 					<section>
 						<h2>5.8 Admin Interface</h2>
