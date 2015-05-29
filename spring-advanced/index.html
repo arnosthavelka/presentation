@@ -1537,6 +1537,7 @@ yaml.desc=Sample configuration</code></pre>
 								<li>Definition</li>
 								<li>Usage hints</li>
 								<li>Health Indicator</li>
+								<li>Metrics counter & gauge</li>
 							</ul>
 						</p>
 						<small>See: <a href="https://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator">spring-boot-actuator</a> GIT repository</small>
@@ -1580,8 +1581,7 @@ public class HealthService extends AbstractHealthIndicator {
     protected void doHealthCheck(Builder builder) throws Exception {
         builder.up().withDetail("author", "Arny");
     }
-}
-</code></pre>
+}</code></pre>
 						<p align="left">Endpoint response:</p>
 						<pre><code>{
     "status":"UP",
@@ -1590,7 +1590,31 @@ public class HealthService extends AbstractHealthIndicator {
         "author":"Arny"
     }, ...
 }</code></pre>
-						<p align="left"><small>Note: to see the custom information (as added in the example above) the the user must be authenticated or property <code>endpoints.health.sensitive</code> has to be set to <code>false</code>.</small></p>
+						<p align="left"><small>Note: to see the custom information (as added in the example above) the user must be either authenticated or property <code>endpoints.health.sensitive</code> has to be set to <code>false</code>.</small></p>
+						<small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-spring-boot/src/main/java/com/asseco/aha/training/spring_advanced/sb/HealthService.java" alt="Link to example HealthService usage">HealthService</a> in the project <strong>sat-spring-boot</strong></small>
+					</section>
+					<section>
+						<h2>5.7.4 Metrics Counter & Gauge</h2>
+						<p align="left">We can use custom <strong>counter</strong> or <strong>gauge</strong> (to add some business value) into metrics, which are available in the endpoint <strong>/metrics</strong>.</p>
+						<pre><code class="java">@RestController
+public class HelloController {
+    @Autowired
+    private CounterService counterService;
+
+    @Autowired
+    private GaugeService gaugeService;
+
+    @RequestMapping("/hello/{name}")
+    String hello(String name) {
+        counterService.increment("hello." + name);
+        gaugeService.submit("hello.length", name.length());
+        return String.format("Hello %s!", name);
+    }
+}</code></pre>
+						<p align="left">Endpoint response:</p>
+						<pre><code>{ ..., "counter.hello.Arny" : 3, "gauge.hello.value" : 4.0, ...}</code></pre>
+						<p align="left"><small>Note: to see the custom information (as added in the example above) the user must be either authenticated or property <code>endpoints.health.sensitive</code> has to be set to <code>false</code>.</small></p>
+						<small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-spring-boot/src/main/java/com/asseco/aha/training/spring_advanced/sb/rest/HelloController.java" alt="Link to HelloController with example of counter & gauge usage">HelloController</a> in the project <strong>sat-spring-boot</strong></small>
 					</section>
 					<section>
 						<h2>5.8 Admin Interface</h2>
