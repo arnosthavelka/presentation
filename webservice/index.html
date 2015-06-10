@@ -1058,33 +1058,33 @@ public class CalculatorWebService implements WsTrainingPortType {
 						<h2>8.3 Methods</h2>
 						<table style="border: 1px solid white;">
 							<tr style="background-color: gray;">
-								<th>Operation</th>
 								<th>HTTP Method</th>
+								<th>Funtion</th>
 								<th>Description</th>
 							</tr>
 							<tr>
-								<td>Read/Select</td>
 								<td>GET</td>
+								<td>Read/Select</td>
 								<td>Retrieves a resource</td>
 							</tr>
 							<tr>
-								<td>Update/Create</td>
 								<td>PUT</td>
-								<td>Creates a new resource or updates an existing resource - idempotent</td>
+								<td>Update/Create</td>
+								<td>Creates or updates resource for known ID (overwrite action) - idempotent / repeatable action</td>
 							</tr>
 							<tr>
-								<td>Create</td>
 								<td>POST</td>
-								<td>Creates a new subordinate resource (identified by the URI) - NOT idempotent</td>
+								<td>Create/Update/Add</td>
+								<td>Creates or updates resource for unknown ID (ID can to be predicted)- <strong>NOT idempotent</strong></td>
 							</tr>
 							<tr>
-								<td>Delete/Remove</td>
 								<td>DELETE</td>
+								<td>Delete/Remove</td>
 								<td>Deletes a resource</td>
 							</tr>
 							<tr>
-								<td>Document API</td>
 								<td>OPTION</td>
+								<td>Document API</td>
 								<td>Provide documentation to exposed API (URL)</td>
 							</tr>
 						</table>
