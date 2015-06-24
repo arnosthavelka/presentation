@@ -1378,6 +1378,7 @@ private HelloService helloService;</code></pre>
 							<li>Actuator</li>
 							<li>Admin Interface</li>
 							<li>CommandLineInterface</li>
+							<li>Deployment to AS</li>
 							<li>A lot more...</li>
 							<li>Other Resources</li>
 						</ol>
@@ -1691,7 +1692,30 @@ public class Hi implements CommandLineRunner {
 }</code></pre>
 					</section>
 					<section>
-						<h2>5.10 A lot more...</h2>
+						<h2>5.10 Deployment to AS</h2>
+						<ol>
+							<li>Define packaging as WAR</li>
+							<li>Exclude embedded Tomcat (since it will run on AS)</li>
+							<li>Define Spring Boot application as:</li>
+						</ol>
+						<pre><code class="java">@SpringBootApplication
+public class WarApplication extends SpringBootServletInitializer {
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(WarApplication.class);
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(WarApplication.class, args);
+    }
+
+}
+</code></pre>
+						<small>See: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/howto-traditional-deployment.html" alt="Guide of Spring Boot traditional deployment">guide</a> & <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-war/" alt="Link to project sat-war">example</a> in the project <strong>sat-war</strong></small>
+					</section>
+					<section>
+						<h2>5.11 A lot more...</h2>
 						<p align="left">Spring Boot offers more features, e.g.:</p>
 						<ol>
 							<li>CLI - command line program invoker (based on Groovy)</li>
@@ -1707,7 +1731,7 @@ public class Hi implements CommandLineRunner {
 						</ol>
 					</section>
 					<section>
-						<h2>5.11 Other Resources</h2>
+						<h2>5.12 Other Resources</h2>
 						<ul>
 							<li><a href="https://www.youtube.com/watch?v=VPtlZLdm7Nc" alt="Webinar on YouTube">Webinar: Building "Bootiful" Microservices with Spring Boot </a></li>
 							<li>Example <a href="https://github.com/joshlong/spring-doge-microservice" alt="Example project spring-doge-microservice">spring-doge-microservice</a></li>
