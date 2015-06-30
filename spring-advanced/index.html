@@ -1379,6 +1379,7 @@ private HelloService helloService;</code></pre>
 							<li>Admin Interface</li>
 							<li>CommandLineInterface</li>
 							<li>Deployment to AS</li>
+							<li>Bean Validation (JSR-303)</li>
 							<li>A lot more...</li>
 							<li>Other Resources</li>
 						</ol>
@@ -1715,7 +1716,28 @@ public class WarApplication extends SpringBootServletInitializer {
 						<small>See: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/howto-traditional-deployment.html" alt="Guide of Spring Boot traditional deployment">guide</a> & <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-war/" alt="Link to project sat-war">example</a> in the project <strong>sat-war</strong></small>
 					</section>
 					<section>
-						<h2>5.11 A lot more...</h2>
+						<h2>5.11 Bean Validation (JSR-303)</h2>
+						<ol>
+							<li>Define DTO (see <a href="#/3/11">chapter 1.7.2</a>)</li>
+							<li>Add validation bean to Spring Boot application:
+								<pre><code class="java">@Bean
+Validator beanValidation() {
+    return new LocalValidatorFactoryBean();
+}</code></pre>
+							</li>
+							<li>Define controller:
+								<pre><code class="java">@RequestMapping("/user")
+public String helloUser(@Valid User user, BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+        return getErrorMessage(bindingResult);
+    }
+    ...</code></pre>
+							</li>
+						</ol>
+						<small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-spring-boot/src/main/java/com/asseco/aha/training/spring_advanced/sb/rest/HelloController.java" alt="Link to HelloController">HelloController</a> in the project <strong>sat-spring-boot</strong></small>
+					</section>
+					<section>
+						<h2>5.12 A lot more...</h2>
 						<p align="left">Spring Boot offers more features, e.g.:</p>
 						<ol>
 							<li>CLI - command line program invoker (based on Groovy)</li>
@@ -1731,7 +1753,7 @@ public class WarApplication extends SpringBootServletInitializer {
 						</ol>
 					</section>
 					<section>
-						<h2>5.12 Other Resources</h2>
+						<h2>5.13 Other Resources</h2>
 						<ul>
 							<li><a href="https://www.youtube.com/watch?v=VPtlZLdm7Nc" alt="Webinar on YouTube">Webinar: Building "Bootiful" Microservices with Spring Boot </a></li>
 							<li>Example <a href="https://github.com/joshlong/spring-doge-microservice" alt="Example project spring-doge-microservice">spring-doge-microservice</a></li>
