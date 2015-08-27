@@ -2500,6 +2500,7 @@ public CityResource item(@PathVariable("id") long id) {
 							<li>Spring way</li>
 							<li>JConsole</li>
 							<li>Jolokia</li>
+							<li>Dropwizard Metrics</li>
 							<li>Hibernate statistics</li>
 							<li>Other Resources</li>
 						</ol>
@@ -2567,7 +2568,34 @@ public class CityMBean {
 						<small>See: Jolokia's <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-jmx.html">spring integration</a> or <a href="http://www.jolokia.org/">home page</a></small>
 					</section>
 					<section>
-						<h2>8.6 Hibernate Statistics</h2>
+						<h2>8.6 Dropwizard Metrics</h2>
+						<h3>Expose metrics via JMX</h3>
+						<p align="left">Add maven dependency:</p>
+						<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.dropwizard.metrics&lt;/groupId&gt;
+    &lt;artifactId&gt;metrics-core&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+						<p align="left">Add JMX metrics reporter:</p>
+						<pre><code class="java">@Autowired
+private MetricRegistry registry;
+
+@Bean
+public JmxReporter jmxReporter() {
+    JmxReporter reporter = JmxReporter.forRegistry(registry)
+	    .inDomain("appMetrics").build();
+    reporter.start();
+    return reporter;
+}</code></pre>
+						<small>Based on <a href="http://blog.frankel.ch/become-a-devops-with-spring-boot" alt="Article with DevOps hints">Become a DevOps with Spring Boot</a>; see: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-spring-boot/src/main/java/com/asseco/aha/training/spring_advanced/sb/SbApplication.java" alt="Link to example HealthService usage">SbApplication</a> in the project <strong>sat-spring-boot</strong></small>
+					</section>
+					<section>
+						<h2>8.6 Dropwizard Metrics</h2>
+						<h3>Metrics result in JConsole</h3>
+						<img src="img/dropwizard_metrics.png" alt="Screenshot of metrics result in JConsole">
+						<small>Note: some metrics have to be gathered before appearing in JConsole</small>
+					</section>
+					<section>
+						<h2>8.7 Hibernate Statistics</h2>
 						<p align="left">Define factory bean:</p>
 						<pre><code class="java">public class HibStatFactoryBean implements FactoryBean&lt;Statistics&gt; {
     private HibernateEntityManagerFactory entityManagerFactory;
@@ -2590,7 +2618,7 @@ public class CityMBean {
     p:entityManagerFactory-ref="entityManagerFactory" /&gt;</code></pre>
 					</section>
 					<section>
-						<h2>6.5 Other Resources</h2>
+						<h2>8.8 Other Resources</h2>
 						<ol>
 							<li><a href="http://java.dzone.com/articles/enabling-jmx-hibernate-ehcache">Enabling JMX in Hibernate, Ehcache, Quartz, DBPC and Spring</a></li>
 							<li><a href="http://www.dzone.com/snippets/spring-jmx-sample">Spring JMX Sample Configuration (Hibernate & Ehcache Statistics)</a></li>
