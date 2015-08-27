@@ -5,5 +5,6 @@ All my public presentations:
 * [JProfiler](http://arnosthavelka.github.io/presentation/jprofiler/template.html)
 * [Web services (JAX-WS & REST)](http://arnosthavelka.github.io/presentation/webservice/index.html)
 * [Spring - Advanced topics](http://arnosthavelka.github.io/presentation/spring-advanced/index.html)
+* [Spring Boot](http://arnosthavelka.github.io/presentation/spring-boot/index.html)
 
 Sources are available [here](https://github.com/arnosthavelka/presentation/tree/gh-pages).
