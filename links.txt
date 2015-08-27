@@ -2,6 +2,8 @@ make HTML available - http://stackoverflow.com/questions/8446218/how-to-see-an-h
 direct  (from gh-pages branch) - http://arnosthavelka.github.com/presentation/devday/automated_testing/template.html
 preview (from master branch) - http://htmlpreview.github.com/?
 
+
+reveal.js (presentation tool) - https://github.com/hakimel/reveal.js
 ----------------------
 http://arnosthavelka.github.com/presentation/devday/automated_testing/template.html
 http://arnosthavelka.github.com/presentation/devday/spring_hints/template.html

@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Spring Boot</title>
+
+		<meta name="description" content="Presentation of Spring Boot topics">
+		<meta name="author" content="Havelka Arnošt">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/blood.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Spring Boot</h1>
+					<h3>Basic overview and some advanced topics</h3>
+					<p>
+						<small>Created by <a href="http://cz.linkedin.com/in/arnosthavelka/">Arnošt Havelka</a></small>
+					</p>
+					<!-- 
+					<p class="fragment">text in sequence</p>
+					-->
+				</section>
+
+				<section>
+					<h2>About me</h2>
+					<ol>
+						<li>Job title: <strong>Solution Architect</strong></li>
+						<li>O2 employment: <strong>Since 1/2015</strong></li>
+						<li>Certifications:<br/>
+							<img src="img/scjp.jpg" alt="Sun Certified Programmer for the Java Platform, Standard Edition 6 (5/2010)">
+							<img src="img/owsd.gif" alt="Oracle Certified Professional, Java EE 5 Web Services Developer (12/2010)">
+							<img src="img/ojpad.gif" alt="Oracle Certified Expert, Java EE 6 Java Persistence API Developer (5/2014)">
+							<img src="img/owcd.gif" alt="Oracle Certified Expert, Java EE 6 Web Component Developer (5/2015)"><br/>
+							<img src="img/spring.jpg" alt="Spring Core 3.0 (7/2013)"><br/>
+						</li>
+					</ol>
+				</section>
+				
+				<section>
+					<h2>Agenda</h2>
+					<ol>
+						<li>Basics</li>
+						<li>Configuration</li>
+						<li>Admin Interface</li>
+						<li>Others</li>
+						<li>TODO</li>
+						<li>TODO</li>
+					</ol>
+				</section>
+				
+				<!-- Chapter 1 - Basics -->
+				<section>
+					<section>
+						<h2>1. Basics</h2>
+						<ol>
+							<li>Overview</li>
+							<li>Usage</li>
+							<li>REST simple example</li>
+							<li>Basic properties</li>
+						</ol>
+					</section>
+					
+					<section>
+						<h2>1.1 Overview</h2>
+						<p align="left">Spring Boot represents a new development model on top of Spring framework. It introduces these main features:
+							<ul>
+								<li><strong>Starters</strong> - common groups of dependencies (e.g. web, JMS, remoting, etc.)</li>
+								<li><strong>Autoconfiguration</strong> - autoconfiguration with default behaviour defined simply by annotations</li>
+								<li><strong>Command-line interface (CLI)</strong> - run groovy scripts (as Spring application) simply as CLI</li>
+								<li><strong>Actuator</strong> - common management features (healthcheck, basic information, metrics, etc.)</li>
+							</ul>
+						</p>
+					</section>
+					<section>
+						<h2>1.2 Usage</h2>
+						<p align="left">Declare parent POM (from Spring Boot):</p>
+						<pre><code class="xml">&lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;1.2.5.RELEASE&lt;/version&gt;
+    &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
+&lt;/parent&gt;</code></pre>
+						<p align="left">Define desired dependencies:</p>
+						<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-rest&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+						<p align="left"><small>Note: there's a lot of other available modules/dependencies (e.g. web, jpa, ws, batch, integration, actuator, mobile, etc.).</small></p>
+					</section>
+					<section>
+						<h2>1.3 Simple example</h2>
+						<p align="left">Spring Boot simple/basic configuration:</p>
+						<pre><code class="java">@SpringBootApplication
+public class SpringBootApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootApplication.class, args);
+    }
+}</code></pre>
+						<p align="left">Simple REST implementation:</p>
+						<pre><code class="java">@RestController
+public class HelloController {
+
+    @RequestMapping("/hello")
+    String hello() {
+        return "Hello!";
+    }
+}</code></pre>
+						<aside class="notes">
+							<p>
+								<strong>rest</strong> - no XML-based, no required interface definition<br/>
+								based on HTTP methods GET/PUT (update)/POST (insert)/DELETE<br/>
+								stateless, cacheable, etc.
+							</p>
+						</aside>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 1.4 Basic properties
+
+							TODO: server.port, app.name, etc.
+							Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
+
+							```
+							<section data-markdown>
+							  ## Markdown support
+
+							  Write content using inline or external Markdown.
+							  Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
+							</section>
+							```
+						</script>
+					</section>					
+				</section>
+
+				<!-- Chapter 2 - Configuration -->
+				<section>
+					<section>
+						<h2>2. Basics</h2>
+						<ol>
+							<li>Externalization</li>
+							<li>Usage</li>
+							<li>REST simple example</li>
+							<li>Basic properties</li>
+						</ol>
+					</section>
+				
+					<section>
+						<h2>2.1 Externalization</h2>
+						<ol>
+							<li>Priorities of external configuration</li>
+							<li>Options to change configuration</li>
+							<li>Random configuration</li>
+							<li>YAML configuration</li>
+						</ol>
+					</section>
+					<section>
+						<h3>2.1.1 Priorities of external configuration [1/2]</h3>
+						<ul>
+							<li>Command line arguments</li>
+							<li>Java System properties (<i>System.getProperties()</i>). </li>
+							<li>OS environment variables</li>
+							<li>JNDI attributes from <i>java:comp/env</i></li>
+							<li>A RandomValuePropertySource that only has properties in random.*</li>
+						</ul>
+						<p><small>Continue ...</small></p>
+					</section>
+					<section>
+						<h3>2.1.1 Priorities of external configuration [2/2]</h3>
+						<ul>
+							<li>Application properties outside of your packaged jar</li>
+							<li>Application properties packaged inside your jar</li>
+							<li>@PropertySource annotations on your <i>@Configuration</i> classes</li>
+							<li>Default properties (specified using <i>SpringApplication.setDefaultProperties</i>)</li>
+						</ul>
+					</section>
+					<section>
+						<h3>2.2 Options to change configuration [1/3]</h3>
+						<p align="left">Default configuration:</p>
+						<pre><code class="java">java -jar spring-advanced-training.jar</code></pre>
+						<p align="left">Command line argument configuration:</p>
+						<pre><code class="java">java -jar spring-advanced-training.jar --hello.name=Richard</code></pre>
+						<p align="left">Configuration by system property:</p>
+						<pre><code class="java">java -Dhello.name="Sarah" -jar spring-advanced-training.jar</code></pre>
+						<p align="left">Configuration by OS variable:</p>
+						<pre><code class="java">set HELLO_NAME=Samuel
+java -jar spring-advanced-training.jar</code></pre>	
+						<p><small>Continue ...</small></p>					
+						<aside class="notes">
+							<p>
+								Source: http://altfatterz.blogspot.cz/2014/10/software-configuration-with-spring-boot.html
+								or http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+							</p>
+						</aside>
+					</section>
+					<section>
+						<h3>2.2 Options to change configuration [2/3]</h3>
+						<p align="left">Configuration name:</p>
+						<pre><code class="java">java -jar spring-advanced-training.jar --spring.config.name=config</code></pre>
+						<p align="left">Configuration profile:</p>
+						<pre><code class="java">// via command line argument
+java -jar spring-advanced-training.jar --spring.profiles.active=xyz</code></pre>
+						<p><small>Continue ...</small></p>
+					</section>
+					<section>
+						<h3>2.2 Options to change configuration [3/3]</h3>
+						<pre><code class="java">// via JVM variable
+java -Dspring.profiles.active=xyz -jar spring-advanced-training.jar</code></pre>
+						<p align="left">Hard-coded by annotation @PropertySource:</p>
+						<pre><code class="java">@Configuration
+@PropertySource("file:D:/some path/custom_config.properties")
+...
+public class ConfigServiceApplication {
+  ...
+}</code></pre>
+						<small>Not applicable to YAML files (only for properties files).</small>
+					</section>
+					<section>
+						<h3>2.3 Random configuration</h3>
+						<p align="left">The <i>RandomValuePropertySource</i> is class  for injecting random values (e.g. String, integers and long). 
+						It's useful for testing. Example configuration is:</p>
+						<pre><code>my.value=${random.value}
+my.number=${random.int}
+my.bignumber=${random.long}
+my.number.less.than.ten=${random.int(10)}
+my.number.in.range=${random.int[1024,65536]}</code></pre>
+						<small>Source: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html" alt="Source link">http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</a></small>
+					</section>
+					<section>
+						<h3>2.4 YAML configuration</h3>
+						<ul>
+							<li>new hierarchical configuration approach</li>
+							<li>discoverable as properties files (by <i>YamlPropertiesFactoryBean </i> and  <i>YamlMapFactoryBean </i>)</li>
+							<li>YML file can not use tabulators (just spaces)</li>
+						</ul>
+						<p align="left">YML file:</p>
+						<pre><code>yaml:
+    foo:
+        value: foo value
+        name: Bruno
+    desc: Sample configuration</code></pre>
+						<p align="left">Available in runtime as:</p>
+						<pre><code>yaml.foo.value=foo value
+yaml.foo.name=Bruno
+yaml.desc=Sample configuration</code></pre>
+						<small>Source: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html" alt="Source link">http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</a></small>
+					</section>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
