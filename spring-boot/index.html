@@ -223,18 +223,16 @@ public String helloUser(@Valid User user, BindingResult bindingResult) {
 						<script type="text/template">
 							### 1.7 Basic properties
 
-							TODO: server.port, app.name, info.* (into /info endpoint), etc.
+							```
+server.port=8080
+server.context-path=/aha
+spring.application.name=@pom.artifactId@
+// pretty print for JSON
+spring.jackson.serialization.INDENT_OUTPUT=true
+logging.level.com.asseco.aha.training.spring_advanced.sb=DEBUG
+							```
 							
-							Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
-
-							```
-							<section data-markdown>
-							  ## Markdown support
-
-							  Write content using inline or external Markdown.
-							  Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
-							</section>
-							```
+							The complete list of configuration properties is available [here](http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#common-application-properties).
 						</script>
 					</section>
 				</section>
@@ -448,6 +446,32 @@ public class HelloController {
 }</code></pre>
 						<p align="left"><small>Note: to see the custom information (as added in the example above) the user must be either authenticated or property <code>endpoints.health.sensitive</code> has to be set to <code>false</code>.</small></p>
 						<small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-spring-boot/src/main/java/com/asseco/aha/training/spring_advanced/sb/rest/HelloController.java" alt="Link to HelloController with example of counter & gauge usage">HelloController</a> in the project <strong>sat-spring-boot</strong></small>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 3.6 Info endpoint
+
+							The info endpoint is available on path */info* and is empty (by default). The desired information can be added by adding new properties starting with prexif *info.*, as:
+							
+							```
+info.id=${project.artifactId}
+info.build.name=${project.artifactId}
+info.build.version=@pom.version@
+							```
+							
+							Response:
+							```
+{
+  "build" : {
+    "name" : "sat-spring-boot",
+    "version" : "0.0.4"
+  },
+  "id" : "sat-spring-boot"
+}
+							```
+							
+							*Note : variable inside @...@ is taken from maven at build time*
+						</script>
 					</section>
 				</section>
 				
