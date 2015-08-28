@@ -74,6 +74,7 @@
 						<li>Actuator</li>
 						<li>Admin Interface</li>
 						<li>DB</li>
+						<li>Remote Shell</li>
 						<li>Spring Cloud</li>
 						<li>Resources</li>
 					</ol>
@@ -222,7 +223,7 @@ public String helloUser(@Valid User user, BindingResult bindingResult) {
 						<script type="text/template">
 							### 1.7 Basic properties
 
-							TODO: server.port, app.name, info.* (into /info endpoint), CLI, etc.
+							TODO: server.port, app.name, info.* (into /info endpoint), etc.
 							
 							Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
 
@@ -235,7 +236,7 @@ public String helloUser(@Valid User user, BindingResult bindingResult) {
 							</section>
 							```
 						</script>
-					</section>					
+					</section>
 				</section>
 
 				<!-- Chapter 2 - Configuration -->
@@ -455,11 +456,11 @@ public class HelloController {
 					<section>
 						<h2>4 Admin Interface</h2>
 						<p>
-							<ul>
+							<ol>
 								<li>Overview</li>
 								<li>Server Application</li>
 								<li>Client Application</li>
-							</ul>
+							</ol>
 						</p>
 						<small>See: <a href="https://github.com/codecentric/spring-boot-admin">spring-boot-admin</a> GIT repository</small>
 					</section>
@@ -537,10 +538,103 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 					</section>
 				</section>
 
-				<!-- Chapter 6 - Spring Cloud -->
+				<!-- Chapter 6 - Remote Shell -->
 				<section>
 					<section>
-						<h2>6. Spring Cloud</h2>
+						<h2>6. Remote Shell</h2>
+						<ol>
+							<li>Overview</li>
+							<li>Implementation in Java</li>
+							<li>Usage</li>
+							<li>Implementation in Groovy</li>
+						</ol>						
+					</section>
+					<section data-markdown style="text-align: left;">
+						<script type="text/template">
+							### 6.1 Overview
+
+							The purpose is to allow remote shell to SpringBoot aplication over SSH. The function is allowed with this dependency:
+							
+							```
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-remote-shell</artifactId>
+</dependency>		
+							```
+							
+							All scripts (with commands) have to be placed into *${project}/src/main/resources/commands*.
+							
+							See [become-a-devops-with-spring-boot](http://blog.frankel.ch/become-a-devops-with-spring-boot) article and example in my project [sat-spring-boot](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-spring-boot/)
+						</script>
+					</section>
+					<section data-markdown style="text-align: left;">
+						<script type="text/template">
+							### 6.2 Implementation in Java
+
+							```
+public class helloj extends BaseCommand {
+
+	@Command
+	@Usage("Hello Java")
+	public String main(@Usage("Specify name") 
+	                   @Option(names={"n","name"}) String name) {
+	   	if (name == null) {
+	   		name = "unknown user";
+	   	}
+	   	return "Welcome " + name + "!";
+	}
+}							```
+						</script>
+					</section>
+					<section data-markdown style="text-align: left;">
+						<script type="text/template">
+							### 6.3 Usage
+							
+							First connect to the application over SSH (e.g. with putty).
+							
+							```
+> helloj 					// just call with default (main) method
+Welcome unknown user!
+> helloj -h 				// ask for help of usage
+usage: helloj [-n | --name] [-h | --help]
+
+   [-n | --name] Specify name
+   [-h | --help] this help
+
+> helloj -n Arny 			// use short variable name
+Welcome Arny!
+> helloj --name Johny		// use long variable name
+Welcome Johny!
+
+							```
+						</script>
+					</section>
+					<section data-markdown style="text-align: left;">
+						<script type="text/template">
+							### 6.4 Implementation in Groovy
+
+							```
+class hellog {
+
+    @Usage("Hello Groovy")
+    @Command
+    def main(@Usage("Specify name") 
+			 @Option(names=["n","name"]) String name) {
+    	if (name == null) {
+    		name = "Arny";
+    	}
+        return "Hello " + name + "!";
+    }
+
+}							```
+						</script>
+					</section>
+				</section>
+				
+				<!-- Chapter 7 - Spring Cloud -->
+				<section>
+					<section>
+						<h2>7. Spring Cloud</h2>
 						<h4>Cloud features</h4>
 						<ul>
 							<li><strong>Eureka</strong> - handles service registration and discovery of services in a cluster (for resilient mid-tier load balancing and failover)</li>
@@ -549,12 +643,12 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
 							<li><strong>Config server</strong> - load external configuration (e.g. from GIT);@RefreshScope (part of config server) - refresh beans by calling localhost:8080/refresh</li>
 						</ul>
 					</section>
-					
 				</section>
-				<!-- Chapter 7 - Resources -->
+				
+				<!-- Chapter 8 - Resources -->
 				<section>
 					<section>
-						<h2>7. Resources</h2>
+						<h2>8. Resources</h2>
 						<ul>
 							<li><a href="https://www.youtube.com/watch?v=VPtlZLdm7Nc" alt="Webinar on YouTube">Webinar: Building "Bootiful" Microservices with Spring Boot </a></li>
 							<li>Example <a href="https://github.com/joshlong/spring-doge-microservice" alt="Example project spring-doge-microservice">spring-doge-microservice</a></li>
