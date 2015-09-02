@@ -82,23 +82,25 @@
 				</section>
 					
 				<section>
-					<section>
-						<h2>1. Spring Core - Basics</h2>
-						<ol>
-							<li>Overview</li>
-							<li>Inversion of Control</li>
-							<li>Spring configuration</li>
-							<li>P-namespace and C-namespace</li>
-							<li>Abstract definition</li>
-							<li>SpEL</li>
-							<li>Java Specifications (JSR-250, JSR-303 and JSR-330)</li>
-							<li>Running Spring Application</li>
-							<li>Spring Notification</li>
-							<li>Context Configuration</li>
-						</ol>
+					<section data-markdown>
+						<script type="text/template">
+							## 1. Spring Core - Basics
+							
+							1. Overview
+							2. Inversion of Control
+							3. P-namespace
+							4. C-namespace
+							5. Abstract definition
+							6. SpEL
+							7. Java Specifications (JSR-250, JSR-303 and JSR-330)
+							8. Running Spring Application
+							9. Spring Notification
+							10. Context Configuration
+						</script>
 					</section>
+					
 					<section>
-						<h2>1.1 Overview</h2>
+						<h3>1.1 Overview</h3>
 						<ul>
 							<li><strong>Goal</strong>:Provide comprehensive infrastructural support for developing enterprise Java applications</li>
 							<li><strong>Core support</strong>:
@@ -111,67 +113,66 @@
 							</li>
 						</ul>
 					</section>
-					<section>
-						<h2>1.2 Inversion of Control (IoC)</h2>
-						<p align="left"><strong>Ioc</strong> is approach that is implemented by design pattern called <a href="http://en.wikipedia.org/wiki/Dependency_injection">Dependency injection</a>. 
-						It promotes programmatic to interfaces, improves testability, etc.</p>
-						<p>Property (setter) based</p>
-						<pre><code class="java">@Service
+					<section data-markdown>
+						<script type="text/template">
+							### 1.2 IoC - Definition
+							
+							**Inversion of Control** (or IoC) is approach that is implemented by design pattern called [Dependency injection](http://en.wikipedia.org/wiki/Dependency_injection).
+							It promotes programming to interfaces, improves testability, etc.
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.2 IoC - Usage
+							
+							Property (setter) based
+```java
+@Service
 public class MyService {
     @Autowired
     private MyDao dao;
-}</code></pre>
-						<p>Constructor based</p>
-						<pre><code class="java">@Service
+}
+```
+							
+							Constructor based
+```java
+@Service
 public class MyService {
     private MyDao dao;
     @Autowired
     public MyService(MyDao dao) {
       this.dao = dao;
     }
-}</code></pre>
-						</section>
-					<section>
-						<h2>1.3 Spring configuration</h2>
-						<p>XML</p>
-						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;beans xmlns="http://www.springframework.org/schema/beans"&gt;
-
-    &lt;context:component-scan base-package="aha.poc" /&gt;
-
-    &lt;bean id="customService" class="somepackage.MyService"/&gt;
-&lt;/beans&gt;</code></pre>
-						<p>JavaConfig</p>
-						<pre><code class="java">@Configuration
-@ComponentScan(basePackages = "aha.poc")
-public class Application {
-
-    @Bean
-    public MyService customService() {
-      return new MyService();
-    }
-}</code></pre>
+}
+```
+						</script>
 					</section>
 					<section>
-						<h2>1.4 P-namespace and C-namespace</h2>
+						<h3>1.3 P-namespace</h3>
 						<p>Namespace P (for properties/setters)</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans ... xmlns:p="http://www.springframework.org/schema/p"&gt;
     &lt;context:component-scan base-package="aha.poc" /&gt;
     &lt;bean ... p:msg="Message value" p:dao-ref="myDAO"/&gt;
 &lt;/beans&gt;</code></pre>
+						<p><small>Note: the injection of collection is not possible (only as reference to the collection bean).</small></p>
+					</section>
+					<section>
+						<h3>1.4 C-namespace</h3>
 						<p>Namespace C (for constructors)</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans ... xmlns:c="http://www.springframework.org/schema/c"&gt;
     &lt;context:component-scan base-package="aha.poc" /&gt;
     &lt;bean ... c:_0="My Value" c:_1-ref="myDAO"/&gt;
 &lt;/beans&gt;</code></pre>
-						<p align="left"><small>Other options: <i>c:_dao-ref="myDAO"</i> (for named argument) or <i>c:_-ref="myDAO"</i> (for constructor with just 1 argument)</small></p>
-						<p align="left"><small>Note: the injection of collection is not (neither for C or P) possible (only as reference to the collection bean).</small></p>
+						<p>
+							<small>Note: the injection of collection is not possible (only as reference to the collection bean).</small>
+							<small>Other options: <i>c:_dao-ref="myDAO"</i> (for named argument) or <i>c:_-ref="myDAO"</i> (for constructor with just 1 argument)</small>
+						</p>
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							## 1.5 Abstract definition
+							### 1.5 Abstract definition
 
 							```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -196,7 +197,7 @@ public class Application {
 						</script>
 					</section>
 					<section>
-						<h2>1.6 SpEL</h2>
+						<h3>1.6 SpEL [1/2]</h3>
 						<ul>
 							<li>Reference bean
 <pre><code class="java">@Value("#{customBean.message}")
@@ -208,6 +209,11 @@ private Double value;
 @Value("#{counter.total+42}")
 private Integer value;</code></pre>
 							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>1.6 SpEL [2/2]</h3>
+						<ul>
 							<li>Regular expression matching
 <pre><code class="java">@Value("#{admin.email matches '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.com'}")
 private String email;</code></pre>
@@ -218,46 +224,36 @@ private String email;</code></pre>
 						</ul>
 					</section>
 					<section>
-						<h2>1.7 Java Specifications</h2>
+						<h3>1.7 Java Specifications</h3>
 						<ol>
 							<li><a href="http://en.wikipedia.org/wiki/JSR_250" alt="Link to JSR-250">JSR-250</a> - Semantic concept</li>
 							<li><a href="http://en.wikipedia.org/wiki/Bean_Validation" alt="Link to JSR-303">JSR-303</a> - Bean Validation</li>
 							<li><a href="https://jcp.org/en/jsr/detail?id=330" alt="Link to JSR-330">JSR-330</a> - Dependency Injection for Java</li>
 						</ol>
 					</section>
-					<section>
-						<h2>1.7.1 JSR-250 - Semantic concept [1/2]</h2>
-						<p align="left"><a href="http://en.wikipedia.org/wiki/JSR_250" alt="Link to JSR-250">JSR-250</a> is a specification of annotations for common 
-						semantic concepts in the Java SE and Java EE platforms that apply across a variety of individual technologies.</p>
-						<table style="border: 1px solid gray;">
-							<tr style="background-color: gray;">
-								<th>Annotation</th>
-								<th>Description</th>
-							</tr>
-							<tr>
-								<td>@Generated</td>
-								<td>Marks sources that have been generated</td>
-							</tr>
-							<tr>
-								<td>@Resource</td>
-								<td>Declares a reference to a resource (e.g. from JNDI, servlet context, etc.)</td>
-							</tr>
-							<tr>
-								<td>@PostConstruct</td>
-								<td>Do initialization</td>
-							</tr>
-							<tr>
-								<td>@PreDestroy</td>
-								<td>Do finalization</td>
-							</tr>
-							<tr>
-								<td>@RolesAllowed</td>
-								<td>Specifies the security roles permitted to access method(s) in an application</td>
-							</tr>
-						</table>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.7.1 JSR-250 - Definition [1/3]
+
+							[JSR-250](http://en.wikipedia.org/wiki/JSR_250) is a specification of annotations for common 
+						semantic concepts in the Java SE and Java EE platforms that apply across a variety of individual technologies.
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.7.1 JSR-250 - Comparation [2/3]
+
+							Annotation | Description
+							------------ | -------------
+							@Generated | Marks sources that have been generated
+							@Resource | Declares a reference to a resource (e.g. from JNDI, servlet context, etc.)
+							@PostConstruct | Do initialization
+							@PreDestroy | Do finalization
+							@RolesAllowed | Specifies the security roles permitted to access method(s) in an application
+						</script>
 					</section>
 					<section>
-						<h2>1.7.1 JSR-250 - Semantic concept [2/2]</h2>
+						<h3>1.7.1 JSR-250 [3/3]</h3>
 						<p align="left">Definition:</p>
 						<pre><code class="xml">&lt;!-- process DI, JSR-250, etc. --&gt;
 &lt;context:annotation-config/&gt;
@@ -279,13 +275,13 @@ public class MyService {
 }</code></pre>
 					</section>
 					<section>
-						<h2>1.7.2 JSR-303 - Bean Validation [1/2]</h2>
+						<h3>1.7.2 JSR-303 - Definition [1/3]</h3>
 						<p align="left"><a href="http://en.wikipedia.org/wiki/Bean_Validation">Bean Validation</a> (JSR-303 for version 1.0 + JSR-349 for version 1.1) 
 						defines a metadata model and API for JavaBean validation. The metadata source is annotations, with the ability to override and extend the meta-data 
 						through the use of XML validation descriptors.</p>
 					</section>
 					<section>
-						<h2>1.7.2 JSR-303 - Bean Validation [2/2]</h2>
+						<h3>1.7.2 JSR-303 - Usage [2/3]</h3>
 						<p align="left">Validator definition:</p>
 						<pre><code class="xml">&lt;bean id="val" class="o.s.v.beanvalidation.LocalValidatorFactoryBean" /&gt;</code></pre>
 						<p align="left">DTO definition:</p>
@@ -298,17 +294,21 @@ public class MyService {
     private String username;
 }</code></pre>
 						<small>Resources are located in <i>${project}\src\main\resources\ValidationMessages.properties.</i></small>
+					</section>
+					<section>
+						<h3>1.7.2 JSR-303 - Usage [3/3]</h3>
 						<p align="left">Usage:</p>
 						<pre><code class="java">@Autowired
 private Validator validator;
 
 private &lt;D&gt; List&lt;String&gt; process(D dto) {
-    Set&lt;ConstraintViolation&lt;D&gt;&gt; validationResult = validator.validate(dto);
+    Set&lt;ConstraintViolation&lt;D&gt;&gt; validationResult = 
+	    validator.validate(dto);
     ...
 }</code></pre>
 					</section>
 					<section>
-						<h2>1.7.3 JSR-330 - Dependency Injection for Java [1/2]</h2>
+						<h3>1.7.3 JSR-330 - Overview [1/2]</h3>
 						<p align="left"><a href="http://jcp.org/en/jsr/detail?id=330">JSR-330</a> is specification of Dependency Injection in java world. It was introduced in JavaEE 6 and supported from Spring 3.0.</p>
 						<pre><code class="xml">&lt;dependency&gt;
     &lt;groupId&gt;javax.inject&lt;/groupId&gt;
@@ -322,43 +322,22 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 							</ul>	
 						</p>
 					</section>
-					<section>
-						<h2>1.7.3 JSR-330 - Dependency Injection for Java [2/2]</h2>
-						<table style="border: 1px solid gray;">
-							<tr style="background-color: gray;">
-							  <th>Spring</th>
-							  <th>javax.inject.*</th>
-							  <th>Description</th>
-							</tr>
-							<tr>
-							  <td>@Autowired</td>
-							  <td>@Inject</td>
-							  <td>@Inject has no 'require' attribute</td>
-							</tr>
-							<tr>
-							  <td>@Component</td>
-							  <td>@Named</td>
-							  <td>JSR-330 has default scope <b>prototype</b></td>
-							</tr>
-							<tr>
-							  <td>@Scope("singleton")</td>
-							  <td>@Singleton</td>
-							  <td>&nbsp;</td>
-							</tr>
-							<tr>
-							  <td>@Qualifier</td>
-							  <td>@Named</td>
-							  <td>&nbsp;</td>
-							</tr>
-							<tr>
-							  <td>@Value, @Required, @Lazy</td>
-							  <td>no equivalent</td>
-							  <td>@Inject has no 'require' attribute</td>
-							</tr>
-						</table>	  						
+					<section data-markdown>
+						<script type="text/template">
+							### 1.7.3 JSR-330 - Comparation [2/2]
+
+							Spring | JSR-330 | Description
+							------------ | ------------- | -------------
+							@Autowired | @Inject | @Inject has no 'require' attribute
+							@Component | @Named | JSR-330 has default scope **prototype**
+							@Scope("singleton") | @Singleton | 
+							@Qualifier | @Named | 
+							@Value, @Required, @Lazy | N/A (no equivalent) | @Inject has no 'require' attribute
+						</script>
 					</section>
+
 					<section>
-						<h2>1.8 Running Spring Application</h2>
+						<h3>1.8 Running Spring Application</h3>
 						<ol>
 							<li>Web application listener (XML)</li>
 							<li>Web application listener (JavaConfig)</li>
@@ -367,8 +346,8 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 						</ol>
 					</section>
 					<section>
-						<h2>1.8.1 Web application listener</h2>
-						<h3>[XML]</h3>
+						<h3>1.8.1 Web application listener</h3>
+						<h4>[XML]</h4>
 						<p align="left">Add to web.xml:</p>
 						<pre><code class="xml">&lt;context-param&gt;
     &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
@@ -379,8 +358,8 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 &lt;/listener&gt;</code></pre>
 					</section>
 					<section>
-						<h2>1.8.2 Web application listener</h2>
-						<h3>[JavaConfig]</h3>
+						<h3>1.8.2 Web application listener</h3>
+						<h4>[JavaConfig]</h4>
 						<p align="left">Add to web.xml:</p>
 						<pre><code class="xml">&lt;context-param&gt;
     &lt;param-name&gt;contextClass&lt;/param-name&gt;
@@ -392,7 +371,7 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 						<p align="left">Add some class with annotation <i>@Configuration</i></p>
 					</section>
 					<section>
-						<h2>1.8.3 Custom usage</h2>
+						<h3>1.8.3 Custom usage</h3>
 						<p align="left">XML configuration:</p>
 						<pre><code class="java">ApplicationContext ctx = 
     new ClasspathXmlApplicationContext("one.ctx","two.ctx");
@@ -403,7 +382,7 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 }</code></pre>
 					</section>
 					<section>
-						<h2>1.8.4 WebApplicationInitializer</h2>
+						<h3>1.8.4 WebApplicationInitializer</h3>
 						<p align="left">Add dependency on Servlet API (version 3+) and implement WebApplicationInitializer as:</p>
 						<pre><code class="java">public class AppInitializer implements WebApplicationInitializer {
     @Override
@@ -424,9 +403,9 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 						<p align="left">Add some class with annotation <i>@Configuration</i> to package <i>xxx.yyy.zzz.config</i></p>
 					</section>
 					<section>
-						<h2>1.9 Spring Notification</h2>
+						<h3>1.9 Spring Notification</h3>
 						<ol>
-							<li>Before Spring 4.2
+							<li>Up to Spring 4.1
 								<ul>
 									<li>Definition&nbsp;of&nbsp;event&nbsp;&&nbsp;listener</li>
 									<li>Usage (send message)</li>
@@ -442,7 +421,7 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 						<p><small>See: <a href="https://spring.io/blog/2015/02/11/better-application-events-in-spring-framework-4-2" alt="Better application events in Spring Framework 4.2">Blog post</a> and project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/" alt="Link to example project on GitHub">sat-core</a></small></p>
 					</section>
 					<section>
-						<h2>1.9.1 Definition (before Spring 4.2)</h2>
+						<h3>1.9.1 Def. (up to Spring 4.1)</h3>
 						<p align="left">Definition of event</p>
 						<pre><code class="java">public class CustomEvent extends ApplicationEvent {
     private String msg;
@@ -465,7 +444,7 @@ public class CustomListener implements ApplicationListener&lt;CustomEvent&gt; {
 						<p><small>See: package <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/notification" alt="Link to example project on GitHub">notification </a> in the project sat-core</small></p>
 					</section>
 					<section>
-						<h2>1.9.2 Usage (before Spring 4.2)</h2>
+						<h3>1.9.2 Usage (up to Spring 4.1)</h3>
 						<p align="left">Definition of event</p>
 						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
 @SpringApplicationConfiguration(classes = NotificationApplication.clasz)
@@ -482,7 +461,7 @@ public class NotificationTest {
 						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/notification/NotificationTest.java" alt="Link to example project on GitHub">NotificationTest.java</a> in project sat-core</small></p>
 					</section>
 					<section>
-						<h2>1.9.3 Definition (Spring 4.2+)</h2>
+						<h3>1.9.3 Definition (Spring 4.2+)</h3>
 						<p align="left">Definition of event</p>
 						<pre><code class="java">public class CityEvent extends MyEvent&lt;City&gt; {
     private boolean inEurope;
@@ -505,7 +484,7 @@ public class CustomListener {
 </code></pre>
 					</section>
 					<section>
-						<h2>1.9.4 Usage (Spring 4.2+)</h2>
+						<h3>1.9.4 Usage (Spring 4.2+)</h3>
 						<p align="left">Definition of event</p>
 						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
 @SpringApplicationConfiguration(classes = NotificationApplication.clasz)
@@ -524,7 +503,7 @@ public class NotificationTest {
 					</section>
 
 					<section>
-						<h2>1.10 Context Configuration</h2>
+						<h3>1.10 Context Configuration</h3>
 						<ol>
 							<li>Simple configuratin in XML</li>
 							<li>Simple configuratin in JavaConfig</li>
@@ -535,7 +514,7 @@ public class NotificationTest {
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							## 1.10.1 Simple configuratin in XML
+							### 1.10.1 Simple config in XML
 
 							Datasource config (file ds-config.xml)
 ```xml
@@ -561,7 +540,7 @@ public class NotificationTest {
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							## 1.10.2 Simple configuratin in JavaConfig
+							### 1.10.2 Simple config in JavaConfig [1/2]
 							
 							Datasource config
 ```java
@@ -574,6 +553,12 @@ public class DatasourceConfig {
 	}	
 }
 ```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.10.2 Simple config in JavaConfig [2/2]
+
 							DAO config
 ```java
 @Configuration
@@ -589,7 +574,7 @@ public class DaoConfig {
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							## 1.10.3 Global configuratin in XML
+							### 1.10.3 Global config in XML
 
 							```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -607,7 +592,7 @@ public class DaoConfig {
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							## 1.10.4 Global configuratin in JavaConfig
+							### 1.10.4 Global config in JavaConfig
 
 							```java
 @Configuration
@@ -621,7 +606,7 @@ public class SystemConfig {
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							## 1.10.5 Abstract configuratin in JavaConfig
+							### 1.10.5 Abstract config in JavaConfig [1/2]
 							
 							Abstract config
 ```java
@@ -637,6 +622,12 @@ public abstract class DatasourceConfig {
 	public abstract Datasource datasource();
 }
 ```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.10.5 Abstract config in JavaConfig [2/2]
+							
 							DAO config
 ```java
 @Configuration
@@ -645,7 +636,8 @@ public class DaoConfig {
 	@Bean
 	public Datasource datasource() {...};	
 }
-```						</script>					</section>
+```						</script>
+					</section>
 				</section>
 				
 				<section>
