@@ -652,14 +652,14 @@ public class DaoConfig {
 						</ol>
 					</section>
 					<section>
-						<h2>2.1 Application configuration</h2>
+						<h3>2.1 Application configuration</h3>
 						<ol>
 							<li><strong>Place holder</strong> - to manage configuration properties (placeholders)</li>
 							<li><strong>Place override</strong> - to override bean's properties</li>
 						</ol>
 					</section>			
 					<section>
-						<h2>2.1.1 Place holder</h2>
+						<h3>2.1.1 Place holder</h3>
 						<ul>
 							<li>Usage of system property (${my.env})</li>
 							<li>Usage of default values</li>
@@ -676,7 +676,7 @@ public class DaoConfig {
 &lt;/beans&gt;</code></pre>
 					</section>
 					<section>
-						<h2>2.1.2 Place override</h2>
+						<h3>2.1.2 Place override</h3>
 						<p align="left">Bean definition:</p>
 						<pre><code class="java">@Component
 public class CustomBean {
@@ -693,7 +693,7 @@ public class CustomBean {
 &lt;/beans&gt;</code></pre>					</section>
 					
 					<section>
-						<h2>2.2 Profiles</h2>
+						<h3>2.2 Profiles</h3>
 						<ol>
 							<li>Overview</li>
 							<li>XML Configuration</li>
@@ -704,7 +704,7 @@ public class CustomBean {
 						<p><br/><small>See: article <a href="http://www.mkyong.com/spring/spring-profiles-example/" alt="Link to article of spring profiles">Spring Profiles Example</a></small></p>
 					</section>
 					<section>
-						<h2>2.2.1 Overview</h2>
+						<h3>2.2.1 Overview [1/2]</h3>
 						<p align="left">The profile definition allows Spring bean only for some context (in some situation). E.g. to distinguish between environment, 
 						code life-cycle (runtime, test, etc.).</p>
 						<p align="left">Activation by Java (system property):</p>
@@ -712,13 +712,16 @@ public class CustomBean {
 System.setProperty("spring.profiles.default", "local");</code></pre>
 						<p align="left">Activation by Java (annotation):</p>
 						<pre><code class="java">@ActiveProfiles("dev")</code></pre>
+					</section>
+					<section>
+						<h3>2.2.1 Overview [2/2]</h3>
 						<p align="left">Activation by JVM parameter (e.g. through maven):</p>
 						<pre><code>-Dspring.profiles.active="dev"</code></pre>
 						<p align="left">Activation by configuration (i.e. setting a property value):</p>
 						<pre><code class="java">spring.profiles.active=dev</code></pre>
 					</section>
 					<section>
-						<h2>2.2.2 XML Configuration</h2>
+						<h3>2.2.2 XML Configuration</h3>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
     &lt;beans&gt;
@@ -733,7 +736,7 @@ System.setProperty("spring.profiles.default", "local");</code></pre>
 &lt;/beans&gt;</code></pre>
 					</section>
 					<section>
-						<h2>2.2.3 Annotation Configuration</h2>
+						<h3>2.2.3 Annotation Configuration [1/2]</h3>
 						<p align="left">Profile scope definition:</p>
 						<pre><code class="java">@Component
 @Profile("dev")
@@ -744,6 +747,9 @@ public class UserDAOImpl implements UserDAO {
 @Profile("prod")
 public class UserDAOImpl implements UserDAO {
 }</code></pre>
+					</section>
+					<section>
+						<h3>2.2.3 Annotation Configuration [2/2]</h3>
 						<p align="left">Profile activation:</p>
 						<pre><code class="java">@ContextConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -756,8 +762,8 @@ public class UserServiceDaoTest {
 }</code></pre>
 					</section>
 					<section>
-						<h2>2.2.4 Custom annotation</h2>
-						<h3>(for configuration)</h3>
+						<h3>2.2.4 Custom annotation</h3>
+						<h4>(for configuration)</h4>
 						<p align="left">Definition of profile annotation:</p>
 						<pre><code class="java">@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -772,7 +778,7 @@ public class UserDAOMock implements UserDAO {
 }</code></pre>
 					</section>
 					<section>
-						<h2>2.2.5 Example of usage</h2>
+						<h3>2.2.5 Example of usage</h3>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
 
@@ -791,7 +797,7 @@ public class UserDAOMock implements UserDAO {
 					</section>				
 					
 					<section>
-						<h2>2.3 Proxy for scope</h2>
+						<h3>2.3 Proxy for scope</h3>
 						<p>
 							<ol>
 								<li>Overview</li>
@@ -802,7 +808,7 @@ public class UserDAOMock implements UserDAO {
 						<small>Source: <a href="http://stackoverflow.com/questions/4503606/annotation-equivalent-of-aopscoped-proxy" alt="Source link">http://stackoverflow.com/questions/4503606/annotation-equivalent-of-aopscoped-proxy</a></small>
 					</section>
 					<section>
-						<h2>2.3.1 Overview</h2>
+						<h3>2.3.1 Overview</h3>
 						<ul>
 							<li>Proxy purpose - handle beans lifecycle correctly</li>
 							<li>Scopes:
@@ -819,7 +825,7 @@ public class UserDAOMock implements UserDAO {
 
 					</section>
 					<section>
-						<h2>2.3.2 XML Configuration</h2>
+						<h3>2.3.2 XML Configuration</h3>
 						<p>Single bean:</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
@@ -840,7 +846,7 @@ public class UserDAOMock implements UserDAO {
 &lt;/beans&gt;</code></pre>
 					</section>
 					<section>
-						<h2>2.3.3 Annotation Configuration</h2>
+						<h3>2.3.3 Annotation Configuration</h3>
 						<pre><code class="java">@Component
 public class WsService {
   @Autowire
@@ -855,7 +861,7 @@ public class PrivateService implement MyService {
 						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/scope/ScopeApplication.java" alt="Example of proxy mode">ScopeApplication.java</a></small>
 					</section>
 					<section>
-						<h2>2.4 Classpath scanning</h2>
+						<h3>2.4 Classpath scanning [1/2]</h3>
 						<p align="left"><strong>Use case</strong>: find some classes (in classpath) based on some criteria.</p>
 						<p align="left"><strong>Solution</strong>: use <i>ClassPathScanningCandidateComponentProvider</i>.</p>
 						<pre><code class="java">ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
@@ -866,6 +872,9 @@ Set&lt;BeanDefinition&gt; beans = provider.findCandidateComponents("com.xyz.abc"
 for (BeanDefinition bd : beans) {
   // The BeanDefinition class gives access to the Class&lt;?&gt; and other attributes.
 }</code></pre>
+					</section>
+					<section>
+						<h3>2.4 Classpath scanning [2/2]</h3>
 						<ul>Filters
 							<li>AnnotationTypeFilter -  based on annotations (on the class)</li>
 							<li>AssignableTypeFilter - based on superclass or interface</li>
@@ -874,7 +883,7 @@ for (BeanDefinition bd : beans) {
 						<small>Source: <a href="http://www.eclecticlogic.com/2014/09/01/classpath-scanning/" alt="Source link">http://www.eclecticlogic.com/2014/09/01/classpath-scanning/</a></small>
 					</section>
 					<section>
-						<h2>2.5 Component scan with no no-args constructor bean</h2>
+						<h3>2.5 Component scan with no no-args constructor bean</h3>
 						<p>
 							<ol>
 								<li>Overview</li>
@@ -885,7 +894,7 @@ for (BeanDefinition bd : beans) {
 						<small>Source: <a href="http://java.dzone.com/articles/spring-component-scan-beans-no" alt="Source link">http://java.dzone.com/articles/spring-component-scan-beans-no</a></small>
 					</section>
 					<section>
-						<h2>2.5.1 Overview</h2>
+						<h3>2.5.1 Overview</h3>
 						<pre>Bean definition:<code class="java">@Component
 public class User {
 
@@ -906,7 +915,7 @@ public User userArny() {
 </code></pre>
 					</section>
 					<section>
-						<h2>2.5.2 Solution [1/4]</h2>
+						<h3>2.5.2 Solution [1/4]</h3>
 						<h4>Variant 1</h4>
 						<p align="left">Modify bean definition for autowiring with default values (annotations @Autowired and @Value).</p>
 						<pre>Spring Bean<code class="java">@Component
@@ -920,7 +929,7 @@ public class User {
 						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/config/JavaConfigApplication.java">JavaConfigApplication.java</a></small>
 					</section>
 					<section>
-						<h2>2.5.2 Solution [2/4]</h2>
+						<h3>2.5.2 Solution [2/4]</h3>
 						<h4>Variant 2</h4>
 						<p align="left">Just not define POJO as Spring Bean. It will be marked as bean by JavaConfig.</p>
 						<pre><code class="java">public class User {
@@ -931,7 +940,7 @@ public class User {
 }</code></pre>
 					</section>
 					<section>
-						<h2>2.5.2 Solution [3/4]</h2>
+						<h3>2.5.2 Solution [3/4]</h3>
 						<h4>Variant 3</h4>
 						<p align="left">Remove component scan from JavaConfig.</p>
 						<pre><code class="java">@Configuration
@@ -941,7 +950,7 @@ public class JavaConfigApplication {
 }</code></pre>
 					</section>
 					<section>
-						<h2>2.5.2 Solution [4/4]</h2>
+						<h3>2.5.2 Solution [4/4]</h3>
 						<h4>Variant 4</h4>
 						<p align="left">Use excluding feature in component scan.</p>
 						<pre><code class="java">@Configuration
@@ -955,7 +964,7 @@ public class JavaConfigApplication {
 }</code></pre>
 					</section>
 					<section>
-						<h2>2.5.3 Conclusion</h2>
+						<h3>2.5.3 Conclusion</h3>
 						<ul>
 							<li>If component scanning is enabled, spring will try to create a bean even though a bean of that class has already been defined in the spring config xml.</li>
 							<li>However if the bean defined in the spring config file and the auto-discovered bean have the same name, spring will not to create a new bean while it does component scanning.</li>
