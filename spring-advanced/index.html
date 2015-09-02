@@ -88,7 +88,7 @@
 							<li>Overview</li>
 							<li>Inversion of Control</li>
 							<li>Spring configuration</li>
-							<li>Namespace P and C</li>
+							<li>P-namespace and C-namespace</li>
 							<li>Abstract definition</li>
 							<li>SpEL</li>
 							<li>Java Specifications (JSR-250, JSR-303 and JSR-330)</li>
@@ -152,7 +152,7 @@ public class Application {
 }</code></pre>
 					</section>
 					<section>
-						<h2>1.4 Namespace P and C</h2>
+						<h2>1.4 P-namespace and C-namespace</h2>
 						<p>Namespace P (for properties/setters)</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans ... xmlns:p="http://www.springframework.org/schema/p"&gt;
@@ -165,6 +165,7 @@ public class Application {
     &lt;context:component-scan base-package="aha.poc" /&gt;
     &lt;bean ... c:_0="My Value" c:_1-ref="myDAO"/&gt;
 &lt;/beans&gt;</code></pre>
+						<p align="left"><small>Other options: <i>c:dao-ref="myDAO"</i> (for named argument) or <i>c:_-ref="myDAO"</i> (for constructor with just 1 argument)</small></p>
 					</section>
 					<section>
 						<h2>1.5 Abstract definition</h2>
