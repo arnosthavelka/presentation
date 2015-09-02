@@ -126,7 +126,7 @@
 							### 1.2 IoC - Usage
 							
 							Property (setter) based
-```java
+```
 @Service
 public class MyService {
     @Autowired
@@ -135,7 +135,7 @@ public class MyService {
 ```
 							
 							Constructor based
-```java
+```
 @Service
 public class MyService {
     private MyDao dao;
@@ -193,7 +193,7 @@ public class MyService {
         p:password="xyz" p:url="http://host:8080/abc/" />
 </beans>
 							```
-							*Note : abstract bean is not possible in JavaConfig (only abstract Configuration).*
+							<small>Note : abstract bean is not possible in JavaConfig (only abstract Configuration).</small>
 						</script>
 					</section>
 					<section>
@@ -443,11 +443,14 @@ public class CustomListener implements ApplicationListener&lt;CustomEvent&gt; {
 </code></pre>
 						<p><small>See: package <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/notification" alt="Link to example project on GitHub">notification </a> in the project sat-core</small></p>
 					</section>
-					<section>
-						<h3>1.9.2 Usage (up to Spring 4.1)</h3>
-						<p align="left">Definition of event</p>
-						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
-@SpringApplicationConfiguration(classes = NotificationApplication.clasz)
+					<section data-markdown>
+						<script type="text/template">
+							### 1.9.2 Usage (up to Spring 4.1)
+							
+							Definition of event
+```
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = NotificationApplication.class)
 public class NotificationTest {
 
     @Autowired
@@ -457,8 +460,11 @@ public class NotificationTest {
     public void contextLoads() {
         ctx.publishEvent(new CustomEvent(ctx, "Test message"));
     }
-}</code></pre>
-						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/notification/NotificationTest.java" alt="Link to example project on GitHub">NotificationTest.java</a> in project sat-core</small></p>
+}
+```
+
+							<small>See: [NotificationTest.java](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/notification/NotificationTest.java) in project sat-core</small>
+						</script>
 					</section>
 					<section>
 						<h3>1.9.3 Definition (Spring 4.2+)</h3>
@@ -543,7 +549,7 @@ public class NotificationTest {
 							### 1.10.2 Simple config in JavaConfig [1/2]
 							
 							Datasource config
-```java
+```
 @Configuration
 public class DatasourceConfig {
 
@@ -560,7 +566,7 @@ public class DatasourceConfig {
 							### 1.10.2 Simple config in JavaConfig [2/2]
 
 							DAO config
-```java
+```
 @Configuration
 @Import(DatasourceConfig.class)
 public class DaoConfig {
@@ -594,7 +600,7 @@ public class DaoConfig {
 						<script type="text/template">
 							### 1.10.4 Global config in JavaConfig
 
-							```java
+							```
 @Configuration
 @Import(DaoConfig.class)
 @ImportResource("classpath:ds-config.xml")
@@ -609,7 +615,7 @@ public class SystemConfig {
 							### 1.10.5 Abstract config in JavaConfig [1/2]
 							
 							Abstract config
-```java
+```
 @Configuration
 public abstract class DatasourceConfig {
 
@@ -629,7 +635,7 @@ public abstract class DatasourceConfig {
 							### 1.10.5 Abstract config in JavaConfig [2/2]
 							
 							DAO config
-```java
+```
 @Configuration
 public class DaoConfig {
 
@@ -1212,6 +1218,7 @@ public class JavaConfigApplication {
 							<li>Annotations for profile</li>
 							<li>Special annotations</li>
 							<li>TestWatcher</li>
+							<li>Testing System.out</li>
 							<li>Springockito</li>
 						</ol>
 						<small>See: my presentation of <a href="http://arnosthavelka.github.com/presentation/devday/automated_testing/template.html" alt="Link to presentation of automated testing">automated testing</a> or <a href="http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/html/testing.html" alt="Spring documentation for testing">Spring documentation</a></small>
@@ -1499,8 +1506,53 @@ public TestRule watcher = new TestWatcher() {
 };</code></pre>
 					</section>
 
+					<section data-markdown>
+						<script type="text/template">
+							### 4.6 Testing System.out [1/2]
+							
+							Spring bean definition
+```
+@Service
+public class HelloService {
+    
+    public vois sayHello(String name) {
+        System.out.println("Hello " + name);
+    };
+	
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 4.6 Testing System.out [2/2]
+							
+							
+							Test of HelloService
+```
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(...)
+public class HelloServiceTest {
+
+    @Rule
+    public final StandardOutputStreamLog log = 
+        new StandardOutputStreamLog();
+	
+    @Autowired
+	private HelloService service;
+	
+	@Test
+    public testService() {
+      service.sayHello("Arny");
+	  assertThat(log.getLog(), equalTo("Hello Arny"));
+    }
+}
+```
+						</script>
+					</section>
+
 					<section>
-						<h3>4.6 Springockito</h3>
+						<h3>4.7 Springockito</h3>
 						<p align="left">Springockito  is a small extension to spring that simplifies way of creation mockito mocks in the integration tests' related context xml files.</p>
 						<p align="left">XML</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
