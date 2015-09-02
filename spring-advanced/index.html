@@ -12,23 +12,22 @@
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
-		<link rel="stylesheet" href="css/reveal.min.css">
-		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+		<!--link rel="stylesheet" href="css/reveal.min.css"-->
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/blood.css" id="theme">
 
 		<!-- For syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
 
-		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<!-- Printing and PDF exports -->
 		<script>
-			if( window.location.search.match( /print-pdf/gi ) ) {
-				var link = document.createElement( 'link' );
-				link.rel = 'stylesheet';
-				link.type = 'text/css';
-				link.href = 'css/print/pdf.css';
-				document.getElementsByTagName( 'head' )[0].appendChild( link );
-			}
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
 
 		<!--[if lt IE 9]>
@@ -42,8 +41,8 @@
 
 			<div class="slides">
 				<section>
-					<h1>Spring - Advanced</h1>
-					<h3>Advanced topics based on Spring Boot</h3>
+					<h2>Spring - Advanced</h2>
+					<h4>Advanced topics based on Spring Boot</h4>
 					<p>
 						<small>Created by <a href="http://cz.linkedin.com/in/arnosthavelka/">Arnošt Havelka</a></small>
 					</p>
@@ -67,20 +66,21 @@
 					</ol>
 				</section>
 				
-				<section>
-					<h2>Agenda</h2>
-					<ol>
-						<li>Spring&nbsp;Core&nbsp;-&nbsp;Basics</li>
-						<li>Spring Core - Hints</li>
-						<li>BFPP & BPP</li>
-						<li>Testing</li>
-						<li>Spring Boot</li>
-						<li>Persistence</li>
-						<li>REST (Spring MVC)</li>
-						<li>JMX</li>
-					</ol>
+				<section data-markdown>
+					<script type="text/template">
+						## Agenda
+						
+						1. Spring Core - Basics
+						2. Spring Core - Hints
+						3. BFPP & BPP
+						4. Testing
+						5. Spring Boot
+						6. Persistence
+						7. REST (Spring MVC)
+						8. JMX
+					</script>
 				</section>
-				
+					
 				<section>
 					<section>
 						<h2>1. Spring Core - Basics</h2>
@@ -94,6 +94,7 @@
 							<li>Java Specifications (JSR-250, JSR-303 and JSR-330)</li>
 							<li>Running Spring Application</li>
 							<li>Spring Notification</li>
+							<li>Context Configuration</li>
 						</ol>
 					</section>
 					<section>
@@ -166,26 +167,33 @@ public class Application {
     &lt;bean ... c:_0="My Value" c:_1-ref="myDAO"/&gt;
 &lt;/beans&gt;</code></pre>
 						<p align="left"><small>Other options: <i>c:_dao-ref="myDAO"</i> (for named argument) or <i>c:_-ref="myDAO"</i> (for constructor with just 1 argument)</small></p>
+						<p align="left"><small>Note: the injection of collection is not (neither for C or P) possible (only as reference to the collection bean).</small></p>
 					</section>
-					<section>
-						<h2>1.5 Abstract definition</h2>
-						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+					<section data-markdown>
+						<script type="text/template">
+							## 1.5 Abstract definition
 
-    &lt;bean id="defBean" class="somepackage.AbstractComponent" 
-        p:user="sys" p:password="sys" abstract="true"/&gt;
+							```
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" ...>
+
+    <bean id="defBean" class="somepackage.AbstractComponent" 
+        p:user="sys" p:password="sys" abstract="true"/>
 	
-    &lt;!-- instantiate bean "defBean" --&gt;
-    &lt;bean id="ABean" parent="defBean" p:url="http://host:8080/abc/"/&gt;
+    <!-- instantiate bean "defBean" -->
+    <bean id="ABean" parent="defBean" p:url="http://host:8080/abc/"/>
 
-    &lt;!-- instantiate and override password" --&gt;
-    &lt;bean id="BBean" parent="defBean" p:password="abc" 
-        p:url="http://host:8080/abc/" /&gt;
+    <!-- instantiate and override password" -->
+    <bean id="BBean" parent="defBean" p:password="abc" 
+        p:url="http://host:8080/abc/" />
 
-    &lt;!-- instantiate and override user and password --&gt;
-    &lt;bean id="CBean" parent="defBean" p:user="admin" 
-        p:password="xyz" p:url="http://host:8080/abc/" /&gt;
-&lt;/beans&gt;</code></pre>
+    <!-- instantiate and override user and password -->
+    <bean id="CBean" parent="defBean" p:user="admin" 
+        p:password="xyz" p:url="http://host:8080/abc/" />
+</beans>
+							```
+							*Note : abstract bean is not possible in JavaConfig (only abstract Configuration).*
+						</script>
 					</section>
 					<section>
 						<h2>1.6 SpEL</h2>
@@ -418,8 +426,18 @@ private &lt;D&gt; List&lt;String&gt; process(D dto) {
 					<section>
 						<h2>1.9 Spring Notification</h2>
 						<ol>
-							<li>Definition&nbsp;of&nbsp;event&nbsp;&&nbsp;listener</li>
-							<li>Usage (send message)</li>
+							<li>Before Spring 4.2
+								<ul>
+									<li>Definition&nbsp;of&nbsp;event&nbsp;&&nbsp;listener</li>
+									<li>Usage (send message)</li>
+								</ul>
+							</li>
+							<li>From Spring 4.2
+								<ul>
+									<li>Definition&nbsp;of&nbsp;event&nbsp;&&nbsp;listener</li>
+									<li>Usage (send message)</li>
+								</ul>
+							</li>
 						</ol>
 						<p><small>See: <a href="https://spring.io/blog/2015/02/11/better-application-events-in-spring-framework-4-2" alt="Better application events in Spring Framework 4.2">Blog post</a> and project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/" alt="Link to example project on GitHub">sat-core</a></small></p>
 					</section>
@@ -504,6 +522,130 @@ public class NotificationTest {
 }</code></pre>
 						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/notification/NotificationTest.java" alt="Link to example project on GitHub">NotificationTest.java</a> in project sat-core</small></p>
 					</section>
+
+					<section>
+						<h2>1.10 Context Configuration</h2>
+						<ol>
+							<li>Simple configuratin in XML</li>
+							<li>Simple configuratin in JavaConfig</li>
+							<li>Global configuratin in XML</li>
+							<li>Global configuratin in JavaConfig</li>
+							<li>Abstract configuratin in JavaConfig</li>
+						</ol>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 1.10.1 Simple configuratin in XML
+
+							Datasource config (file ds-config.xml)
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" ...>
+
+	<jdbc:embedded-database id="dataSource">
+		...
+	</jdbc:embedded-database>
+
+</beans>
+```
+							DAO config (file dao-config.xml)
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" ...>
+
+    <bean id="myDAO" p:datasource="dataSource"/>
+
+</beans>
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 1.10.2 Simple configuratin in JavaConfig
+							
+							Datasource config
+```java
+@Configuration
+public class DatasourceConfig {
+
+	@Bean(destroyMethod="shutdown")
+	public Datasource datasource() {
+		return new EmbeddedDatabaseBuilder().addScript(...).build();
+	}	
+}
+```
+							DAO config
+```java
+@Configuration
+@Import(DatasourceConfig.class)
+public class DaoConfig {
+
+	@Bean
+	public MyDAO myDAO() {
+		return new MyDAO().datasource(datasource());
+	}	
+}
+```						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 1.10.3 Global configuratin in XML
+
+							```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" ...>
+
+	<!-- definition in XML -->
+	<import resource="ds-config.xml" />
+	
+	<!-- definition in JavaConfig -->
+    <bean class="aha.poc.DaoConfig"/>
+
+</beans>
+							```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 1.10.4 Global configuratin in JavaConfig
+
+							```java
+@Configuration
+@Import(DaoConfig.class)
+@ImportResource("classpath:ds-config.xml")
+public class SystemConfig {
+
+}
+							```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 1.10.5 Abstract configuratin in JavaConfig
+							
+							Abstract config
+```java
+@Configuration
+public abstract class DatasourceConfig {
+
+	@Bean
+	public MyDAO myDAO() {
+		return new MyDAO().datasource(datasource());
+	}	
+
+	@ExternalBean
+	public abstract Datasource datasource();
+}
+```
+							DAO config
+```java
+@Configuration
+public class DaoConfig {
+
+	@Bean
+	public Datasource datasource() {...};	
+}
+```						</script>					</section>
 				</section>
 				
 				<section>
@@ -2247,11 +2389,11 @@ public JmxReporter jmxReporter() {
 		</div>
 
 		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.min.js"></script>
+		<script src="js/reveal.js"></script>
 
 		<script>
 
-			// Full list of configuration options available here:
+			// Full list of configuration options available at:
 			// https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
 				controls: true,
@@ -2259,21 +2401,16 @@ public JmxReporter jmxReporter() {
 				history: true,
 				center: true,
 
-				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+				transition: 'convex', // none/fade/slide/convex/concave/zoom
 
-				// Parallax scrolling
-				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
-				// parallaxBackgroundSize: '2100px 900px',
-
-				// Optional libraries used to extend on reveal.js
+				// Optional reveal.js plugins
 				dependencies: [
 					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
 					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
 					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
 				]
 			});
 
