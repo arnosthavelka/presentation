@@ -96,6 +96,7 @@
 							8. Running Spring Application
 							9. Spring Notification
 							10. Context Configuration
+							11. Profiles
 						</script>
 					</section>
 					
@@ -643,6 +644,83 @@ public class DaoConfig {
 	public Datasource datasource() {...};	
 }
 ```						</script>
+					</section>
+					<section>
+						<h3>1.11 Profiles</h3>
+						<ol>
+							<li>Profile Definition</li>
+							<li>Profile Activation</li>
+							<li>@ActiveProfiles</li>
+							<li>@IfProfileValue</li>
+						</ol>
+					</section>
+					<section>
+						<h3>1.11.1 Profile Definition</h3>
+						<p align="left">XML:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+    &lt;beans profile="richard"&gt;
+        &lt;bean id="userRichard" c:name="Richard" class="com...core.config.User" /&gt;
+    &lt;/beans&gt;
+  
+&lt;/beans&gt;</code></pre>
+						<p align="left">JavaConfig:</p>
+						<pre><code class="java">@Configuration
+@Profile("richard")
+public class RichardConfig {
+
+    @Bean
+    public User userArny() {
+        return new User("Richard");
+    }
+
+}</code></pre>
+					</section>					
+					<section data-markdown>
+						<script type="text/template">
+							### 1.11.2 Profile Activation
+							
+							* properties
+							  * **spring.profiles.active** - active profile
+							  * **spring.profiles.default** - default profile (when no profile is defined)
+							* options: initialization/context parameters of a webapp, JNDI entries, environment variables, JVM system properties
+						</script>
+					</section>
+					<section>
+						<h3>1.11.3 @ActiveProfiles</h3>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(
+    classes = { MyConfig.clasz, RichardConfig.clasz, BarbaraConfig.clasz })
+@ActiveProfiles("richard")
+public class RichardConfigTest {
+
+    @Test
+    public void testHello() {
+        assertThat(user.getName(), equalTo("Richard"));
+    }
+}</code></pre>
+						<p>
+							<small>Note: This annotation is applicable only for tests.</small>
+							<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/RichardConfigTest.java">RichardConfigTest.java</a></small>
+						</p>
+					</section>
+					<section>
+						<h3>1.11.4 @IfProfileValue</h3>
+						<p align="left">Define test with <i>@IfProfileValue</i> annotation.</p>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = { MyConfig.clasz, BarbaraConfig.clasz })
+@ActiveProfiles("richard")
+public class RichardConfigTest {
+
+    @Test
+    @IfProfileValue(name = "test-group", values = { "training" })
+    public void testHello() {
+        assertThat(user.getName(), not(equalTo("Arny")));
+    }
+}</code></pre>
+						<p align="left">Use profile by calling JVM with e.g. <i>-Dtest-group=training</i>. Annotation reflects JVM parameters, environments properties, etc.</p>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/BarbaraConfigTest.java">BarbaraConfigTest.java</a></small>
 					</section>
 				</section>
 				
@@ -1215,7 +1293,6 @@ public class JavaConfigApplication {
 						<ol>
 							<li>Overview</li>
 							<li>Spring&nbsp;configuration&nbsp;for&nbsp;testing</li>
-							<li>Annotations for profile</li>
 							<li>Special annotations</li>
 							<li>TestWatcher</li>
 							<li>Testing System.out</li>
@@ -1390,78 +1467,14 @@ public class JavaConfigTest {
 					</section>
 
 					<section>
-						<h3>4.3 Annotations for profile</h3>
-						<ol>
-							<li>Profile Definition</li>
-							<li>@ActiveProfiles</li>
-							<li>@IfProfileValue</li>
-						</ol>
-					</section>
-					<section>
-						<h3>4.3.1 Profile Definition</h3>
-						<p align="left">XML:</p>
-						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
-
-    &lt;beans profile="richard"&gt;
-        &lt;bean id="userRichard" c:name="Richard" class="com...core.config.User" /&gt;
-    &lt;/beans&gt;
-  
-&lt;/beans&gt;</code></pre>
-						<p align="left">JavaConfig:</p>
-						<pre><code class="java">@Configuration
-@Profile("richard")
-public class RichardConfig {
-
-    @Bean
-    public User userArny() {
-        return new User("Richard");
-    }
-
-}</code></pre>
-					</section>					
-					<section>
-						<h3>4.3.2 @ActiveProfiles</h3>
-						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
-@SpringApplicationConfiguration(
-    classes = { MyConfig.clasz, RichardConfig.clasz, BarbaraConfig.clasz })
-@ActiveProfiles("richard")
-public class RichardConfigTest {
-
-    @Test
-    public void testHello() {
-        assertThat(user.getName(), equalTo("Richard"));
-    }
-}</code></pre>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/RichardConfigTest.java">RichardConfigTest.java</a></small>
-					</section>
-					<section>
-						<h3>4.3.3 @IfProfileValue</h3>
-						<p align="left">Define test with <i>@IfProfileValue</i> annotation.</p>
-						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
-@SpringApplicationConfiguration(classes = { MyConfig.clasz, BarbaraConfig.clasz })
-@ActiveProfiles("richard")
-public class RichardConfigTest {
-
-    @Test
-    @IfProfileValue(name = "test-group", values = { "training" })
-    public void testHello() {
-        assertThat(user.getName(), not(equalTo("Arny")));
-    }
-}</code></pre>
-						<p align="left">Use profile by calling JVM with e.g. <i>-Dtest-group=training</i>. Annotation reflects JVM parameters, environments properties, etc.</p>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/BarbaraConfigTest.java">BarbaraConfigTest.java</a></small>
-					</section>
-
-					<section>
-						<h3>4.4 Special annotations</h3>
+						<h3>4.3 Special annotations</h3>
 						<ol>
 							<li>@Timed</li>
 							<li>@Repeat</li>
 						</ol>
 					</section>
 					<section>
-						<h3>4.4.1 @Timed</h3>
+						<h3>4.3.1 @Timed</h3>
 						<p align="left">Indicates that the annotated test method must finish execution in a specified time period (in milliseconds).</p>
 						<pre><code class="java">@Test
 @Timed(millis = 10)
@@ -1473,7 +1486,7 @@ public void testSpringTimeout() throws InterruptedException {
 						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/TimedAnnotationTest.java">TimedAnnotationTest.java</a></small>
 					</section>
 					<section>
-						<h3>4.4.2 @Repeat</h3>
+						<h3>4.3.2 @Repeat</h3>
 						<p align="left">Indicates that the annotated test method must be executed repeatedly.</p>
 						<pre><code class="java">@Test
 @Repeat(10)
@@ -1484,7 +1497,7 @@ public void testRepeatAnnotation() {
 					</section>
 
 					<section>
-						<h3>4.5 TestWatcher</h3>
+						<h3>4.4 TestWatcher</h3>
 						<p align="left">Logging of test method can be done by TestWatcher clacc from JUnit.</p>
 						<pre><code class="java">/**
  * Log method execution (start & stop).
@@ -1508,7 +1521,7 @@ public TestRule watcher = new TestWatcher() {
 
 					<section data-markdown>
 						<script type="text/template">
-							### 4.6 Testing System.out [1/2]
+							### 4.5 Testing System.out [1/2]
 							
 							Spring bean definition
 ```
@@ -1525,7 +1538,7 @@ public class HelloService {
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							### 4.6 Testing System.out [2/2]
+							### 4.5 Testing System.out [2/2]
 							
 							
 							Test of HelloService
@@ -1552,7 +1565,7 @@ public class HelloServiceTest {
 					</section>
 
 					<section>
-						<h3>4.7 Springockito</h3>
+						<h3>4.6 Springockito</h3>
 						<p align="left">Springockito  is a small extension to spring that simplifies way of creation mockito mocks in the integration tests' related context xml files.</p>
 						<p align="left">XML</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
