@@ -723,17 +723,20 @@ public class RichardConfigTest {
 						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/BarbaraConfigTest.java">BarbaraConfigTest.java</a></small>
 					</section>
 				</section>
-				
+
+				<!-- Chapter 2 - Spring Core - Hints -->
 				<section>
-					<section>
-						<h2>2. Spring Core - Hints</h2>
-						<ol>
-							<li>Application configuration</li>
-							<li>Profiles</li>
-							<li>Proxy for scope</li>
-							<li>Classpath scanning</li>
-							<li>Component scan & bean with no-arg constructor</li>
-						</ol>
+					<section data-markdown>
+						<script type="text/template">
+							## 2. Spring Core - Hints
+							
+							1. Application configuration
+							2. Profiles
+							3. Proxy for scope
+							4. Classpath scanning
+							5. Component scan & bean with no-arg constructor
+							6. Addressing ambiguity in autowiring
+						</script>
 					</section>
 					<section>
 						<h3>2.1 Application configuration</h3>
@@ -1056,17 +1059,71 @@ public class JavaConfigApplication {
 							<li>If no constructor is auto-wired, spring will try to create an object using default no-args constructor.</li>
 						</ul>
 					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.6 Addressing ambiguity in autowiring
+							
+							1. Primary Bean
+							2. Selection by Traits
+							
+							<small>See: package [wiring](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/wiring) and 
+							[WiringTest](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/wiring/WiringTest.java) in project **sat-core**.</small>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.6.1. Primary Bean
+							
+							Use **@Primary** annotation to define the default Spring bean (when more than 1 reference is found).
+							
+```java
+@Component
+@Primary
+public class Tea implements Drink {
+
+    ...
+
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.6.2 Selection by Traits
+							
+							Trait definition (as annotation):
+							
+```
+@Target({ElementType.CONSTRUCTOR, ElementType.FIELD,
+ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+public @interface Alcoholic {
+
+}
+```
+
+							Example of usage:
+```
+@Autowired
+@Alcoholic
+@Sparkling
+private Drink beer;
+```
+						</script>
+					</section>
 				</section>
 
 				<section>
-					<section>
-						<h2>3. BFPP & BPP</h2>
-						<ol>
-							<li>Spring&nbsp;lifecycle</li>
-							<li>Factory bean</li>
-							<li>BFPP</li>
-							<li>BPP</li>
-						</ol>
+					<section data-markdown>
+						<script type="text/template">
+							##3. BFPP & BPP
+							
+							1. Spring lifecycle
+							2. Factory bean
+							3. BFPP
+							4. BPP
+						</script>
 					</section>
 					<section>
 						<h3>3.1 Spring life-cycle</h3>
