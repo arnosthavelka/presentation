@@ -96,7 +96,6 @@
 							8. Running Spring Application
 							9. Spring Notification
 							10. Context Configuration
-							11. Profiles
 						</script>
 					</section>
 					
@@ -645,83 +644,6 @@ public class DaoConfig {
 }
 ```						</script>
 					</section>
-					<section>
-						<h3>1.11 Profiles</h3>
-						<ol>
-							<li>Profile Definition</li>
-							<li>Profile Activation</li>
-							<li>@ActiveProfiles</li>
-							<li>@IfProfileValue</li>
-						</ol>
-					</section>
-					<section>
-						<h3>1.11.1 Profile Definition</h3>
-						<p align="left">XML:</p>
-						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
-
-    &lt;beans profile="richard"&gt;
-        &lt;bean id="userRichard" c:name="Richard" class="com...core.config.User" /&gt;
-    &lt;/beans&gt;
-  
-&lt;/beans&gt;</code></pre>
-						<p align="left">JavaConfig:</p>
-						<pre><code class="java">@Configuration
-@Profile("richard")
-public class RichardConfig {
-
-    @Bean
-    public User userArny() {
-        return new User("Richard");
-    }
-
-}</code></pre>
-					</section>					
-					<section data-markdown>
-						<script type="text/template">
-							### 1.11.2 Profile Activation
-							
-							* properties
-							  * **spring.profiles.active** - active profile
-							  * **spring.profiles.default** - default profile (when no profile is defined)
-							* options: initialization/context parameters of a webapp, JNDI entries, environment variables, JVM system properties
-						</script>
-					</section>
-					<section>
-						<h3>1.11.3 @ActiveProfiles</h3>
-						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
-@SpringApplicationConfiguration(
-    classes = { MyConfig.clasz, RichardConfig.clasz, BarbaraConfig.clasz })
-@ActiveProfiles("richard")
-public class RichardConfigTest {
-
-    @Test
-    public void testHello() {
-        assertThat(user.getName(), equalTo("Richard"));
-    }
-}</code></pre>
-						<p>
-							<small>Note: This annotation is applicable only for tests.</small>
-							<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/RichardConfigTest.java">RichardConfigTest.java</a></small>
-						</p>
-					</section>
-					<section>
-						<h3>1.11.4 @IfProfileValue</h3>
-						<p align="left">Define test with <i>@IfProfileValue</i> annotation.</p>
-						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
-@SpringApplicationConfiguration(classes = { MyConfig.clasz, BarbaraConfig.clasz })
-@ActiveProfiles("richard")
-public class RichardConfigTest {
-
-    @Test
-    @IfProfileValue(name = "test-group", values = { "training" })
-    public void testHello() {
-        assertThat(user.getName(), not(equalTo("Arny")));
-    }
-}</code></pre>
-						<p align="left">Use profile by calling JVM with e.g. <i>-Dtest-group=training</i>. Annotation reflects JVM parameters, environments properties, etc.</p>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/BarbaraConfigTest.java">BarbaraConfigTest.java</a></small>
-					</section>
 				</section>
 
 				<!-- Chapter 2 - Spring Core - Hints -->
@@ -783,29 +705,27 @@ public class CustomBean {
 						<h3>2.2 Profiles</h3>
 						<ol>
 							<li>Overview</li>
-							<li>XML Configuration</li>
-							<li>Annotation Configuration</li>
+							<li>Configuration in XML</li>
+							<li>Configuration in JavaConfig</li>
+							<li>Profile activation</li>
+							<li>Profile activation</li>
 							<li>Custom annotation (for configuration)</li>
 							<li>Example of usage</li>
 						</ol>
 						<p><br/><small>See: article <a href="http://www.mkyong.com/spring/spring-profiles-example/" alt="Link to article of spring profiles">Spring Profiles Example</a></small></p>
 					</section>
-					<section>
-						<h3>2.2.1 Overview [1/2]</h3>
-						<p align="left">The profile definition allows Spring bean only for some context (in some situation). E.g. to distinguish between environment, 
-						code life-cycle (runtime, test, etc.).</p>
-						<p align="left">Activation by Java (system property):</p>
-						<pre><code class="java">System.setProperty("spring.profiles.active", "dev");
-System.setProperty("spring.profiles.default", "local");</code></pre>
-						<p align="left">Activation by Java (annotation):</p>
-						<pre><code class="java">@ActiveProfiles("dev")</code></pre>
-					</section>
-					<section>
-						<h3>2.2.1 Overview [2/2]</h3>
-						<p align="left">Activation by JVM parameter (e.g. through maven):</p>
-						<pre><code>-Dspring.profiles.active="dev"</code></pre>
-						<p align="left">Activation by configuration (i.e. setting a property value):</p>
-						<pre><code class="java">spring.profiles.active=dev</code></pre>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.2.1 Overview
+							
+							The profile definition allows Spring bean only for some context (in some situation). E.g. to distinguish between environment, 
+							code life-cycle (runtime, test, etc.).
+						
+							* properties
+							  * **spring.profiles.active** - active profile
+							  * **spring.profiles.default** - default profile (when no profile is defined)
+							* activation options: initialization/context parameters of a webapp, JNDI entries, environment variables, JVM system properties
+						</script>
 					</section>
 					<section>
 						<h3>2.2.2 XML Configuration</h3>
@@ -823,7 +743,7 @@ System.setProperty("spring.profiles.default", "local");</code></pre>
 &lt;/beans&gt;</code></pre>
 					</section>
 					<section>
-						<h3>2.2.3 Annotation Configuration [1/2]</h3>
+						<h3>2.2.3 Annotation Configuration</h3>
 						<p align="left">Profile scope definition:</p>
 						<pre><code class="java">@Component
 @Profile("dev")
@@ -835,21 +755,32 @@ public class UserDAOImpl implements UserDAO {
 public class UserDAOImpl implements UserDAO {
 }</code></pre>
 					</section>
-					<section>
-						<h3>2.2.3 Annotation Configuration [2/2]</h3>
-						<p align="left">Profile activation:</p>
-						<pre><code class="java">@ContextConfiguration
-@RunWith(SpringJUnit4ClassRunner.class)
+					<section data-markdown>
+						<script type="text/template">
+							### 2.2.4 Profile Activation
+							
+							* Activation by Java (system property): 
+```
+System.setProperty("spring.profiles.active", "dev");
+System.setProperty("spring.profiles.default", "local");
+```
+							* Activation by Java annotation (only for unit tests):
+```
 @ActiveProfiles("dev")
-public class UserServiceDaoTest {
-
-	@Autowired
-	private UserDAO dao;
-
-}</code></pre>
+```
+							* Activation by JVM parameter (e.g. through maven):
+```
+-Dspring.profiles.active="dev"
+```
+							* Activation by configuration (i.e. setting a property value):
+```
+spring.profiles.active=dev
+```
+							<small>Note : there are other options to define profile as system property (in environments) - see overview (JNDI, web params, etc.).</small>
+						</script>
 					</section>
 					<section>
-						<h3>2.2.4 Custom annotation</h3>
+						<h3>2.2.5 Custom annotation</h3>
 						<h4>(for configuration)</h4>
 						<p align="left">Definition of profile annotation:</p>
 						<pre><code class="java">@Target(ElementType.TYPE)
@@ -865,7 +796,7 @@ public class UserDAOMock implements UserDAO {
 }</code></pre>
 					</section>
 					<section>
-						<h3>2.2.5 Example of usage</h3>
+						<h3>2.2.6 Example of usage</h3>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
 
@@ -1528,6 +1459,8 @@ public class JavaConfigTest {
 						<ol>
 							<li>@Timed</li>
 							<li>@Repeat</li>
+							<li>@ActiveProfiles</li>
+							<li>@IfProfileValue</li>
 						</ol>
 					</section>
 					<section>
@@ -1551,6 +1484,39 @@ public void testRepeatAnnotation() {
     assertThat(2, equalTo(1 + 1));
 }</code></pre>
 						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/RepeatAnnotationTest.java">RepeatAnnotationTest.java</a></small>
+					</section>
+					<section>
+						<h3>4.3.3 @ActiveProfiles</h3>
+						<p align="left">Activation profile for tests:</p>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(
+    classes = { MyConfig.clasz, RichardConfig.clasz, BarbaraConfig.clasz })
+@ActiveProfiles("richard")
+public class RichardConfigTest {
+
+    @Test
+    public void testHello() {
+        assertThat(user.getName(), equalTo("Richard"));
+    }
+}</code></pre>
+						<p><small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/RichardConfigTest.java">RichardConfigTest.java</a></small></p>
+					</section>
+					<section>
+						<h3>4.3.4 @IfProfileValue</h3>
+						<p align="left">Define test with <i>@IfProfileValue</i> annotation.</p>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = { MyConfig.clasz, BarbaraConfig.clasz })
+@ActiveProfiles("richard")
+public class RichardConfigTest {
+
+    @Test
+    @IfProfileValue(name = "test-group", values = { "training" })
+    public void testHello() {
+        assertThat(user.getName(), not(equalTo("Arny")));
+    }
+}</code></pre>
+						<p align="left">Use profile by calling JVM with e.g. <i>-Dtest-group=training</i>. Annotation reflects JVM parameters, environments properties (e.g. OS), etc.</p>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/BarbaraConfigTest.java">BarbaraConfigTest.java</a></small>
 					</section>
 
 					<section>
