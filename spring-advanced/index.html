@@ -81,6 +81,7 @@
 					</script>
 				</section>
 					
+				<!-- Chapter 1 - Spring Core - Basics -->
 				<section>
 					<section data-markdown>
 						<script type="text/template">
@@ -658,6 +659,7 @@ public class DaoConfig {
 							4. Classpath scanning
 							5. Component scan & bean with no-arg constructor
 							6. Addressing ambiguity in autowiring
+							7. Conditional bean creation
 						</script>
 					</section>
 					<section>
@@ -1043,8 +1045,96 @@ private Drink beer;
 ```
 						</script>
 					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 2.7 Conditional bean creation
+							
+							1. Overview
+							2. Condition definition
+							3. Usage in Spring
+							4. Extended usage in Spring Boot
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.7.1 Overview
+							
+							The annotation **@Conditional** is purposued to limit bean creation to some condition, defined by interface **Condition** as:
+						
+```java
+public interface Condition {
+	boolean matches(ConditionContext ctxt, 
+		AnnotatedTypeMetadata metadata);
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.7.2 Condition definition
+							
+```java
+public class SodaCondition implements Condition {
+
+	@Override
+	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+		return context.getEnvironment().containsProperty("soda");
+	}
+}
+```
+							Other options are based on:
+							* profile
+```java
+context.getEnvironment().acceptsProfiles("some value")
+```
+							* metadata, e.g. based on annotation existence or its attributes 
+```java
+boolean annotated = metadata.isAnnotated("MyAnnotation");
+MultiValueMap<String, Object> = metadata.getAllAnnotationAttributes(...);
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.7.3 Usage in Spring
+							
+```java
+	@Bean
+	@Conditional(SodaCondition.class)
+	public Drink cola() {
+		return new Drink() {
+			@Override
+			public String getName() {
+				return "cola";
+			}
+		};
+	}
+```
+							<small>See: test class [SodaConditionalTest](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/conditional/SodaConditionalTest.java) in project **sat-core**.</small>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.7.4 Extended usage in Spring Boot
+							
+							Spring Boot has extension with several other annotations:
+							* ConditionalOnClass, ConditionalOnMissingClass
+							* ConditionalOnBean, ConditionalOnMissingBean
+							* ConditionalOnProperty
+							* etc.
+							
+							Example:
+```java
+@Configuration
+@ConditionalOnProperty(prefix = "auth", name = "type", 
+	havingValue = "IN_MEMORY", matchIfMissing = true)
+public class InMemorySecurityConfig {
+```
+						</script>
+					</section>
 				</section>
 
+				<!-- Chapter 3 - BFPP & BPP -->
 				<section>
 					<section data-markdown>
 						<script type="text/template">
