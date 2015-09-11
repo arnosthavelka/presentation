@@ -1372,8 +1372,8 @@ public class InMemorySecurityConfig {
 							<li>Overview</li>
 							<li>Spring&nbsp;configuration&nbsp;for&nbsp;testing</li>
 							<li>Special annotations</li>
-							<li>TestWatcher</li>
-							<li>Testing System.out</li>
+							<li>JUnit Rules</li>
+							<li>Controller</li>
 							<li>Springockito</li>
 						</ol>
 						<small>See: my presentation of <a href="http://arnosthavelka.github.com/presentation/devday/automated_testing/template.html" alt="Link to presentation of automated testing">automated testing</a> or <a href="http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/html/testing.html" alt="Spring documentation for testing">Spring documentation</a></small>
@@ -1609,8 +1609,16 @@ public class RichardConfigTest {
 						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/BarbaraConfigTest.java">BarbaraConfigTest.java</a></small>
 					</section>
 
+					<section data-markdown>
+						<script type="text/template">
+							## 4.4 JUnit Rules
+							
+							1. TestWatcher
+							2. Testing System.out
+						</script>
+					</section>
 					<section>
-						<h3>4.4 TestWatcher</h3>
+						<h3>4.4.1 TestWatcher</h3>
 						<p align="left">Logging of test method can be done by TestWatcher clacc from JUnit.</p>
 						<pre><code class="java">/**
  * Log method execution (start & stop).
@@ -1634,7 +1642,7 @@ public TestRule watcher = new TestWatcher() {
 
 					<section data-markdown>
 						<script type="text/template">
-							### 4.5 Testing System.out [1/2]
+							### 4.4.2 Testing System.out [1/2]
 							
 							Spring bean definition
 ```
@@ -1651,7 +1659,7 @@ public class HelloService {
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							### 4.5 Testing System.out [2/2]
+							### 4.4.2 Testing System.out [2/2]
 							
 							
 							Test of HelloService
@@ -1676,7 +1684,68 @@ public class HelloServiceTest {
 ```
 						</script>
 					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 4.5 Controller
+							
+							1. Controller (with JSP view)
+							2. REST Controller (just JSON)
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 4.5.1 Controller (with JSP view)
+							
+```
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = { ControllerApplication.class })
+@WebAppConfiguration
+public class HelloControllerTest {
 
+	@Test
+	public void test() throws Exception {
+		HelloController controller = new HelloController();
+		MockMvc mockMvc = standaloneSetup(controller)
+				.setSingleView(new InternalResourceView("/WEB-INF/jsp/hello.jsp")).build();
+
+		mockMvc.perform(get("/hello/Arny"))
+			.andExpect(view().name("hello"))
+			.andExpect(model().attributeExists("name"))
+			.andExpect(model().attribute("name", "Arny"));
+	}
+}
+```
+							
+							<small>See: [HelloControllerTest.java](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/controller/HelloControllerTest.java) in project sat-core</small>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 4.5.2 REST Controller (just JSON)
+							
+```
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = { ControllerApplication.class })
+@WebAppConfiguration
+public class GreetingControllerTest {
+
+	@Autowired
+	private WebApplicationContext webApplicationContext;
+
+	@Test
+	public void testArny() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+		mockMvc.perform(get("/arny").contentType(MediaType.APPLICATION_JSON_VALUE))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+			.andExpect(content().string("Hello!"));
+	}
+}
+```
+
+							<small>See: [GreetingControllerTest.java](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/controller/GreetingControllerTest.java) in project sat-core</small>
+						</script>
+					</section>
 					<section>
 						<h3>4.6 Springockito</h3>
 						<p align="left">Springockito  is a small extension to spring that simplifies way of creation mockito mocks in the integration tests' related context xml files.</p>
