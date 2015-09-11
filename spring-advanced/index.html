@@ -74,10 +74,12 @@
 						2. Spring Core - Hints
 						3. BFPP & BPP
 						4. Testing
-						5. Spring Boot
+						5. Spring MVC
 						6. Persistence
 						7. REST (Spring MVC)
 						8. JMX
+						
+						<small align="left">Former chapter Spring Boot was removed to be <a href="http://arnosthavelka.github.io/presentation/spring-boot/index.html" alt="Presentation of Spring Boot framework">standalone</a>.</small>
 					</script>
 				</section>
 					
@@ -1762,23 +1764,269 @@ private HelloService helloService;</code></pre>
 					</section>
 				</section>
 
+				<!-- Chapter 5 - Spring MVC -->
 				<section>
-					<section>
-						<h2>5. Spring Boot</h2>
-						<p align="left">This part (the content) was moved <a href="http://arnosthavelka.github.io/presentation/spring-boot/index.html" alt="Presentation of Spring Boot framework">here</a></p>
+					<section data-markdown>
+						<script type="text/template">
+							### 5. Spring MVC
+							
+							1. Setup for JSP
+							2. Error handling
+							3. Redirect options
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.1 Setup for JSP
+							
+							1. Maven
+							2. Application & Configuration
+							3. Controller
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.1.1 Maven
+							
+```
+<packaging>war</packaging>
+
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<!-- to properly auto-configure MVC beans for JSP usage -->
+<dependency>
+	<groupId>org.apache.tomcat.embed</groupId>
+	<artifactId>tomcat-embed-jasper</artifactId>
+	<scope>provided</scope>
+</dependency>
+<!-- to use JSTL tags-->
+<dependency>
+	<groupId>org.apache.tiles</groupId>
+	<artifactId>tiles-jsp</artifactId>
+	<version>3.0.5</version>
+</dependency>
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.1.2 Application & Configuration
+							
+```
+@SpringBootApplication
+public class ControllerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ControllerApplication.class, args);
+    }
+
+	// to define JSPs location
+	@Bean
+	public ViewResolver getViewResolver() {
+		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+		resolver.setPrefix("/WEB-INF/jsp/");
+		resolver.setSuffix(".jsp");
+		return resolver;
+	}
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.1.3 Controller
+							
+```
+@Controller
+public class HelloController {
+
+	@RequestMapping(value = "hello/{name}", method = RequestMethod.GET)
+	public String sayHello(@PathVariable String name, Model model) {
+		model.addAttribute("name", name);
+		return "hello";
+	}
+
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.2 Error handling
+							
+							1. Basic / Manual
+							2. Exception
+							3. Exception Handler
+							3. Controller Advice
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.2.1 Basic / Manual
+							
+```
+@Controller
+public class HelloController {
+
+	@RequestMapping(value = "hello/{name}", method = RequestMethod.GET)
+	public String sayHello(@PathVariable String name, Model model) {
+
+		if (StringUtils.hasText(name)) {
+			model.addAttribute("name", name);
+			return "hello";
+		}
+
+		throw new IllegalArgumentException("Name not found");
+	}
+
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.2.2 Exception
+							
+```
+@ResponseStatus(value=HttpStatus.NOT_FOUND, reason="Item Not Found")
+public class ItemNotFoundException extends RuntimeException {
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.2.3 Exception Handler
+							
+							Usage for all methods in controller is:
+```
+@ExceptionHandler(IllegalArgumentException.class)
+public String handleNotFoundException() {
+	return "error/notFound";
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.2.4 Controller Advice
+							
+							<div align="left">Used for:</div>
+							1. @ExceptionHandler (see chapter 5.2.3)
+							2. @InitBinder
+							3. @ModelAttribute
+
+							<div align="left">Example:</div>
+```
+@ControllerAdvice
+public class GeneralExceptionHandler {
+	@ExceptionHandler(IllegalArgumentException.class)
+	public String handleNotFoundException() {
+		return "error/notFound";
+	}
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.3 Redirect Options
+							
+							1. Basic usage
+							2. Templating
+							3. Flash attribute
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.3.1 Basic Usage
+							
+```
+@Controller
+public class SomeItemController {
+
+	@RequestMapping(value = "item/{id}", method = RequestMethod.GET)
+	public String saveItem(@PathVariable long id, ItemDTO dto) {
+
+		// persist DTO
+		...
+		
+		// go to view
+		return "redirect:item/" + id;
+	}
+
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.3.2 Templating
+							
+							* The values used in templating have to be placed in the model
+							* Any attribute not used as template variable is added as query parameters
+							
+```
+@Controller
+public class SomeItemController {
+
+	@RequestMapping(value = "item/{id}", method = RequestMethod.GET)
+	public String someOperation(@PathVariable long id, Model model) {
+
+		// some advanced logic
+		...
+		
+		// go to view ad redirect:item/1?name=Arny
+		model.addAttribute("id", id);
+		model.addAttribute("name", "Arny");
+		return "redirect:item/{id}";
+	}
+
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.3.3 Flash attribute
+							
+							<div align="left">Flash attribute (accessible via model) can survive redirect. All **flash** attributes are added to HTTP session
+							and removed (after adding to the model) from HTTP session after redirect.</div>
+							
+```
+@Controller
+public class SomeItemController {
+
+	@RequestMapping(value = "item/{id}", method = RequestMethod.GET)
+	public String someOperation(@PathVariable long id, Model model) {
+
+		model.addAttribute("id", id);
+		model.addFlashAttribute("name", "Arny");
+		
+		// go to view
+		return "redirect:item/{id}";
+	}
+
+}
+```
+						</script>
 					</section>
 				</section>
 				
+				<!-- Chapter 6 - Persistence -->
 				<section>
-					<section>
-						<h2>6. Persistence</h2>
-						<ol>
-							<li>Goal</li>
-							<li>Transaction&nbsp;Theory</li>
-							<li>JDBC</li>
-							<li>JPA</li>
-							<li>Other Resources</li>
-						</ol>
+					<section data-markdown>
+						<script type="text/template">
+							### 6. Persistence
+							
+							1. Goal
+							2. Transaction Theory
+							3. JDBC
+							4. JPA
+							5. Other Resources
+						</script>
 					</section>
 					<section>
 						<h3>6.1 Goal</h3>
