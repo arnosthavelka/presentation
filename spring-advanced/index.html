@@ -1616,7 +1616,7 @@ public class RichardConfigTest {
 							## 4.4 JUnit Rules
 							
 							1. TestWatcher
-							2. Testing System.out
+							2. System Rules
 						</script>
 					</section>
 					<section>
@@ -1644,9 +1644,23 @@ public TestRule watcher = new TestWatcher() {
 
 					<section data-markdown>
 						<script type="text/template">
-							### 4.4.2 Testing System.out [1/2]
+							### 4.4.2 System Rules [1/3]
 							
-							Spring bean definition
+							<div align="left">**System Rules** is library (a collection of JUnit rules) for testing code that uses java.lang.System, e.g.:</div>
+							
+							1. Command-Line Applications
+							2. System.exit
+							3. System properties
+							4. Security Managers
+
+							<small>See: [project site](http://stefanbirkner.github.io/system-rules/index.html)</small>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 4.4.2 System Rules [2/3]
+							
+							<div align="left">Spring bean definition (to be tested)</div>
 ```
 @Service
 public class HelloService {
@@ -1657,22 +1671,28 @@ public class HelloService {
 	
 }
 ```
+							<div align="left">Maven dependency</div>
+```
+<dependency>
+	<groupId>com.github.stefanbirkner</groupId>
+	<artifactId>system-rules</artifactId>
+	<version>1.12.1</version>
+</dependency>
+```
 						</script>
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							### 4.4.2 Testing System.out [2/2]
+							### 4.4.2 System Rules [3/3]
 							
-							
-							Test of HelloService
+							<div align="left">Example of testing System.out</div>
 ```
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(...)
 public class HelloServiceTest {
 
     @Rule
-    public final StandardOutputStreamLog log = 
-        new StandardOutputStreamLog();
+	public final SystemOutRule log = new SystemOutRule().enableLog();
 	
     @Autowired
 	private HelloService service;
