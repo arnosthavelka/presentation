@@ -78,6 +78,7 @@
 						6. Persistence
 						7. REST (Spring MVC)
 						8. JMX
+						9. AOP
 						
 						<small align="left">Former chapter Spring Boot was removed to be <a href="http://arnosthavelka.github.io/presentation/spring-boot/index.html" alt="Presentation of Spring Boot framework">standalone</a>.</small>
 					</script>
@@ -2905,20 +2906,200 @@ public JmxReporter jmxReporter() {
 					
 				</section>
 
-				<!--section>
-					<h2>9. AOP</h2>
-					<p style="color:red">TODO</p>
-					<ol>
-						<li>Overview</li>
-						<li>Tangling & scattering (DevDay presentation?)</li>
-						<li>Expression pattern</li>
-						<li>Example</li>
-						<li>aaa</li>
-					</ol>
+				<!-- Chapter 9 - AOP; -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## 9. AOP
+							
+							1. Tangling & scattering
+							2. Expression pattern
+							3. Simple example
+							4. Pointcat example
+							5. Annotating introductions
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.1 Tangling & scattering
+							
+							- DevDay presentation?
+							- Expression pattern
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.2 Expression pattern
+							
+							- DevDay presentation?
+							- Expression pattern
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.3 Simple example
+							
+```
+@Aspect
+@Component
+public class DrinkLogger {
+
+	@After("execution(* com..spring_advanced.core.wiring.Drink.*())")
+	public void logAnyDrinkUsage(JoinPoint jp) {
+		LOG.info("Drink {} was just used...", 
+			jp.getTarget().getClass().getSimpleName());
+	}
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.4 Pointcut example
+							
+```
+@Aspect
+@Component
+public class DrinkLogger {
+
+	@Pointcut("execution(* com.asseco.aha.training..Tea.*())")
+	private void teaUsage() {
+
+	}
+
+	@Before("teaUsage()")
+	public void logTeaUsage(JoinPoint joinPoint) {
+		LOG.info("Tea drink is being used...");
+	}
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.5 Annotating introductions
+							
+							1. Overview
+							2. Original function
+							2. New function
+							3. Introduction aspect
+							
+							<small>See: [BeanEnhancer.java](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/aop/BeanEnhancer.java) in project sat-core</small>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.5.1 Overview
+							
+							<div align="left">The purpose of the introduction is to introduce new feature (enhance) in the existing component (spring bean).</div>
+							<svg style="width:100%; height:450px;">
+								<rect x="60" y="120" width="140" height="60" stroke="black" stroke-width="4" fill="#AAAAFF" />
+								<text x="70" y="160" fill="black">Caller</text>
+								
+								<rect x="420" y="10" width="420" height="260" stroke=black stroke-width="4" fill="gray" />
+								<text x="430" y="50">Proxy</text>
+								
+								<rect x="440" y="70" width="380" height="80" stroke=black stroke-width="4" fill="#AAAAFF" />
+								<text x="460" y="120">Advised bean</text>
+								
+								<rect x="440" y="170" width="380" height="80" stroke=black stroke-width="4" fill="#AAAAFF" />
+								<text x="460" y="220">Introduction delegate</text>
+								
+								<line x1="200" y1="150" x2="440" y2="100" stroke="yellow" stroke-width="2"/>
+								<line x1="430" y1="110" x2="440" y2="100" stroke="yellow" stroke-width="2"/>
+								<line x1="430" y1="95" x2="440" y2="100" stroke="yellow" stroke-width="2"/>
+								<text x="230" y="100" fill="yellow" font-size="20">Existing method</text>
+								
+								<line x1="200" y1="150" x2="440" y2="210" stroke="yellow" stroke-width="2"/>
+								<line x1="430" y1="220" x2="440" y2="210" stroke="yellow" stroke-width="2"/>
+								<line x1="430" y1="200" x2="440" y2="210" stroke="yellow" stroke-width="2"/>
+								<text x="230" y="230" fill="yellow" font-size="20">Introduced method</text>
+								
+							</svg>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.5.2 Original function
+							
+							<div align="left">**Adviced bean** from the picture - the original component to be extended with new feature</div>
+							
+```
+public interface Drink {
+	
+	String getName();
+
+}
+
+
+```
+							
+
+```
+@Bean
+public Drink beer() {
+	return new Drink() {
+
+		@Override
+		public String getName() {
+			return "Beer";
+		}
+
+	};
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.5.3 New function
+							
+							<div align="left">**Introduced method** from the picture - the implementation of the new feature</div>
+							
+```
+public interface Enjoyable {
+
+	String enjoy(Drink drink);
+}
+```
+							
+
+```
+public class EnjoyableImpl implements Enjoyable {
+
+	@Override
+	public String enjoy(Drink drink) {
+		return String.format("Wow %s!", drink.getName());
+	}
+
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.5.4 Introduction aspect
+							
+							<div align="left">Wiring both features together with Aspects.</div>
+							
+```
+@Aspect
+@Component
+public class BeanEnhancer {
+
+	@DeclareParents(
+		value = "com.asseco.aha.training.spring_advanced.core.aop.Drink+", 
+		defaultImpl = EnjoyableImpl.class)
+	public static Enjoyable enjoyable;
+
+}
+```
+						</script>
+					</section>
 				</section>
 
-				<section>
-					<h2>9. Remoting & WS</h2>
+				<!--section>
+					<h2>10. Remoting & WS</h2>
 					<p style="color:red">TODO</p>
 					<ol>
 						<li>Overview</li>
