@@ -2970,10 +2970,40 @@ public class CustomerService {
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							### 9.2 Expression pattern
+							### 9.2 Expression pattern 1/2
+							#### Definition
 							
-							- DevDay presentation?
-							- Expression pattern
+```
+execution(modifiers-pattern? ret-type-pattern declaring-type-pattern? 
+          name-pattern(param-pattern) throws-pattern?)
+```
+							<div align="left">Markers:</div>
+							* '?' - optional value
+							* '\*' - represents any type (e.g. for return type) or wildcard in name pattern (for all or just part)
+							* '..' - matches any number of parameters (zero or more)
+							* '(\*)' - matches a method taking one parameter of any type (or '(\*,String)' for defined type)
+							* '(..)' - matches any number of parameters (zero or more)
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.2 Expression pattern 2/2
+							#### Examples
+							
+							* all public methods
+```
+execution(public * *(..))
+```
+							* all setters (starting with prefix 'set')
+```
+execution(* set*(..))
+```
+							* all methods in any Controller (class with suffix 'Controller') in package 'com.github.aha.poc' (or its sub-package)
+```
+execution(* com.github.aha.poc..*Controller.*(..))
+```
+							
+							<small>See: [Spring AOP](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/aop.html)</small>
 						</script>
 					</section>
 					<section data-markdown>
