@@ -2309,6 +2309,7 @@ values ('Australia', 'Melbourne', 'Victoria')
 							<li>Named Queries</li>
 							<li>CRUD Operations</li>
 							<li>Dynamic Queries</li>
+							<li>Mixed Repository</li>
 						</ol>
 						<p><small>See: project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/" alt="Link to example project on GitHub">sat-jpa</a> or 
 						<a href="http://docs.spring.io/spring-data/data-jpa/docs/current/reference/html/#jpa.query-methods.query-creation" alt="Link to Spring Data documentation">Spring Data documentation</a></small></p>
@@ -2467,6 +2468,65 @@ public void testCitiesWithoutStateInUsa() {
     ...
 }</code></pre>
 						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/asseco/aha/training/spring_advanced/jpa/DynamicQueryTests.java" alt="Link to test example on GitHub">DynamicQueryTests.java</a> in project sat-jpa</small></p>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 6.4.5.7 Mixed Repository [1/2]
+							
+							
+							<div align="left">Define interface</div>
+							
+```
+public interface CityService {
+	List<City> findByState(String state);
+}
+```
+
+							<div align="left">Implement interface</div>
+							
+```
+public class CityServiceImpl implements CityService {
+
+	private static final String JPQL = "select c from City c where c.state = ?1";
+	
+	@PersistenceContext
+	private EntityManager em;
+
+	public List<City> findByState(String state) {
+		TypedQuery<City> query = em.createQuery(JPQL, City.class);
+		query.setParameter(1, state);
+		return query.getResultList();
+	}
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 6.4.5.7 Mixed Repository [2/2]
+							
+							
+							<div align="left">Use interface (just extends defined interface)</div>
+							
+```java
+public interface CityRepository extends JpaRepository<City, Long>, CityService {
+	...
+}
+```
+
+							<div align="left">Test feature</div>
+							
+```java
+public class MixedQueryTests extends AbstractCityTests {
+
+    @Test
+    public void testCitiesWithState() {
+		List<City> result = cityRepository.findByState("CA");
+		assertThat(...);
+	}
+}
+```
+						</script>
 					</section>
 					<section>
 						<h3>6.4.6 Configuration</h3>
