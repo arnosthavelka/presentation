@@ -77,6 +77,7 @@
 						<li>Remote Shell</li>
 						<li>Spring Cloud</li>
 						<li>Resources</li>
+						<li>Embedded server</li>
 					</ol>
 				</section>
 				
@@ -92,6 +93,8 @@
 							<li>Deployment to AS</li>
 							<li>Bean Validation (JSR-303)</li>
 							<li>Basic properties</li>
+							<li>Configuration approaches</li>
+							<li>Customize The Error Messages</li>
 						</ol>
 					</section>
 					
@@ -233,6 +236,58 @@ logging.level.com.asseco.aha.training.spring_advanced.sb=DEBUG
 							```
 							
 							The complete list of configuration properties is available [here](http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#common-application-properties).
+						</script>
+					</section>
+					<section data-markdown style="text-align: left;">
+						<script type="text/template">
+							### 1.8 Configuration approaches
+
+							#### Property file
+							```
+server.port=8080
+							```
+
+							#### YAML file
+							```
+server:
+	port: 8080
+							```
+
+							#### Java config
+							```
+@Component
+public class CustomizationBean implements EmbeddedServletContainerCustomizer {
+    @Override
+    public void customize(ConfigurableEmbeddedServletContainer container) {
+        container.setPort(8083);
+    }
+}
+							```
+						</script>
+					</section>
+					<section data-markdown style="text-align: left;">
+						<script type="text/template">
+							### 1.9 Customize The Error Messages
+
+							#### Customize error handling
+							```
+@Component
+public class CustomizationBean implements EmbeddedServletContainerCustomizer {
+    @Override
+    public void customize(ConfigurableEmbeddedServletContainer container) {        
+        container.addErrorPages(new ErrorPage(HttpStatus.BAD_REQUEST, "/400"));
+        container.addErrorPages(new ErrorPage("/customError"));
+    }
+}
+							```
+
+							#### Simplest error page implementation
+							```
+@RequestMapping("/customError")
+String errorHeaven() {
+    return "My custom error page...";
+}
+							```
 						</script>
 					</section>
 				</section>
@@ -688,6 +743,107 @@ class hellog {
 					
 				</section>
 			
+				<!-- Chapter 9 - Embedded server -->
+				<section>
+					<section data-markdown style="text-align: left;">
+						<script type="text/template">
+							## 9. Embedded server
+							
+							SpringBoot uses (by default) Tomcat as embedded server. However we can configure:
+							* Jetty
+							* Undertow
+						</script>
+					</section>					
+					<section data-markdown style="text-align: left;">
+						<script type="text/template">
+							### 9.1 Jetty 1/2
+
+							#### Dependency configuration
+							```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>
+							```
+
+						</script>
+					</section>
+					<section data-markdown style="text-align: left;">
+						<script type="text/template">
+							### 9.1 Jetty 2/2
+
+							#### Server configuration 
+							```
+@Bean
+public JettyEmbeddedServletContainerFactory  jettyEmbeddedServletContainerFactory() {
+    JettyEmbeddedServletContainerFactory jettyContainer = 
+		new JettyEmbeddedServletContainerFactory();
+     
+    jettyContainer.setPort(9000);
+    jettyContainer.setContextPath("/springbootapp");
+    return jettyContainer;
+}
+							```
+						</script>
+					</section>
+					<section data-markdown style="text-align: left;">
+						<script type="text/template">
+							### 9.2 Undertow 1/2
+
+							#### Dependency configuration
+							```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-undertow</artifactId>
+</dependency>
+							```
+
+						</script>
+					</section>
+					<section data-markdown style="text-align: left;">
+						<script type="text/template">
+							### 9.2 Undertow 2/2
+
+							#### Server configuration 
+							```
+@Bean
+public UndertowEmbeddedServletContainerFactory embeddedServletContainerFactory() {
+    UndertowEmbeddedServletContainerFactory factory = 
+      new UndertowEmbeddedServletContainerFactory();
+     
+    factory.addBuilderCustomizers(new UndertowBuilderCustomizer() {
+        @Override
+        public void customize(io.undertow.Undertow.Builde builder) {
+            builder.addHttpListener(8080, "0.0.0.0");
+        }
+    });
+     
+    return factory;
+}
+							```
+						</script>
+					</section>
+				</section>
 			</div>
 
 		</div>
