@@ -55,7 +55,7 @@
 					<h2>About me</h2>
 					<ol>
 						<li>Job title: <strong>Solution Architect</strong></li>
-						<li>O2 employment: <strong>Since 1/2015</strong></li>
+						<li>O2ITS employment: <strong>Since 1/2015</strong></li>
 						<li>Certifications:<br/>
 							<img src="img/scjp.jpg" alt="Sun Certified Programmer for the Java Platform, Standard Edition 6 (5/2010)">
 							<img src="img/owsd.gif" alt="Oracle Certified Professional, Java EE 5 Web Services Developer (12/2010)">
@@ -80,7 +80,7 @@
 						8. JMX
 						9. AOP
 						
-						<small align="left">Former chapter Spring Boot was removed to be <a href="http://arnosthavelka.github.io/presentation/spring-boot/index.html" alt="Presentation of Spring Boot framework">standalone</a>.</small>
+						<small align="left">Former chapter Spring Boot was moved to its oqn <a href="http://arnosthavelka.github.io/presentation/spring-boot/index.html" alt="Presentation of Spring Boot framework">presentation</a>.</small>
 					</script>
 				</section>
 					
@@ -445,7 +445,7 @@ public class CustomListener implements ApplicationListener&lt;CustomEvent&gt; {
     }
 }
 </code></pre>
-						<p><small>See: package <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/notification" alt="Link to example project on GitHub">notification </a> in the project sat-core</small></p>
+						<p><small>See: package <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/notification" alt="Link to example project on GitHub">notification </a> in the project sat-core</small></p>
 					</section>
 					<section data-markdown>
 						<script type="text/template">
@@ -467,7 +467,7 @@ public class NotificationTest {
 }
 ```
 
-							<small>See: [NotificationTest.java](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/notification/NotificationTest.java) in project sat-core</small>
+							<small>See: [NotificationTest.java](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/github/aha/sat/core/notification/NotificationTest.java) in project sat-core</small>
 						</script>
 					</section>
 					<section>
@@ -509,7 +509,7 @@ public class NotificationTest {
         ctx.publishEvent(new CityEvent(ctx, false));
     }
 }</code></pre>
-						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/notification/NotificationTest.java" alt="Link to example project on GitHub">NotificationTest.java</a> in project sat-core</small></p>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/github/aha/sat/core/notification/NotificationTest.java" alt="Link to example project on GitHub">NotificationTest.java</a> in project sat-core</small></p>
 					</section>
 
 					<section>
@@ -881,7 +881,7 @@ public class WsService {
 public class PrivateService implement MyService {
   ...
 }</code></pre>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/scope/ScopeApplication.java" alt="Example of proxy mode">ScopeApplication.java</a></small>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/scope/ScopeApplication.java" alt="Example of proxy mode">ScopeApplication.java</a></small>
 					</section>
 					<section>
 						<h3>2.4 Classpath scanning [1/2]</h3>
@@ -931,7 +931,7 @@ public User userArny() {
 }</code></pre>
 						<pre>Spring error:<code>Caused by: o.s.b.BeanInstantiationException: Could not instantiate bean 
     class [com...config.User]: No default constructor found; 
-        nested exception is java.lang.NoSuchMethodException: com.asseco.aha.training.spring_advanced.core.config.User.&lt;init&gt;()
+        nested exception is java.lang.NoSuchMethodException: com.github.aha.sat.core.config.User.&lt;init&gt;()
 	    at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:85) ~[spring-beans-4.0.8.RELEASE.jar:4.0.8.RELEASE]
 	    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1070) ~[spring-beans-4.0.8.RELEASE.jar:4.0.8.RELEASE]
 	    ... 16 common frames omitted
@@ -949,7 +949,7 @@ public class User {
         ...
     }
 }</code></pre>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/config/JavaConfigApplication.java">JavaConfigApplication.java</a></small>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/config/JavaConfigApplication.java">JavaConfigApplication.java</a></small>
 					</section>
 					<section>
 						<h3>2.5.2 Solution [2/4]</h3>
@@ -977,7 +977,7 @@ public class JavaConfigApplication {
 						<h4>Variant 4</h4>
 						<p align="left">Use excluding feature in component scan.</p>
 						<pre><code class="java">@Configuration
-@ComponentScan(basePackages = { "com.asseco.aha.training.spring_advanced.core.config" }, 
+@ComponentScan(basePackages = { "com.github.aha.sat.core.config" }, 
     excludeFilters = @ComponentScan.Filter(
         type = FilterType.ANNOTATION, 
         value = Component.class))
@@ -1002,8 +1002,8 @@ public class JavaConfigApplication {
 							1. Primary Bean
 							2. Selection by Traits
 							
-							<small>See: package [wiring](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/wiring) and 
-							[WiringTest](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/wiring/WiringTest.java) in project **sat-core**.</small>
+							<small>See: package [wiring](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/wiring) and 
+							[WiringTest](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/wiring/WiringTest.java) in project **sat-core**.</small>
 						</script>
 					</section>
 					<section data-markdown>
@@ -1113,7 +1113,7 @@ MultiValueMap<String, Object> = metadata.getAllAnnotationAttributes(...);
 		};
 	}
 ```
-							<small>See: test class [SodaConditionalTest](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/conditional/SodaConditionalTest.java) in project **sat-core**.</small>
+							<small>See: test class [SodaConditionalTest](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/conditional/SodaConditionalTest.java) in project **sat-core**.</small>
 						</script>
 					</section>
 					<section data-markdown>
@@ -1335,7 +1335,7 @@ public class InMemorySecurityConfig {
   &lt;bean id="myBfpp" class="abc.MyBfpp" /&gt;
 
 &lt;/beans&gt;</code></pre>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/postprocessor/PostProcessorApplication.java">PostProcessorApplication.java</a></small>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/postprocessor/PostProcessorApplication.java">PostProcessorApplication.java</a></small>
 					</section>
 					<section>
 						<h3>3.4 BPP - overview [1/2]</h3>
@@ -1364,7 +1364,7 @@ public class InMemorySecurityConfig {
   &lt;bean id="myBpp" class="abc.MyBpp" /&gt;
 
 &lt;/beans&gt;</code></pre>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/postprocessor/PostProcessorApplication.java">PostProcessorApplication.java</a></small>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/postprocessor/PostProcessorApplication.java">PostProcessorApplication.java</a></small>
 					</section>					
 				</section>
 
@@ -1504,13 +1504,13 @@ public class InMemorySecurityConfig {
 
 &lt;/beans&gt;</code></pre>
 						<p align="left">Usage:</p>
-						<pre><code class="java">// path is com/asseco/aha/training/spring_advanced/core/config/XmlDefaultConfigTest-context.xml
+						<pre><code class="java">// path is com/github/aha/sat/core/config/XmlDefaultConfigTest-context.xml
 @ContextConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 public class XmlDefaultConfigTest {
     ...
 }</code></pre>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/XmlDefaultConfigTest.java">XmlDefaultConfigTest.java</a></small>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/testing/XmlDefaultConfigTest.java">XmlDefaultConfigTest.java</a></small>
 					</section>
 					<section>
 						<h3>4.2.2 Spring way (XML)</h3>
@@ -1528,13 +1528,13 @@ public class XmlDefaultConfigTest {
 public class XmlDirectConfigTest {
     ...
 }</code></pre>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/XmlDirectConfigTest.java">XmlDirectConfigTest.java</a></small>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/testing/XmlDirectConfigTest.java">XmlDirectConfigTest.java</a></small>
 					</section>
 					<section>
 						<h3>4.2.3 Spring Boot way (JavaConfig)</h3>
 						<p align="left">Configuration:</p>
 						<pre><code class="java">@SpringBootApplication
-//@ComponentScan("com.asseco.aha.training.spring_advanced.core.config")
+//@ComponentScan("com.github.aha.sat.core.config")
 public class JavaConfigApplication {
     ...
 }</code></pre>
@@ -1544,7 +1544,7 @@ public class JavaConfigApplication {
 public class JavaConfigTest {
     ...
 }</code></pre>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/config/JavaConfigTest.java">JavaConfigTest.java</a></small>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/config/JavaConfigTest.java">JavaConfigTest.java</a></small>
 					</section>
 
 					<section>
@@ -1566,7 +1566,7 @@ public void testSpringTimeout() throws InterruptedException {
     assertThat(Boolean.TRUE, equalTo(1 == 1));
 }</code></pre>
 						<p align="left"><small>Note: spring annotation waits till the end to raise an exception. On the other hand JUnit solution raise the exception immediately when the test takes too long.</small></p>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/TimedAnnotationTest.java">TimedAnnotationTest.java</a></small>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/testing/TimedAnnotationTest.java">TimedAnnotationTest.java</a></small>
 					</section>
 					<section>
 						<h3>4.3.2 @Repeat</h3>
@@ -1576,7 +1576,7 @@ public void testSpringTimeout() throws InterruptedException {
 public void testRepeatAnnotation() {
     assertThat(2, equalTo(1 + 1));
 }</code></pre>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/RepeatAnnotationTest.java">RepeatAnnotationTest.java</a></small>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/testing/RepeatAnnotationTest.java">RepeatAnnotationTest.java</a></small>
 					</section>
 					<section>
 						<h3>4.3.3 @ActiveProfiles</h3>
@@ -1592,7 +1592,7 @@ public class RichardConfigTest {
         assertThat(user.getName(), equalTo("Richard"));
     }
 }</code></pre>
-						<p><small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/RichardConfigTest.java">RichardConfigTest.java</a></small></p>
+						<p><small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/testing/RichardConfigTest.java">RichardConfigTest.java</a></small></p>
 					</section>
 					<section>
 						<h3>4.3.4 @IfProfileValue</h3>
@@ -1609,7 +1609,7 @@ public class RichardConfigTest {
     }
 }</code></pre>
 						<p align="left">Use profile by calling JVM with e.g. <i>-Dtest-group=training</i>. Annotation reflects JVM parameters, environments properties (e.g. OS), etc.</p>
-						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/testing/BarbaraConfigTest.java">BarbaraConfigTest.java</a></small>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/testing/BarbaraConfigTest.java">BarbaraConfigTest.java</a></small>
 					</section>
 
 					<section data-markdown>
@@ -1739,7 +1739,7 @@ public class HelloControllerTest {
 }
 ```
 							
-							<small>See: [HelloControllerTest.java](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/controller/HelloControllerTest.java) in project sat-core</small>
+							<small>See: [HelloControllerTest.java](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/controller/HelloControllerTest.java) in project sat-core</small>
 						</script>
 					</section>
 					<section data-markdown>
@@ -1766,7 +1766,7 @@ public class GreetingControllerTest {
 }
 ```
 
-							<small>See: [GreetingControllerTest.java](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/asseco/aha/training/spring_advanced/core/controller/GreetingControllerTest.java) in project sat-core</small>
+							<small>See: [GreetingControllerTest.java](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/controller/GreetingControllerTest.java) in project sat-core</small>
 						</script>
 					</section>
 					<section>
@@ -1775,7 +1775,7 @@ public class GreetingControllerTest {
 						<p align="left">XML</p>
 						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans ... xmlns:mockito="http://www.mockito.org/spring/mockito" xsi:schemaLocation="..." &gt;
-  &lt;mockito:mock id="myService" class="com.asseco.aha.training.spring_advanced.core.testing.HelloService" /&gt;
+  &lt;mockito:mock id="myService" class="com.github.aha.sat.core.testing.HelloService" /&gt;
 &lt;/beans&gt;</code></pre>
 						<p align="left">Annotation</p>
 						<pre><code class="java">@ReplaceWithMock
@@ -2225,7 +2225,7 @@ public class JdbcTests {
 
 }
 </code></pre>
-						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jdbc/src/test/java/com/asseco/aha/training/spring_advanced/jdbc/JdbcTests.java" alt="Link to example project on GitHub">JdbcTests.java</a> in project sat-jdbc</small></p>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-jdbc/src/test/java/com/github/aha/sat/jdbc/JdbcTests.java" alt="Link to example project on GitHub">JdbcTests.java</a> in project sat-jdbc</small></p>
 					</section>
 					<section>
 						<h3>6.3.6 Intelligent exception handling</h3>
@@ -2261,7 +2261,7 @@ public class JdbcTests {
 &lt;bean id="entityManagerFactoryHSQL" 
     class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
     p:persistenceProviderClass="org.hibernate.ejb.HibernatePersistence" 
-    p:packagesToScan="com.asseco.aha.training.spring_advanced.jpa.domain"
+    p:packagesToScan="com.github.aha.sat.jpa.domain"
     p:dataSource-ref="dataSourceHSQL" 
     p:jpaVendorAdapter-ref="jpaVendorAdapterHSQL"/&gt;
 
@@ -2377,7 +2377,7 @@ public class QueryTests extends AbstractCityTests {
         ...
     }
 }</code></pre>
-						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/asseco/aha/training/spring_advanced/jpa/QueryTests.java" alt="Link to test example on GitHub">QueryTests.java</a> in project sat-jpa</small></p>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/github/aha/sat/jpa/QueryTests.java" alt="Link to test example on GitHub">QueryTests.java</a> in project sat-jpa</small></p>
 					</section>
 					<section>
 						<h3>6.4.5.4 Named Queries [1/2]</h3>
@@ -2399,7 +2399,7 @@ public class NamedQueryTests extends AbstractCityTests {
         ...
     }
 }</code></pre>
-						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/asseco/aha/training/spring_advanced/jpa/NamedQueryTests.java" alt="Link to test example on GitHub">NamedQueryTests.java</a> in project sat-jpa</small></p>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/github/aha/sat/jpa/NamedQueryTests.java" alt="Link to test example on GitHub">NamedQueryTests.java</a> in project sat-jpa</small></p>
 					</section>
 					<section>
 						<h3>6.4.5.4 Named Queries [2/2]</h3>
@@ -2415,7 +2415,7 @@ public class NamedQueryTests extends AbstractCityTests {
     }
 
 }</code></pre>
-						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/asseco/aha/training/spring_advanced/jpa/NamedQueryTests.java" alt="Link to test example on GitHub">NamedQueryTests.java</a> in project sat-jpa</small></p>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/github/aha/sat/jpa/NamedQueryTests.java" alt="Link to test example on GitHub">NamedQueryTests.java</a> in project sat-jpa</small></p>
 					</section>
 					<section>
 						<h3>6.4.5.5 CRUD Operations</h3>
@@ -2437,7 +2437,7 @@ public class CrudTests extends AbstractCityTests {
         ...
     }
 }</code></pre>
-						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/asseco/aha/training/spring_advanced/jpa/DynamicQueryTests.java" alt="Link to test example on GitHub">DynamicQueryTests.java</a> in project sat-jpa</small></p>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/github/aha/sat/jpa/DynamicQueryTests.java" alt="Link to test example on GitHub">DynamicQueryTests.java</a> in project sat-jpa</small></p>
 					</section>
 					<section>
 						<h3>6.4.5.6 Dynamic Queries [1/2]</h3>
@@ -2467,7 +2467,7 @@ public void testCitiesWithoutStateInUsa() {
         new Sort("country", "name"));
     ...
 }</code></pre>
-						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/asseco/aha/training/spring_advanced/jpa/DynamicQueryTests.java" alt="Link to test example on GitHub">DynamicQueryTests.java</a> in project sat-jpa</small></p>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/github/aha/sat/jpa/DynamicQueryTests.java" alt="Link to test example on GitHub">DynamicQueryTests.java</a> in project sat-jpa</small></p>
 					</section>
 					<section data-markdown>
 						<script type="text/template">
@@ -2798,7 +2798,7 @@ public CityResource item(@PathVariable("id") long id) {
     return assembler.toResource(city);
 }</code></pre>
 						<p><small>See: project <a href="https://github.com/spring-projects/spring-hateoas" alt="Link to project on GitHub">spring-hateoas</a>
-						    and example in the class <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-rest/src/main/java/com/asseco/aha/training/spring_advanced/rest/rest/CityHateoasController.java">CityHateoasController</a> (project <i>sat-rest</i>)</small></p>
+						    and example in the class <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-rest/src/main/java/com/github/aha/sat/rest/rest/CityHateoasController.java">CityHateoasController</a> (project <i>sat-rest</i>)</small></p>
 					</section>
 					<section>
 						<h3>7.8 Check implementation</h3>
@@ -2894,7 +2894,7 @@ public class CityMBean {
     &lt;artifactId&gt;jolokia-core&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 						<p align="left">Browse JMX via HTTP, e.g.:</p>
-						<pre><code>http://localhost:8080/jolokia/read/com.asseco.aha.training.sat-rest:name=cityMBean,type=CityMBean</code></pre>
+						<pre><code>http://localhost:8080/jolokia/read/com.github.aha.training.sat-rest:name=cityMBean,type=CityMBean</code></pre>
 						<small>See: Jolokia's <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-jmx.html">spring integration</a> or <a href="http://www.jolokia.org/">home page</a></small>
 					</section>
 					<section>
@@ -2916,7 +2916,7 @@ public JmxReporter jmxReporter() {
     reporter.start();
     return reporter;
 }</code></pre>
-						<small>Based on <a href="http://blog.frankel.ch/become-a-devops-with-spring-boot" alt="Article with DevOps hints">Become a DevOps with Spring Boot</a>; see: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-spring-boot/src/main/java/com/asseco/aha/training/spring_advanced/sb/SbApplication.java" alt="Link to example HealthService usage">SbApplication</a> in the project <strong>sat-spring-boot</strong></small>
+						<small>Based on <a href="http://blog.frankel.ch/become-a-devops-with-spring-boot" alt="Article with DevOps hints">Become a DevOps with Spring Boot</a>; see: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-spring-boot/src/main/java/com/github/aha/sat/sb/SbApplication.java" alt="Link to example HealthService usage">SbApplication</a> in the project <strong>sat-spring-boot</strong></small>
 					</section>
 					<section>
 						<h3>8.6 Dropwizard Metrics</h3>
@@ -3093,7 +3093,7 @@ public class DrinkLogger {
 @Component
 public class DrinkLogger {
 
-	@Pointcut("execution(* com.asseco.aha.training..Tea.*())")
+	@Pointcut("execution(* com.github.aha.sat..Tea.*())")
 	private void teaUsage() {
 
 	}
@@ -3115,7 +3115,7 @@ public class DrinkLogger {
 							2. New function
 							3. Introduction aspect
 							
-							<small>See: [BeanEnhancer.java](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/main/java/com/asseco/aha/training/spring_advanced/core/aop/BeanEnhancer.java) in project sat-core</small>
+							<small>See: [BeanEnhancer.java](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/aop/BeanEnhancer.java) in project sat-core</small>
 						</script>
 					</section>
 					<section data-markdown>
@@ -3219,7 +3219,7 @@ public class EnjoyableImpl implements Enjoyable {
 public class BeanEnhancer {
 
 	@DeclareParents(
-		value = "com.asseco.aha.training.spring_advanced.core.aop.Drink+", 
+		value = "com.github.aha.sat.core.aop.Drink+", 
 		defaultImpl = EnjoyableImpl.class)
 	public static Enjoyable enjoyable;
 
