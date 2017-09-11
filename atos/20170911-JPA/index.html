@@ -441,6 +441,7 @@ List<Tuple> dokladIdent = builder.select(
 						<script type="text/template">
 							## 6. Examples of usage with BaseDAO implementation
 							
+							1. Simple example
 							1. Exists operation
 							1. Handling results
 							1. Save operation
@@ -448,7 +449,21 @@ List<Tuple> dokladIdent = builder.select(
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							### 6.1 Exists operation
+							### 6.1 Simple example
+
+							```
+public MDokumentRegistraceKCDPP getByIdKcdpp(String idKCDPP) {
+	JPABuilder<MDokumentRegistraceKCDPP> builder = 
+		prepareJpaBuilder(MDokumentRegistraceKCDPP.class);
+	builder.and(builder.from().get(MDokumentRegistraceKCDPP_.idKCDPP), idKCDPP);
+	return firstEntityOrNull(builder.select());
+}
+							```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 6.2 Exists operation
 
 							```
 JPABuilder<Integer> builder = prepareJpaBuilder(Integer.class);
@@ -461,7 +476,7 @@ return exists(builder);
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							### 6.2 Handling results
+							### 6.3 Handling results
 
 							```
 JPABuilder<String> builder = prepareJpaBuilder(String.class);
@@ -473,7 +488,7 @@ return required ? firstEntity(result) : firstEntityOrNull(result);
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							### 6.3 Save operation
+							### 6.4 Save operation
 
 							```
 String popis = dokladPlatba.getPopis();
