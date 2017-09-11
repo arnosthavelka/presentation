@@ -298,7 +298,7 @@ List<MPouzivatel> result = em.createQuery(query).getResultList();
 
 							* simplify usage of JPA Criteria queries (by "hidding" CriteriaBuilder)
 							* allow usage of static metamodel
-							* use only (by defualt) valid records
+							* use only (by default) valid records
 							* support mostly used query operations (and, in etc.)
 						</script>
 					</section>
@@ -308,7 +308,7 @@ List<MPouzivatel> result = em.createQuery(query).getResultList();
 
 							* AbstractJPABuilder - common ancestor
 							* JPABuilder - the basic work with one whole element (attribute or entity)
-							* JPATupleBuilder - the usage of several attributres
+							* JPATupleBuilder - the usage of several attributes
 						</script>
 					</section>
 					<section data-markdown>
@@ -317,8 +317,8 @@ List<MPouzivatel> result = em.createQuery(query).getResultList();
 
 							1. create query of defined class
 							1. the root class is from query type
-							1. conditions/predicates are added to on list (by default)
-							1. apply distinct on most execution operations
+							1. conditions/predicates are added to the list (by default)
+							1. apply distinct on most of the execution operations
 						</script>
 					</section>
 					<section data-markdown>
