@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>DevDay - Logging</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/blood.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<!-- 
+				https://help.github.com/articles/basic-writing-and-formatting-syntax/
+				https://www.webpagefx.com/tools/emoji-cheat-sheet/
+				-->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## Logging
+													
+							Created by [Arnošt Havelka](http://cz.linkedin.com/in/arnosthavelka/)
+						</textarea>
+					</section>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## Agenda
+						
+						1. Some theory
+						1. Basic Examples
+						1. SLF4J
+					</textarea>
+				</section>
+					
+				<!-- Chapter 1 - Some theory -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 1. Some theory
+							
+							1. The goals
+							1. Logging frameworks
+							1. Levels & usages
+							1. Configuration
+						</textarea>
+					</section>
+				</section>
+				
+				<!-- Chapter 2 - Basic Examples -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 2. Basic Examples
+							
+							1. JUL
+							1. Log4J
+							1. SLF4J
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 2.1 JUL
+							
+							**J**ava **U**til **L**ogging (included in the JDK)
+							
+							The definition of logger is defined as:
+							```
+import java.util.logging.Logger;
+static final Logger LOGGER = Logger.getLogger(HelloExample.class.getName());
+							```
+
+							The usage is:
+							```
+// logging just the message
+LOGGER.finer("Some gebug message");
+// logging the message with parameters
+LOGGER.log(Level.FINER, "processing[{0}]: {1}", new Object[]{ i, list.get(i) });
+// logging the handled exception
+LOGGER.log(Level.SEVERE, "Got error!", e);
+							```
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 2.2 Log4J
+							
+							The definition of logger is defined as:
+							```
+import org.apache.log4j.Logger;
+static final Logger LOGGER = Logger.getLogger(HelloExample.class);
+							```
+
+							The usage is:
+							```
+// logging just the message
+LOGGER.warn("This is warn : " + parameter);
+// logging with level check
+if(logger.isDebugEnabled()){
+    LOGGER.debug("XML element content:" + dokument.toXML());
+}
+// logging the handled exception
+LOGGER.error("Got error!", e);
+							```
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 2.3 SLF4J
+							
+							The definition of logger is defined as:
+							```
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+static final Logger LOGGER = LoggerFactory.getLogger(HelloExample.class);
+							```
+
+							The usage is:
+							```
+// logging just the message
+LOGGER.warn("Some gebug message");
+// logging the message with parameters
+LOGGER.debug("processing[{}]: {}", i, list.get(i));
+// logging the handled exception
+LOGGER.error("Got error: {}", msg);
+							```
+						</textarea>
+					</section>
+					
+					</section>
+				
+				<!-- Chapter 3 - SLF4J -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 3. SLF4J
+							
+							1. TODO
+						</textarea>
+					</section>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
