@@ -56,10 +56,75 @@
 							
 							1. The goals
 							1. Logging frameworks
-							1. Levels & usages
-							1. Configuration
+							1. Levels & Usages
+							1. Example of the configuration
 						</textarea>
 					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 1.1 The goals of Logging
+							
+							1. To log messages (with parameteres), error etc.
+							1. Separate adding entries and writing entries
+							1. Configurable level of logging (what to log)
+							1. Configurable logging (how and where to log)
+							1. etc.
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 1.2 Logging frameworks
+							
+							1. Log4J
+							1. Java Util Logging or Java Logging API
+							1. Logback
+							1. SLF4J (not really logging framework)
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 1.3 Levels & Usages
+							
+| SLF4J Level | JUL Level | Meaning / Usage |
+| ------------- | ------------- | ------------- |
+| Fatal   | SEVERE | Really bad failures |
+| Error    | N/A | All kind of errors |
+| Warn    | WARNING | Logical errors |
+| Info    | INFO | Information |
+| Debug    | FINE | Logging for developers |
+| Trace    | FINEST | Very detailed logging |
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 1.4 Example of the configuration
+							
+							Example of SLF4J configuration via XML:
+							```
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="false" scanPeriod="60 seconds">
+  <property scope="context" name="LOG_HOME" value="${jboss.server.log.dir}" />
+  <include optional="true" resource="logback-custom.xml" />
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%date %level [%thread] %logger [user:%X{user} pripad:%X{pripadId}] - %msg %n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="INFO" additivity="false">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>
+							```
+						</textarea>
+					</section>
+
 				</section>
 				
 				<!-- Chapter 2 - Basic Examples -->
