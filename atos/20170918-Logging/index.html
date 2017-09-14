@@ -130,11 +130,11 @@ static final Logger LOGGER = Logger.getLogger(HelloExample.class.getName());
 							The usage is:
 							```
 // logging just the message
-LOGGER.finer("Some gebug message");
+LOGGER.finer("Some debug message");
 // logging the message with parameters
 LOGGER.log(Level.FINER, "processing[{0}]: {1}", new Object[]{ i, list.get(i) });
-// logging the handled exception
-LOGGER.log(Level.SEVERE, "Got error!", e);
+// custom logging
+LOGGER.logp(Level.FINE, "className", "methodName", "Param0={0}, Param1={1}", new Object[] {key.getType().getName(), key.getPid().toString() });
 							```
 						</textarea>
 					</section>
@@ -177,7 +177,7 @@ static final Logger LOGGER = LoggerFactory.getLogger(HelloExample.class);
 							The usage is:
 							```
 // logging just the message
-LOGGER.warn("Some gebug message");
+LOGGER.warn("Some debug message");
 // logging the message with parameters
 LOGGER.debug("processing[{}]: {}", i, list.get(i));
 // logging the handled exception
