@@ -57,7 +57,8 @@
 							1. The goals
 							1. Logging frameworks
 							1. Levels & Usages
-							1. Example of the configuration
+							1. Example of the configuration via XML
+							1. Example of the configuration via property file
 						</textarea>
 					</section>
 					
@@ -102,9 +103,10 @@
 
 					<section data-markdown>
 						<textarea data-template>
-							## 1.4 Example of the configuration
+							## 1.4 Configuration
+							### via XML
 							
-							Example of SLF4J configuration via XML:
+							Example of **logback.xml** file:
 							```
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration scan="false" scanPeriod="60 seconds">
@@ -126,6 +128,24 @@
 						</textarea>
 					</section>
 
+					<section data-markdown>
+						<textarea data-template>
+							## 1.5 Configuration
+							### via property file
+							
+							Example of **log4j.properties** file:
+							```
+# Root logger option
+log4j.rootLogger=INFO, stdout
+
+# Direct log messages to stdout
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.Target=System.out
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n
+							```
+						</textarea>
+					</section>
 				</section>
 				
 				<!-- Chapter 2 - Basic Examples -->
