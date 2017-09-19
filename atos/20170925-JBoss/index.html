@@ -156,8 +156,8 @@
 							## 2. Deploy
 							
 							1. Hotdeploy
-							1. Console
-							1. CLI
+							1. JBoss Console
+							1. JBoss CLI
 							1. Maven plugin
 						</textarea>
 					</section>
@@ -172,7 +172,30 @@
 						</textarea>
 					</section>
 
-				</section>
+					<section>
+						<h3>2.2 JBoss Console</h3>
+						<img src="img/jboss-eap_deploy-console.png" alt="Deploy via JBoss Console"/>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 2.3 JBoss CLI
+							
+							Run in folder `<JBOSS_HOME>`\bin:
+							<p><small>jboss-cli.bat --connect --controller=172.20.10.230:9990 --user=admin --password=SuperHeslo "ls deployment"</small></p>
+
+							Result:
+<p align="left"><small>
+> ISZAMBeta_1.0.137.ear<br/>
+> ...<br/>
+> ISZAMVyvoj_1.0.1606.ear<br/>
+> Press any key to continue ...<br/>
+</small></p>
+							<p><small>See: <a href="http://middlewaremagic.com/jboss/?p=419">Connect command</a></small></p>
+						</textarea>
+					</section>
+
+					</section>
 
 				<!-- Chapter 3 - Configuration -->
 				<section>
