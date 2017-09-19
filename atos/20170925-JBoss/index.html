@@ -43,19 +43,19 @@
 					<textarea data-template>
 						## Agenda
 						
-						1. Concept
+						1. Overview
+						1. Deploy
 						1. Configuration
-						1. SLF4J
 						
 						<p><small>See: presentation <a href="https://www.slideshare.net/rayploski/jboss-application-server-7">JBoss 7</a></small></p>
 					</textarea>
 				</section>
 					
-				<!-- Chapter 1 - Some theory -->
+				<!-- Chapter 1 - Overview -->
 				<section>
 					<section data-markdown>
 						<textarea data-template>
-							## 1. Concept
+							## 1. Overview
 							
 							1. History
 							1. Architecture
@@ -153,7 +153,32 @@
 				<section>
 					<section data-markdown>
 						<textarea data-template>
-							## 2. Configuration
+							## 2. Deploy
+							
+							1. Hotdeploy
+							1. Console
+							1. CLI
+							1. Maven plugin
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 2.1 Hotdeploy
+							
+							Simply put the deployable artifact (WAR/EAR) to this folder (for the standalone mode):
+							
+							__`<JBOSS_HOME>`\standalone\deployments__
+						</textarea>
+					</section>
+
+				</section>
+
+				<!-- Chapter 3 - Configuration -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 3. Configuration
 							
 							1. Logging
 							1. Datasource
