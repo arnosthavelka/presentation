@@ -182,20 +182,56 @@
 							## 2.3 JBoss CLI
 							
 							Run in folder `<JBOSS_HOME>`\bin:
-							<p><small>jboss-cli.bat --connect --controller=172.20.10.230:9990 --user=admin --password=SuperHeslo "ls deployment"</small></p>
+							<p><small>jboss-cli.bat --connect --controller=localhost:9990 --user=admin --password=admin "ls deployment"</small></p>
 
 							Result:
-<p align="left"><small>
-> ISZAMBeta_1.0.137.ear<br/>
-> ...<br/>
-> ISZAMVyvoj_1.0.1606.ear<br/>
-> Press any key to continue ...<br/>
-</small></p>
+							```
+ISZAMBeta_1.0.137.ear
+...
+ISZAMVyvoj_1.0.1606.ear
+Press any key to continue ...
+							```
 							<p><small>See: <a href="http://middlewaremagic.com/jboss/?p=419">Connect command</a></small></p>
 						</textarea>
 					</section>
 
+					<section data-markdown>
+						<textarea data-template>
+							### 2.4 Maven plugin
+
+							Definition (in pom.xml):
+							```
+<plugin>
+	<groupId>org.wildfly.plugins</groupId>
+	<artifactId>wildfly-maven-plugin</artifactId>
+	<version>1.2.0.Final</version>
+	<configuration>
+		<serverId>wildfly-as</serverId>
+		<hostname>localhost</hostname>
+		<username>admin</username>
+		<password>admin</password>
+	</configuration>
+</plugin>
+							```
+						</textarea>
 					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 2.4 Maven plugin
+
+							Goals:
+							* wildfly:deploy
+							* wildfly:undeploy
+							
+							Usage:
+							<p><small>http://localhost:8080/zam-jboss-maven-plugin-0.0.1-SNAPSHOT/greeting?name=aha</small></p>
+
+							<p><small>See: <a href="https://docs.jboss.org/wildfly/plugins/maven/latest/plugin-info.html#">Plugin goals</a></small></p>
+						</textarea>
+					</section>
+
+				</section>
 
 				<!-- Chapter 3 - Configuration -->
 				<section>
@@ -203,6 +239,7 @@
 						<textarea data-template>
 							## 3. Configuration
 							
+							1. deployment descriptor
 							1. Logging
 							1. Datasource
 							1. Modules
