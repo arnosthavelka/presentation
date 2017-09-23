@@ -32,7 +32,7 @@
 					<section data-markdown>
 						<textarea data-template>
 							## JBoss
-							#### Concept, Configuration and Usage
+							#### Concept & Usage
 													
 							Created by [Arnošt Havelka](http://cz.linkedin.com/in/arnosthavelka/)
 						</textarea>
@@ -44,8 +44,8 @@
 						## Agenda
 						
 						1. Overview
-						1. Deploy
-						1. Configuration
+						1. Deployment methods
+						1. Deployment descriptors
 						
 						<p><small>See: presentation <a href="https://www.slideshare.net/rayploski/jboss-application-server-7">JBoss 7</a></small></p>
 					</textarea>
@@ -149,11 +149,11 @@
 
 				</section>
 				
-				<!-- Chapter 2 - Configuration -->
+				<!-- Chapter 2 - Deployment methods -->
 				<section>
 					<section data-markdown>
 						<textarea data-template>
-							## 2. Deploy
+							## 2. Deployment methods
 							
 							1. Hotdeploy
 							1. JBoss Console
@@ -233,17 +233,75 @@ Press any key to continue ...
 
 				</section>
 
-				<!-- Chapter 3 - Configuration -->
+				<!-- Chapter 3 - Deployment descriptors -->
 				<section>
 					<section data-markdown>
 						<textarea data-template>
-							## 3. Configuration
+							## 3. Deployment descriptors
 							
-							1. deployment descriptor
-							1. Logging
-							1. Datasource
-							1. Modules
+							1. standalone.xml
+							1. jboss-web.xml
+							1. jboss-deployment-structure.xml
 						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.1 standalone.xml
+
+							Binding value via JNDI:
+							```
+<subsystem xmlns="urn:jboss:domain:naming:2.0">  
+      <bindings>  
+         <simple name="java:global/url/Configuration" value="file:///data/config/wildfly-services-1.0" type="java.net.URL"/>  
+     </bindings>  
+</subsys
+							```
+							
+							Usage:
+							```
+@Resource(lookup="java:global/url/Configuration")  
+private URL configuration;
+							```
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.2 jboss-web.xml
+
+							```
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web>
+	<context-root>zam-jboss-maven-plugin</context-root>
+</jboss-web>
+							```
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.3 jboss-deployment-structure.xml
+
+							```
+<jboss-deployment-structure>
+
+	<deployment>
+		<dependencies>
+			<module name="org.springframework.spring" slot="3.2.3" export="true">
+				<imports>
+					<include path="META-INF**" />
+					<include path="**" />
+				</imports>
+				<exports>
+					<include path="META-INF**" />
+					<include path="**" />
+				</exports>
+			</module>
+			<module name="org.apache.commons.beanutils" export="true" />
+			<module name="org.apache.commons.collections" export="true" />
+							```
+							</textarea>
 					</section>
 
 				</section>
