@@ -1,0 +1,198 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>DevDay - ELK</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/blood.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<!-- 
+				https://help.github.com/articles/basic-writing-and-formatting-syntax/
+				https://www.webpagefx.com/tools/emoji-cheat-sheet/
+				-->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## ELK
+							#### Elasticsearch, Logstash & Kibana 
+													
+							Created by [Arnošt Havelka](http://cz.linkedin.com/in/arnosthavelka/)
+						</textarea>
+					</section>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## Agenda
+						
+						1. Concept and some theory
+						1. Data Reservoir
+						1. Data Collectors
+						1. Console
+						1. Live Demo
+						1. ZAM solution
+						
+						<p><small>See: <a href="https://www.elastic.co/">elastic.co</a></small></p>
+					</textarea>
+				</section>
+					
+				<!-- Chapter 1 - Concept and some theory -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 1. Concept and some theory
+							
+							1. Overview
+							1. Architecture
+							1. Available products
+						</textarea>
+					</section>
+					
+					<!--section>
+						<h3>1.1 History</h3>
+						<img src="img/jboss-eap_history.jpg" alt="History of JBoss"/>
+					</section>
+					
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 1.3 Modes
+
+							1. **Standalone**
+							   - Single JVM server
+							   - Managed from JVM server itself
+							1. **Domain**
+							   - Multi JVM model (multiple JVMs)
+							   - Managed from Domain Controller (single point)
+							   - Three separate processes:
+							     - Process Controller (starting servers)
+								 - Host Controller (pushing out the configuration changes over the domain)
+								 - Server Instance (JVM)
+						</textarea>
+					</section-->
+
+				</section>
+				
+				<!-- Chapter 2 - Data Reservoir -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 2. Data Reservoir
+							### [Elasticsearch]
+							
+							1. Overview
+							1. Key componets (shard, index, etc.)
+							1. Scaling
+						</textarea>
+					</section>
+
+					<!--section data-markdown>
+						<textarea data-template>
+							## 2.1 Hotdeploy
+							
+							Simply put the deployable artifact (WAR/EAR) to this folder (for the standalone mode):
+							
+							__`<JBOSS_HOME>`\standalone\deployments__
+						</textarea>
+					</section-->
+
+				</section>
+
+				<!-- Chapter 3 - Data Collectors -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 3. Data Collectors
+							
+							1. Types
+							1. Logstash
+							   - Inputs
+							   - Filters
+							   - Outputs
+							1. Filebeat
+						</textarea>
+					</section>
+
+					<!--section data-markdown>
+						<textarea data-template>
+							## 2.1 Hotdeploy
+							
+							Simply put the deployable artifact (WAR/EAR) to this folder (for the standalone mode):
+							
+							__`<JBOSS_HOME>`\standalone\deployments__
+						</textarea>
+					</section-->
+
+				</section>
+
+				<!-- Chapter 4 - Live demo -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 4. Live demo
+							
+							<p><a href="http://demo.elastic.co/app/kibana">http://demo.elastic.co/app/kibana</a></p>
+						</textarea>
+					</section>
+
+
+				</section>
+
+				<!-- Chapter 5 - ZAM Solution -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 5. ZAM Solution
+							
+							
+						</textarea>
+					</section>
+
+
+				</section>
+
+				<section>
+					<h1>THE END</h1>
+					<h3>Thank you!</h3>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
