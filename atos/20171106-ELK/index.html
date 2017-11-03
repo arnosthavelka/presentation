@@ -44,7 +44,7 @@
 						## Agenda
 						
 						1. The Concept
-						1. Data Reservoir
+						1. Elasticsearch
 						1. Data Collectors
 						1. Console
 						1. Live Demo
@@ -117,24 +117,33 @@
 				<section>
 					<section data-markdown>
 						<textarea data-template>
-							## 2. Data Reservoir
-							### [Elasticsearch]
+							## 2. Elasticsearch
+							### [Data Reservoir]
 							
-							1. Overview
+							1. Architecture
 							1. Key components (nodes, shards, indices etc.)
 							1. Scaling
 						</textarea>
 					</section>
 
-					<!--section data-markdown>
+					<section>
+						<h3>2.1 Architecture</h3>
+						<img src="img/elasticsearch.jpg" alt="Big Data Landscape in  2016"/>
+					</section>
+
+					<section data-markdown>
 						<textarea data-template>
-							## 2.1 Hotdeploy
+							## 2.2. Key components
 							
-							Simply put the deployable artifact (WAR/EAR) to this folder (for the standalone mode):
+							1. **Node** - a single server that stores the data and participates in indexing and search capabilities.
+							1. **Index** - a collection of documents that have somewhat similar characteristics.
+							1. **Type** - a logical category/partition of your index.
+							1. **Document** - a basic unit of information that can be indexed.
+							1. **Shards & Replicas** - the basic element to store data. The index is split into multiple pieces called shards.
 							
-							__`<JBOSS_HOME>`\standalone\deployments__
+							<p><small>See: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_basic_concepts.html">Basic Concept</a></small></p>
 						</textarea>
-					</section-->
+					</section>
 
 				</section>
 
