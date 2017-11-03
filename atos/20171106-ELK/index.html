@@ -43,7 +43,7 @@
 					<textarea data-template>
 						## Agenda
 						
-						1. Concept and some theory
+						1. The Concept
 						1. Data Reservoir
 						1. Data Collectors
 						1. Console
@@ -54,42 +54,63 @@
 					</textarea>
 				</section>
 					
-				<!-- Chapter 1 - Concept and some theory -->
+				<!-- Chapter 1 - The Concept -->
 				<section>
 					<section data-markdown>
 						<textarea data-template>
-							## 1. Concept and some theory
+							## 1. The Concept
 							
 							1. Overview
 							1. Architecture
-							1. Available products
+							1. Big Data Landscape
+							1. ELK products
 						</textarea>
 					</section>
-					
-					<!--section>
-						<h3>1.1 History</h3>
-						<img src="img/jboss-eap_history.jpg" alt="History of JBoss"/>
-					</section>
-					
-					</section>
-					
+								
 					<section data-markdown>
 						<textarea data-template>
-							## 1.3 Modes
+							## 1.1 Overview
 
-							1. **Standalone**
-							   - Single JVM server
-							   - Managed from JVM server itself
-							1. **Domain**
-							   - Multi JVM model (multiple JVMs)
-							   - Managed from Domain Controller (single point)
-							   - Three separate processes:
-							     - Process Controller (starting servers)
-								 - Host Controller (pushing out the configuration changes over the domain)
-								 - Server Instance (JVM)
+							ELK stands for:
+							1. **Elastisearch**
+							   - Full-test search engine
+							   - NoSQL database
+							1. **Logstash**
+							   - Data collector (filtering, modifications, etc.)
+							1. **Kibana** -
+							   - Web console (visualization, data analysis, etc.)
 						</textarea>
-					</section-->
+					</section>
+					
+					<section>
+						<h3>1.2 Architecture</h3>
+						<img src="img/big_data_architecture.jpg" alt="Simple architecture of Big Data"/>
+					</section>
 
+					<section>
+						<h3>1.3 Big Data Landscape</h3>
+						<img src="img/Big-Data-Landscape-2016-v18-FINAL.jpg" alt="Big Data Landscape in  2016"/>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 1.4 ELK products [1/2]
+
+							1. **Elastisearch** - a distributed, RESTful search and analytics engine capable of solving a growing number of use cases.
+							1. **Kibana** - lets you visualize your Elasticsearch data and navigate the Elastic Stack
+							1. **Logstash** - is server-side data processing pipeline that ingests data from a multitude of sources simultaneously, transforms it, and then sends it to your favorite “stash.”.
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 1.4 ELK products [2/2]
+
+							1. **Beats** - is the platform for single-purpose data shippers. The Beats family consists of Filebeat, Metricbeat, Packetbeat, Winlogbeat, Heartbeat.
+							1. **X-Pack** - the additional components (security, alerting, monitoring, reporting, grapg, machine learning).
+							1. **Cloud** - the hosted Elasticsearch & Kibana on AWS and GCP.
+						</textarea>
+					</section>
 				</section>
 				
 				<!-- Chapter 2 - Data Reservoir -->
@@ -100,7 +121,7 @@
 							### [Elasticsearch]
 							
 							1. Overview
-							1. Key componets (shard, index, etc.)
+							1. Key components (nodes, shards, indices etc.)
 							1. Scaling
 						</textarea>
 					</section>
