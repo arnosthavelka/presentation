@@ -120,20 +120,36 @@
 							## 2. Elasticsearch
 							### [Data Reservoir]
 							
+							1. Overview
 							1. Architecture
 							1. Key components (nodes, shards, indices etc.)
-							1. Scaling
+							1. Search example
+							1. Cluster & Scaling
+							
+							<p><small>See: <a href="https://www.elastic.co/products/elasticsearch">Elasticsearch product page</a></small></p>
 						</textarea>
-					</section>
-
-					<section>
-						<h3>2.1 Architecture</h3>
-						<img src="img/elasticsearch.jpg" alt="Big Data Landscape in  2016"/>
 					</section>
 
 					<section data-markdown>
 						<textarea data-template>
-							## 2.2. Key components
+							## 2.1 Overview
+							
+							1. Search and analytics engine based on **Lucine** engine
+							1. Serves as NoSQL database
+							1. Uses standard RESTful APIs and JSON (including management & batch processing)
+							1. Clients are available in many languages such as Java, Python, .NET, and Groovy (and more by contributors)
+							
+						</textarea>
+					</section>
+
+					<section>
+						<h3>2.2 Architecture</h3>
+						<img src="img/elasticsearch.jpg" alt="Elasticsearch architecture"/>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 2.3 Key components
 							
 							1. **Node** - a single server that stores the data and participates in indexing and search capabilities.
 							1. **Index** - a collection of documents that have somewhat similar characteristics.
@@ -143,6 +159,46 @@
 							
 							<p><small>See: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_basic_concepts.html">Basic Concept</a></small></p>
 						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 2.4 Search Example
+							
+							```
+curl -H "Content-Type: application/json" -XGET
+'http://localhost:9200/social-*/_search' -d '{
+  "query": {
+    "match": {
+      "message": "myProduct"
+    }
+  },
+  "aggregations": {
+    "top_10_states": {
+      "terms": {
+        "field": "state",
+        "size": 10
+      }
+    }
+  }
+}'
+							```
+						</textarea>
+					</section>
+					
+					<section>
+						<h3>2.5 Cluster & Scaling [1/3]</h3>
+						<img src="img/elasticsearch-scaling.jpg" alt="Scaling of Elasticsearch"/>
+					</section>
+					
+					<section>
+						<h3>2.5 Cluster & Scaling [2/3]</h3>
+						<img src="img/elasticsearch-multicast.jpg" alt="Multicast communication of Elasticsearch"/>
+					</section>
+
+					<section>
+						<h3>2.5 Cluster & Scaling [3/3]</h3>
+						<img src="img/elasticsearch-unicast.jpg" alt="Unicast communication of Elasticsearch"/>
 					</section>
 
 				</section>
