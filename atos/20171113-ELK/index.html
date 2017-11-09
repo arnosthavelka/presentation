@@ -121,10 +121,12 @@
 							### [Data Reservoir]
 							
 							1. Overview
+							1. Features
 							1. Architecture
 							1. Key components (nodes, shards, indices etc.)
-							1. Search example
 							1. Cluster & Scaling
+							1. API
+							1. REST API usage
 							
 							<p><small>See: <a href="https://www.elastic.co/products/elasticsearch">Elasticsearch product page</a></small></p>
 						</textarea>
@@ -142,14 +144,25 @@
 						</textarea>
 					</section>
 
+					<section data-markdown>
+						<textarea data-template>
+							## 2.2 Features
+							
+							1. Handle data (indexing, CRUD operations)
+							1. Analyzing data (analyzers, tokenizers, stemming, ngrams, etc.)
+							1. Search data (via match or filter)
+							1. Searching with relevancy (boosting, reducing, scripting, etc.)
+						</textarea>
+					</section>
+
 					<section>
-						<h3>2.2 Architecture</h3>
+						<h3>2.3 Architecture</h3>
 						<img src="img/elasticsearch.jpg" alt="Elasticsearch architecture"/>
 					</section>
 
 					<section data-markdown>
 						<textarea data-template>
-							## 2.3 Key components
+							## 2.4 Key components
 							
 							1. **Node** - a single server that stores the data and participates in indexing and search capabilities.
 							1. **Index** - a collection of documents that have somewhat similar characteristics.
@@ -161,9 +174,36 @@
 						</textarea>
 					</section>
 
+					<section>
+						<h3>2.5 Cluster & Scaling [1/3]</h3>
+						<img src="img/elasticsearch-scaling.jpg" alt="Scaling of Elasticsearch"/>
+					</section>
+					
+					<section>
+						<h3>2.5 Cluster & Scaling [2/3]</h3>
+						<img src="img/elasticsearch-multicast.jpg" alt="Multicast communication of Elasticsearch"/>
+					</section>
+
+					<section>
+						<h3>2.5 Cluster & Scaling [3/3]</h3>
+						<img src="img/elasticsearch-unicast.jpg" alt="Unicast communication of Elasticsearch"/>
+					</section>
+
 					<section data-markdown>
 						<textarea data-template>
-							## 2.4 Search Example
+							## 2.6 API
+							
+							Examples:
+							1. **_search** - search in defined index or type (including wildcards)
+							1. **_cat** - helpful diagnostic and debugging tools
+							1. **_cluster** - cluster tools
+							
+							<p><small>See: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_basic_concepts.html">Basic Concept</a></small></p>
+						</textarea>
+					</section>
+					<section data-markdown>
+						<textarea data-template>
+							## 2.7 REST API usage
 							
 							```
 curl -H "Content-Type: application/json" -XGET
@@ -186,21 +226,6 @@ curl -H "Content-Type: application/json" -XGET
 						</textarea>
 					</section>
 					
-					<section>
-						<h3>2.5 Cluster & Scaling [1/3]</h3>
-						<img src="img/elasticsearch-scaling.jpg" alt="Scaling of Elasticsearch"/>
-					</section>
-					
-					<section>
-						<h3>2.5 Cluster & Scaling [2/3]</h3>
-						<img src="img/elasticsearch-multicast.jpg" alt="Multicast communication of Elasticsearch"/>
-					</section>
-
-					<section>
-						<h3>2.5 Cluster & Scaling [3/3]</h3>
-						<img src="img/elasticsearch-unicast.jpg" alt="Unicast communication of Elasticsearch"/>
-					</section>
-
 				</section>
 
 				<!-- Chapter 3 - Data Collectors -->
