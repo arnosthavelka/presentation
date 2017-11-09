@@ -359,7 +359,63 @@ PUT aha/test/2
 					
 					<section data-markdown>
 						<textarea data-template>
-							## 5.4 Live demo
+							## 5.2 Retrieve data
+							
+							```
+GET aha/test/1
+							```
+							
+							```
+{
+  "_index": "aha",
+  "_type": "test",
+  "_id": "1",
+  "_version": 6,
+  "found": true,
+  "_source": {
+    "name": "Arnost Havelka",
+    "job": "TL"
+  }
+}
+							```
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 5.3 Search all
+							
+							```
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+							```
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 5.3 Search by field
+							
+							```
+GET _search
+{
+  "query": {
+    "match": {
+      "name" : "arnost"
+    }
+  }
+}
+							```
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 5.4 Links to try yourself
 							
 							1. http://demo.elastic.co/app/kibana (official)
 							1. http://localhost:9200/_cluster/health
