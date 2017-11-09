@@ -197,6 +197,8 @@
 							1. **_search** - search in defined index or type (including wildcards)
 							1. **_cat** - helpful diagnostic and debugging tools
 							1. **_cluster** - cluster tools
+							1. **_cache** - cache tools
+							1. and more
 							
 							<p><small>See: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_basic_concepts.html">Basic Concept</a></small></p>
 						</textarea>
@@ -327,11 +329,43 @@ curl -H "Content-Type: application/json" -XGET
 						<textarea data-template>
 							## 5. Live demo
 							
-							<p><a href="http://demo.elastic.co/app/kibana">http://demo.elastic.co/app/kibana</a></p>
+							1. Create data
+							1. Get data
+							1. Search data
+							1. Links
 						</textarea>
 					</section>
 
-
+					<section data-markdown>
+						<textarea data-template>
+							## 5.1 Create data
+							
+							```
+PUT aha/test/1
+{
+  "name": "Arnost",
+  "title": "TL"
+}
+							```
+							```
+PUT aha/test/2
+{
+  "name": "Stano",
+  "title": "Deputy"
+}
+							```
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 5.4 Live demo
+							
+							1. http://demo.elastic.co/app/kibana (official)
+							1. http://localhost:9200/_cluster/health
+							1. http://localhost:5601/app/kibana
+						</textarea>
+					</section>
 				</section>
 
 				<!-- Chapter 5 - ZAM Solution -->
