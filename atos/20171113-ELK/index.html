@@ -45,8 +45,8 @@
 						
 						1. The Concept
 						1. Elasticsearch
-						1. Data Collectors
-						1. Console
+						1. Logstash
+						1. Kibana
 						1. Live Demo
 						1. ZAM solution
 						
@@ -228,38 +228,104 @@ curl -H "Content-Type: application/json" -XGET
 					
 				</section>
 
-				<!-- Chapter 3 - Data Collectors -->
+				<!-- Chapter 3 - Logstash -->
 				<section>
 					<section data-markdown>
 						<textarea data-template>
-							## 3. Data Collectors
+							## 3. Logstash
+							### [Data Collectors]
 							
-							1. Types
-							1. Logstash
-							   - Inputs
-							   - Filters
-							   - Outputs
-							1. Filebeat
+							1. Inputs
+							1. Filters
+							1. Outputs
 						</textarea>
 					</section>
 
-					<!--section data-markdown>
+					<section>
+						<h3>3.1 Inputs [1/2]</h3>
+						<img src="img/logstash-inputs.png" alt="Schema of logstach inputs"/>
+					</section>
+					
+					<section data-markdown>
 						<textarea data-template>
-							## 2.1 Hotdeploy
+							## 3.1 Inputs [1/2]
 							
-							Simply put the deployable artifact (WAR/EAR) to this folder (for the standalone mode):
-							
-							__`<JBOSS_HOME>`\standalone\deployments__
+							1. elasticsearch
+							1. file
+							1. jdbc
+							1. evenlog
+							1. and many more
 						</textarea>
-					</section-->
+					</section>
 
+					<section>
+						<h3>3.2 Filters [1/2]</h3>
+						<img src="img/logstash-filters.png" alt="Schema of logstach filters"/>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 3.2 Filters [1/2]
+							
+							1. grok
+							1. clone
+							1. split
+							1. translate
+							1. and many more
+						</textarea>
+					</section>
+
+					<section>
+						<h3>3.3 Outputs [1/2]</h3>
+						<img src="img/logstash-outputs.png" alt="Schema of logstach outputs"/>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 3.3 Outputs [1/2]
+							
+							1. elasticsearch
+							1. email
+							1. file
+							1. jira
+							1. and many more
+						</textarea>
+					</section>
+				
 				</section>
 
-				<!-- Chapter 4 - Live demo -->
+				<!-- Chapter 4 - Kibana -->
 				<section>
 					<section data-markdown>
 						<textarea data-template>
-							## 4. Live demo
+							## 4. Kibana
+							### [Console]
+							
+							1. Discover
+							1. Visualize
+							1. Dashboard
+							1. Dev Tools
+							1. Management							
+						</textarea>
+					</section>
+
+					<section>
+						<h3>4.1 Dashboard</h3>
+						<img src="img/kibana-dashboard.jpg" alt="Kibana dashboard"/>
+					</section>
+					
+					<section>
+						<h3>4.2 Dev Tools]</h3>
+						<img src="img/kibana-devtools.jpg" alt="Kibana Dev Tools"/>
+					</section>
+
+				</section>
+
+				<!-- Chapter 5 - Live demo -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 5. Live demo
 							
 							<p><a href="http://demo.elastic.co/app/kibana">http://demo.elastic.co/app/kibana</a></p>
 						</textarea>
