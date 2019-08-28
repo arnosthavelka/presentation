@@ -1,6 +1,6 @@
 make HTML available - http://stackoverflow.com/questions/8446218/how-to-see-an-html-page-on-github-as-a-normal-rendered-html-page-to-see-preview
+direct  (from gh-pages branch) - http://arnosthavelka.github.com/presentation/devday/automated_testing/template.html
+preview (from master branch) - http://htmlpreview.github.com/?
 
-repo automated_testing
-----------------------
-direct  - http://arnosthavelka.github.com/presentation/devday/automated_testing/template.html
-preview - http://htmlpreview.github.com/?https://github.com/arnosthavelka/presentation/blob/master/devday/automated_testing/template.html
+
+reveal.js (presentation tool) - https://github.com/hakimel/reveal.js

@@ -15,7 +15,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 		<link rel="stylesheet" href="css/reveal.min.css">
-		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+		<link rel="stylesheet" href="css/theme/blood.css" id="theme">
 
 		<!-- For syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -43,25 +43,25 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
-					<h1>WEB SERVICES (SOAP)</h1>
-					<h3>Implementation with JAX-WS & Spring</h3>
-					<p>[Internal training by ACE Academy]</p>
+					<h1>WEB SERVICES</h1>
+					<h3>SOAP (JAX-WS & CXF)</h3>
+					<h3>Microservices + REST</h3>
 					<p>
-						<small>Created by <a href="mailto:arnost.havelka@asseco-ce.com">Havelka Arnošt</a></small>
+						<small>Created by <a href="http://cz.linkedin.com/in/arnosthavelka/">Arnošt Havelka</a></small>
 					</p>
 				</section>
 
 				<section>
 					<h2>About me</h2>
 					<ol>
-						<li>ACE employee: since 6/2009</li>
-						<li>Job title: Solution Architect / Head of SW development</li>
-						<li>Division: Public CZ</li>
+						<li>Job title: <strong>Solution Architect</strong></li>
+						<li>O2 employment: <strong>Since 1/2015</strong></li>
 						<li>Certifications:<br/>
-							<img src="img/scjp.jpg" alt="Sun Certified Programmer for the Java Platform, Standard Edition 6 (5/2010)" style="-webkit-transform: rotate(180deg);">
-							<img src="img/ocwsd.gif" alt="Oracle Certified Professional, Java EE 5 Web Services Developer (12/2010)" style="-webkit-transform: rotate(180deg);">
-							<img src="img/ocjpad.gif" alt="Oracle Certified Expert, Java EE 6 Java Persistence API Developer (5/2014)" style="-webkit-transform: rotate(180deg);"><br/>
-							<img src="img/spring.jpg" alt="Spring Core 3.0 (7/2013)" style="-webkit-transform: rotate(180deg);"><br/>
+							<img src="img/scjp.jpg" alt="Sun Certified Programmer for the Java Platform, Standard Edition 6 (5/2010)">
+							<img src="img/owsd.gif" alt="Oracle Certified Professional, Java EE 5 Web Services Developer (12/2010)">
+							<img src="img/ojpad.gif" alt="Oracle Certified Expert, Java EE 6 Java Persistence API Developer (5/2014)">
+							<img src="img/owcd.gif" alt="Oracle Certified Expert, Java EE 6 Web Component Developer (5/2015)"><br/>
+							<img src="img/spring.jpg" alt="Spring Core 3.0 (7/2013)"><br/>
 						</li>
 					</ol>
 				</section>
@@ -80,9 +80,12 @@
 					<ol>
 						<li>Basic theory</li>
 						<li>WSDL & XSD</li>
-						<li>JAX-WS annotations</li>
+						<li>JAX-WS</li>
+						<li>CXF</li>
 						<li>Implementation (including testing)</li>
 						<li>Exposing WS in different setups</li>
+						<li>Microservices</li>
+						<li>REST</li>
 					</ol>
 				</section>
 
@@ -128,8 +131,8 @@
 						<ul>
 							<li><a href="http://en.wikipedia.org/wiki/Java_API_for_XML_Web_Services" alt="Link of JAX-WS on Wikipedia">JAX-WS</a> (Java API for XML Web Services) is Java specification 
 							(<a href="http://jcp.org/en/jsr/detail?id=224" alt="Link to JSR-224">JSR-224</a>) of webservices.</li>
-							<li>Vendors: Metro project, CXF, Axis, Oracle Weblogic, etc.</li>
-							<li>Related technologies: JAX-B, SAAJ, etc.</li>
+							<li>Vendors: Metro project (reference implementation), CXF, Axis, Oracle Weblogic, etc.</li>
+							<li>Related technologies: JAX-B (XML binding), SAAJ (SOAP with Attachments API for Java), etc.</li>
 							<li>Specifications in JavaEE:
 								<table style="border: 1px solid white;">
 									<tr style="background-color: gray;">
@@ -199,7 +202,7 @@
 						<ul>
 							<li>It's an abbreviation (stands for) of Web Services Interoperability.</li>
 							<li>It's a set of guidelines, best practices and test for interoperability (for heterogeneous systems).</li>
-							<li>Last version of basic profile is 2.0, but frequently used is still version 1.2.</li>
+							<li>Last version of basic profile is 2.0. However usually used one is still version 1.2.</li>
 						</li>
 					</section>
 					<section>
@@ -209,7 +212,7 @@
 							Annotation has threshold to define size for using MTOM/XOP (otherwise it is sent normally).</li>
 							<li><strong>WS-Addressing</strong> - a standardized way of including message routing data within SOAP headers</li>
 							<li><strong>WS-Security</strong> - an extension to SOAP to apply security to Web services (XML Signature and XML Encryption)</li>
-							<li><strong>WS-ReliableMessaging</strong> - a protocol that allows SOAP messages to be reliably delivered between distributed applications</li>
+							<li><strong>WS-ReliableMessaging</strong> - a protocol that allows SOAP messages to be reliably delivered distributed system (between applications)</li>
 							<li><a href="http://en.wikipedia.org/wiki/List_of_web_service_specifications" alt="List of web service specifications on Wikipedia">And more</a> (e.g. WS-Trust, WS-Coordination , WS-Transaction, WS-MetadataExchange)</li>
 						</li>
 					</section>
@@ -219,6 +222,7 @@
 					<section>
 						<h2>2. WSDL & XSD</h2>
 						<ol>
+							<li>Overview</li>
 							<li>XSD Types (simple type, complex type)</li>
 							<li>XSD Sequence + Attributes + Enums</li>
 							<li>XSD Groups</li>
@@ -228,7 +232,13 @@
 					</section>
 
 					<section>
-						<h3>2.1 XSD Types (simple type, complex type)</h3>
+						<h2>2.1 Overview</h2>
+						<p align="left"><strong>WSDL</strong> - contract of SOAP WS. It defines (or includes) types, operations/methods, services, binding, etc.</p>
+						<p align="left"><strong>XSD</strong> - definition of XML types and elements</p>
+					</section>
+
+					<section>
+						<h3>2.2 XSD Types (simple type, complex type)</h3>
 						<h4>Simple type</h4>
 						<pre><code class="xml"><xs:simpleType name="CustomChar">
     <xs:annotation>
@@ -251,7 +261,7 @@
 					</section>
 
 					<section>
-						<h3>2.2 XSD Sequence + Attributes + Enums</h3>
+						<h3>2.3 XSD Sequence + Attributes + Enums</h3>
 						<h4>Sequence + Attributes</h4>
 						<pre><code class="xml"><xs:complexType name="CustomFilter">
     <xs:sequence>
@@ -271,7 +281,7 @@
 					</section>
 
 					<section>
-						<h3>2.3 XSD Groups</h3>
+						<h3>2.4 XSD Groups</h3>
 						<h4>Definition</h4>
 						<pre><code class="xml"><xs:group name="CustomGroup">
     <xs:sequence>
@@ -289,7 +299,7 @@
 					</section>
 					
 					<section>
-						<h3>2.4 Namespace</h3>
+						<h3>2.5 Namespace</h3>
 						<h4>WSDL</h4>
 						<pre><code class="xml"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <wsdl:definitions xmlns="urn:com:asseco:csu:abc:v1:ws:Custom" 
@@ -312,46 +322,47 @@
 
 	...
 </code></pre>
+						<small align="left">Note: <i>xs:include</i> is for types in same namespace, <i>xs:import</i> is for types from different namespace.</small>
 					</section>
 
 					<section>
-						<h3>2.5 WSDL structure</h3>
-<pre><code class="xml"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<wsdl:definitions xmlns="urn:com:asseco:abc:v1:ws:Custom" xmlns:cty="urn:com:asseco:abc:v1:type:Custom" targetNamespace="urn:com:asseco:abc:v1:ws:Custom">
+						<h3>2.6 WSDL structure</h3>
+<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
+&lt;wsdl:definitions xmlns="urn:com:asseco:abc:v1:ws:Custom" xmlns:cty="urn:com:asseco:abc:v1:type:Custom" targetNamespace="urn:com:asseco:abc:v1:ws:Custom"&gt;
 
-    <wsdl:types>
-        <xsd:import namespace="urn:com:asseco:abc:v1:type:Custom" schemaLocation="../xsd/CustomType.xsd"></xsd:import>
-    </wsdl:types>
+    &lt;wsdl:types&gt;
+        &lt;xsd:import namespace="urn:com:asseco:abc:v1:type:Custom" schemaLocation="../xsd/CustomType.xsd"/&gt;
+    &lt;/wsdl:types&gt;
 
-    <wsdl:message name="AbcRequest">
-        <wsdl:part element="cty:AbcRequest" name="request"/>
-    </wsdl:message>
-    <wsdl:message name="AbcResponse">
-        <wsdl:part element="cty:AbcResponse" name="response"/>
-    </wsdl:message>
+    &lt;wsdl:message name="AbcRequest"&gt;
+        &lt;wsdl:part element="cty:AbcRequest" name="request"/&gt;
+    &lt;/wsdl:message&gt;
+    &lt;wsdl:message name="AbcResponse"&gt;
+        &lt;wsdl:part element="cty:AbcResponse" name="response"/&gt;
+    &lt;/wsdl:message&gt;
 
-    <wsdl:portType name="CustomPortType">
-        <wsdl:operation name="AbcMethod">
-            <wsdl:input message="AbcRequest"/>
-            <wsdl:output message="AbcResponse"/>
-        </wsdl:operation>
-    </wsdl:portType>
+    &lt;wsdl:portType name="CustomPortType"&gt;
+        &lt;wsdl:operation name="AbcMethod"&gt;
+            &lt;wsdl:input message="AbcRequest"/&gt;
+            &lt;wsdl:output message="AbcResponse"/&gt;
+        &lt;/wsdl:operation&gt;
+    &lt;/wsdl:portType&gt;
 
-    <wsdl:binding name="CustomBinding" type="CustomPortType">
+    &lt;wsdl:binding name="CustomBinding" type="CustomPortType"&gt;
         &lt;soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/&gt;
-        <wsdl:operation name="AbcMethod">
+        &lt;wsdl:operation name="AbcMethod"&gt;
             &lt;soap:operation soapAction="AbcMethod"/&gt;
             &lt;wsdl:input&gt;&lt;soap:body use="literal"/&gt;&lt;/wsdl:input&gt;
             &lt;wsdl:output&gt;&lt;soap:body use="literal"/&gt;&lt;/wsdl:output&gt;
-        </wsdl:operation>
-    </wsdl:binding>
+        &lt;/wsdl:operation&gt;
+    &lt;/wsdl:binding&gt;
 
-    <wsdl:service name="CustomWS">
-        <wsdl:port binding="CustomBinding" name="CustomPortService">
+    &lt;wsdl:service name="CustomWS"&gt;
+        &lt;wsdl:port binding="CustomBinding" name="CustomPortService"&gt;
             &lt;soap:address location="???"/&gt;
-        </wsdl:port>
-    </wsdl:service>
-</wsdl:definitions>
+        &lt;/wsdl:port&gt;
+    &lt;/wsdl:service&gt;
+&lt;/wsdl:definitions&gt;
 </code></pre>
 					</section>
 
@@ -359,7 +370,7 @@
 
 				<section>
 					<section>
-						<h2>3. JAX-WS Annotations</h2>
+						<h2>3. JAX-WS</h2>
 						<ol>
 							<li>Overview</li>
 							<li>Exposing WS (server side)</li>
@@ -370,27 +381,33 @@
 
 					<section>
 						<h3>3.1 Overview</h3>
-						<h4 align="left">Basic annotations are:</h4>
-						<ul>
-							<li><strong>@Webservice</strong> - expose WS with embedded mashalling (done by the server)</li>
-							<li><strong>@WebServiceProvider</strong> - expose WS, but handle service completely (from XML request to XML response)</li>
-							<li><strong>@WebServiceClient</strong> - consume/call WS</li>
-							<li><strong>@HandlerChain</strong> - get access to message content (e.g. for logging, authorization, modification, etc.)</li>
-							<li><strong>@MTOM</strong> - serve/consume bigger content as attachments (instead of encoded text)</li>
-						</ul>
-					</section>			
-					<section>
-						<h3>3.2 Exposing WS (server side)</h3>
-						<ol>
-							<li>Contract Last - implementation from Java</li>
-							<li>Contract First - implementation from WSDL</li>
-							<li>Complex processing - processing SOAP message</li>
-						</ol>
+						<p align="left"><a href="http://en.wikipedia.org/wiki/Java_API_for_XML_Web_Services" alt="Link of JAX-WS on Wikipedia">Java API for XML Web Services</a> (JAX-WS) is Java specification 
+							(defined as <a href="http://jcp.org/en/jsr/detail?id=224" alt="Link to JSR-224">JSR-224</a>) of webservices.</p>
+						<p align="left">There are many implementations (vendors): Metro project (reference implementation), CXF, Axis, Oracle Weblogic, etc.</p>
 					</section>
 
 					<section>
-						<h3>3.2.1 Contract Last(Server Side)</h3>
-						<h4 align="left">@Webservice</h4>
+						<h3>3.2 Exposing WS</h3>
+						<h4>[Server side]</h4>
+						<ol>
+							<li>Annotations for server side</li>
+							<li>Contract Last - implementation from Java</li>
+							<li>Contract First - implementation from WSDL</li>
+							<li>Custom processing - custom processing of SOAP message</li>
+						</ol>
+					</section>
+					<section>
+						<h3>3.2.1 Annotations</h3>
+						<h4>[Server side]</h4>
+						<ul>
+							<li><strong>@Webservice</strong> - expose WS with embedded marshalling (done by the server)</li>
+							<li><strong>@WebServiceProvider</strong> - expose WS, but handle service completely (from XML request to XML response)</li>
+						</ul>
+					</section>
+					<section>
+						<h3>3.2.2 Contract Last</h3>
+						<h4>[Server side]</h4>
+						<p align="left">Use the annotation <strong>@WebService</strong> with all desired parameters (service name, port name, methods, etc.).</p>
 						<pre><code class="java">@WebService(serviceName = "HelloService", portName = "HelloPort", 
 			targetNamespace = "urn:com:asseco:aha:training:ws:v1")
 public class HelloWebService implements HelloService {
@@ -403,8 +420,9 @@ public class HelloWebService implements HelloService {
 }</code></pre>
 					</section>
 					<section>
-						<h3>3.2.2 Contract First (Server Side)</h3>
-						<h4 align="left">@Webservice</h4>
+						<h3>3.2.3 Contract First</h3>
+						<h4>[Server side]</h4>
+						<p align="left">Use the annotation <strong>@WebService</strong> only with definition of the generated interface.</p>
 						<pre><code class="java">@WebService(endpointInterface = "com.asseco.aha.training.ws.v1.HelloService")
 public class HelloWebService implements HelloService {
 
@@ -416,11 +434,13 @@ public class HelloWebService implements HelloService {
 }</code></pre>
 					</section>
 					<section>
-						<h3>3.2.3 Complex Processing (Server Side)</h3>
-						<h4 align="left">@WebServiceProvider</h4>
+						<h3>3.2.4 Custom Processing</h3>
+						<h4>[Server side]</h4>
+						<p align="left">Use the annotation <strong>@WebServiceProvider</strong> with all message parameters to be applied for.</p>
 						<pre><code class="java">@javax.xml.ws.ServiceMode(value = javax.xml.ws.Service.Mode.MESSAGE)
-@WebServiceProvider(wsdlLocation = "wsdl/ws-training-provider.wsdl", serviceName = "...", portName = "...", targetNamespace = "...")
-public class ProviderWebService implements Provider<SOAPMessage> {
+@WebServiceProvider(wsdlLocation = "wsdl/foo.wsdl", 
+    serviceName = "...", portName = "...", targetNamespace = "...")
+public class ProviderWebService implements Provider&lt;SOAPMessage&gt; {
 
 
 	@Override
@@ -435,15 +455,26 @@ public class ProviderWebService implements Provider<SOAPMessage> {
 					</section>
 					
 					<section>
-						<h3>3.3 Consuming WS (client side)</h3>
+						<h3>3.3 Consuming WS</h3>
+						<h4>[Client side]</h4>
 						<ol>
-							<li>Generated client - done by JAX-WS RI</li>
-							<li>Runtime client - runtime customization</li>
+							<li>Annotations for server side</li>
+							<li>Generated client - generated by JAX-WS RI</li>
+							<li>General client - provided by JAX-WS RI</li>
 							<li>Spring client - spring way</li>
 						</ol>
 					</section>
 					<section>
-						<h3>3.3.1 Generated client (Client Side)</h3>
+						<h3>3.3.1 Annotations</h3>
+						<h4>[Client side]</h4>
+						<ul>
+							<li><strong>@WebServiceClient</strong> - consume/call WS</li>
+						</ul>
+					</section>
+					<section>
+						<h3>3.3.1 Generated client</h3>
+						<h4>[Client side]</h4>
+						<p align="left">Use generated classes to create WS instance and get the port from there.</p>
 						<pre><code class="java">public class HelloWorldClient{
     public static void main(String[] args) throws Exception {
  		URL url = new URL("http://localhost:8080/ws-server-as/CalculatorWebService?WSDL");
@@ -465,12 +496,14 @@ public class ProviderWebService implements Provider<SOAPMessage> {
 }</code></pre>
 					</section>
 					<section>
-						<h3>3.3.2 Runtime client (Client Side)</h3>
+						<h3>3.3.2 Runtime client</h3>
+						<h4>[Client side]</h4>
+						<p align="left">Use <strong>Service</strong> classe to create WS instance and get the port from there.</p>
 						<pre><code class="java">public class HelloWorldClient{
  
     public static void main(String[] args) throws Exception {
  
-		URL url = new URL("http://localhost:8080/ws-server-as/HelloWebService?WSDL");
+        URL url = new URL("http://localhost:8080/ws-server-as/HelloWebService?WSDL");
         QName qname = new QName("http://ws.server.ws.training.aha.asseco.com/", "HelloWebServiceService");
  
         Service service = Service.create(url, qname);
@@ -483,7 +516,9 @@ public class ProviderWebService implements Provider<SOAPMessage> {
 }</code></pre>
 					</section>
 					<section>
-						<h3>3.3.3 Spring client (Client Side)</h3>
+						<h3>3.3.3 Spring client</h3>
+						<h4>[Client side]</h4>
+						<p align="left">Define client with Spring support.</p>
 						<pre><code class="xml"><beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
@@ -508,13 +543,21 @@ public class ProviderWebService implements Provider<SOAPMessage> {
 					<section>
 						<h3>3.4 Advanced Issues</h3>
 						<ol>
+							<li>Advanced annotations</li>
 							<li>Handler Chain</li>
 							<li>MTOM</li>
 							<li>WS-Addressing</li>
 						</ol>
 					</section>
 					<section>
-						<h3>3.4.1 Handler Chain</h3>
+						<h3>3.4.1 Advanced annotations</h3>
+						<ul>
+							<li><strong>@HandlerChain</strong> - get access to message content (e.g. for logging, authorization, modification, etc.)</li>
+							<li><strong>@MTOM</strong> - serve/consume bigger content as attachments (instead of encoded text)</li>
+						</ul>
+					</section>
+					<section>
+						<h3>3.4.2 Handler Chain</h3>
 						Handler definition:
 						<pre><code class="java">public class WsLoggingHandler implements SOAPHandler&lt;SOAPMessageContext&gt; {
     @Override
@@ -540,7 +583,7 @@ public class CalculatorWebService implements WsTrainingPortType {
 					</section>
 
 					<section>
-						<h3>3.4.2 MTOM</h3>
+						<h3>3.4.3 MTOM</h3>
 						Service:
 						<pre><code class="java">@WebService
 @MTOM(threshold = 1024)
@@ -562,7 +605,7 @@ public void testCalc() throws MalformedURLException {
 					</section>
 
 					<section>
-						<h3>3.4.3 WS-Addressing</h3>
+						<h3>3.4.4 WS-Addressing</h3>
 						Service:
 						<pre><code class="java">@WebService
 @Addressing(true, false) // enabled , required
@@ -591,7 +634,146 @@ SOAPAction: ""
 
 				<section>
 					<section>
-						<h2>4. Implementation</h2>
+						<h2>4. CXF</h2>
+						<ol>
+							<li>Overview</li>
+							<li>Setup</li>
+							<li>Exposing WS</li>
+							<li>Interceptors</li>
+						</ol>
+					</section>
+				
+					<section>
+						<h3>4.1 Overview</h3>
+						<p align="left"><a href="http://cxf.apache.org/" alt="CXF web site">Apache CXF</a> is an open source services framework. CXF helps you build and develop services using frontend programming APIs, 
+						like JAX-WS and JAX-RS. These services can speak a variety of protocols such as SOAP, XML/HTTP, RESTful HTTP, or CORBA and work over a variety of transports 
+						such as HTTP, JMS or JBI.</p>
+						<aside class="notes">URL is usually http://localhost:8080/ws-server-cxf/services</aside>
+					</section>
+					<section>
+						<h3>4.2 Setup</h3>
+						<p align="left">Maven dependency:</p>
+						<pre><code class="java">&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.cxf&lt;/groupId&gt;
+    &lt;artifactId&gt;cxf-rt-frontend-jaxws&lt;/artifactId&gt;
+    &lt;version&gt;3.0.2&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+						<p align="left">CXF configuration (via Spring):</p>
+						<pre><code class="java">&lt;beans ...
+    xmlns:jaxws="http://cxf.apache.org/jaxws"
+    xsi:schemaLocation="... http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd"&gt;
+
+    &lt;jaxws:endpoint ... address="/MyEndpoint"/&gt;
+&lt;/beans&gt;</code></pre>
+					</section>
+					<section>
+						<h3>4.3 Exposing WS</h3>
+						<h4>[Server side]</h4>
+						<ol>
+							<li>Contract Last - implementation from Java</li>
+							<li>Contract First - implementation from WSDL</li>
+							<li>Custom processing - custom processing of SOAP message</li>
+						</ol>
+					</section>
+
+					<section>
+						<h3>4.3.1 Contract Last</h3>
+						<h4>[Server side]</h4>
+						<ul>
+							<li>Prepare WSDL and generate classes</li>
+							<li>Implement generated interface</li>
+							<li>Use implemented class as:
+						<pre><code class="xml">&lt;jaxws:endpoint id="calcWS" 
+    implementor="com.asseco.aha.training.ws.server.ws.CalculatorWebService"
+    address="/CalculatorWebService"/&gt;</code></pre>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>4.2.2 Contract First</h3>
+						<h4>[Server side]</h4>
+						<ul>
+							<li>Prepare Spring bean (desired method annotated with <strong>@WebMethod</strong>). E.g. as:
+						<pre><code class="java">@Component("loremBean")
+public class LoremWebService {
+    @WebMethod
+    public byte[] generate(int paraCount) {
+        ...
+    }
+}</code></pre>
+							</li>
+							<li>Use implemented bean as:
+						<pre><code class="xml">&lt;jaxws:endpoint id="loremWS" implementor="#loremBean" 
+    address="/LoremWebService"&gt;
+    &lt;jaxws:properties&gt;
+        &lt;entry key="mtom-enabled" value="true" /&gt;
+        &lt;entry key="source-preferred-format" value="dom"/&gt;
+        &lt;entry key="schema-validation-enabled" value="false"/&gt;
+        &lt;entry key="faultStackTraceEnabled" value="true"/&gt;
+        &lt;entry key="exceptionMessageCauseEnabled" value="true"/&gt;
+    &lt;/jaxws:properties&gt;
+&lt;/jaxws:endpoint&gt;</code></pre>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>4.2.3 Custom Processing</h3>
+						<h4>[Server side]</h4>
+						<ul>
+							<li>Prepare Spring bean (desired method annotated with <strong>@WebMethod</strong>). E.g. as:
+						<pre><code class="java">@Component("providerBean")
+@javax.xml.ws.ServiceMode(value = javax.xml.ws.Service.Mode.PAYLOAD)
+@WebServiceProvider
+public class ProviderWebService implements Provider<Source> {
+    @Override
+    public Source invoke(Source request) {
+        ...
+    }
+}</code></pre>
+							</li>
+							<li>Use implemented bean as:
+						<pre><code class="xml">&lt;jaxws:endpoint id="providerWS"
+    implementor="#providerBean" address="/ProviderWebService"
+    wsdlLocation="classpath:wsdl/ws-training-provider.wsdl"
+    xmlns:a="urn:com:asseco:aha:training:ws:provider:srv:v1"
+    serviceName="a:ProviderService" endpointName="a:ProviderPort"/&gt;
+</code></pre>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>4.3 Interceptors</h3>
+						<pre><code class="java">&lt;beans ...
+    xmlns:cxf="http://cxf.apache.org/core"
+    xsi:schemaLocation="... http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd"&gt;
+
+    &lt;import resource="classpath:META-INF/cxf/cxf.xml" /&gt;
+    &lt;bean id="logInbound" class="org.apache.cxf.interceptor.LoggingInInterceptor" /&gt;
+    &lt;bean id="logOutbound" class="org.apache.cxf.interceptor.LoggingOutInterceptor" /&gt;
+
+    &lt;cxf:bus&gt;
+        &lt;cxf:inInterceptors&gt;
+            &lt;ref bean="logInbound" /&gt;
+        &lt;/cxf:inInterceptors&gt;
+        &lt;cxf:outInterceptors&gt;
+            &lt;ref bean="logOutbound" /&gt;
+        &lt;/cxf:outInterceptors&gt;
+        &lt;cxf:inFaultInterceptors&gt;
+            &lt;ref bean="logInbound" /&gt;
+        &lt;/cxf:inFaultInterceptors&gt;
+        &lt;cxf:outFaultInterceptors&gt;
+            &lt;ref bean="logOutbound" /&gt;
+        &lt;/cxf:outFaultInterceptors&gt;
+    &lt;/cxf:bus&gt;
+
+&lt;/beans&gt;</code></pre>
+					</section>
+		
+				</section>
+				
+				<section>
+					<section>
+						<h2>5. Implementation</h2>
 						<ol>
 							<li>Prerequisites</li>
 							<li>Build model</li>
@@ -601,7 +783,7 @@ SOAPAction: ""
 					</section>
 
 					<section>
-						<h3>4.1 Prerequisites</h3>
+						<h3>5.1 Prerequisites</h3>
 						<table style="border: 1px solid white;">
 							<tr style="background-color: gray;">
 								<th>Item</th>
@@ -621,12 +803,20 @@ SOAPAction: ""
 							<tr>
 								<td>IoC</td>
 								<td>Spring Framework</td>
-								<td>4</td>
+								<td>4.1</td>
 							</tr>
 							<tr>
-								<td>Applicarion Server</td>
+								<td rowspan="3">Application Server</td>
 								<td>WildFly</td>
 								<td>8.1.x</td>
+							</tr>
+							<tr>
+								<td>JBoss</td>
+								<td>7.1.1</td>
+							</tr>
+							<tr>
+								<td>Tomcat</td>
+								<td>7.0.28</td>
 							</tr>
 							<tr>
 								<td>Unit testing</td>
@@ -647,17 +837,17 @@ SOAPAction: ""
 					</section>
 					
 					<section>
-						<h2>4.2 Build model</h2>
-						<img src="img/ws_traning_build_model.png" alt="Maven build model" style="-webkit-transform: rotate(180deg);">
+						<h2>5.2 Build model</h2>
+						<img src="img/ws_traning_build_model.png" alt="Maven build model">
 					</section>
 
 					<section>
-						<h2>4.3 Implementation</h2>
+						<h2>5.3 Implementation</h2>
 						<p>Check <a href="https://github.com/arnosthavelka/ws-training" alt="Souce code for lab">source code</a> ...</p>
 					</section>
 
 					<section>
-						<h2>4.4 Lab (Exercise)</h2>
+						<h2>5.4 Lab (Exercise)</h2>
 						<ul>
 							<li>Write WS (contract last)</li>
 							<li>Write WS (contract first)</li>
@@ -669,42 +859,53 @@ SOAPAction: ""
 				
 				<section>
 					<section>
-						<h2>5. Exposing WS in different setups</h2>
+						<h2>6. Exposing WS</h2>
+						<h3>[In different setups]</h3>
 						<ol>
-							<li>Wildfly/JBoss</li>
+							<li>Wildfly</li>
+							<li>JBoss</li>
 							<li>Tomcat</li>
 							<li>Spring boot (embedded Tomcat)</li>
 							<li>Spring exporter</li>
+							<li>CXF</li>
 							<li>JAX-WS Endpoint</li>
 						</ol>
 					</section>
 
 					<section>
-						<h3>5.1 Wildfly/JBoss</h3>
+						<h3>6.1 Wildfly</h3>
 						<ul>
-							<li>WS itself (@WebService) works out of box (Wildfly is full AS)</li>
-							<li>Spring integration can be done in ancestor (@PostConstruct inheritance works)</li>
-							<li>AS modifies WSDLL (service name, target namespace, etc.) when not explicitly specified.</li>
+							<li>WS itself (<strong>@WebService</strong>) works out of box (Wildfly is full AS)</li>
+							<li>The integration of WS with Spring can be done in ancestor (<strong>@PostConstruct</strong> inheritance is working)</li>
+							<li>AS modifies WSDL (service name, target namespace, etc.) when not explicitly specified.</li>
 						</ul>
 					</section>
 					
 					<section>
-						<h2>5.2 Tomcat</h2>
+						<h3>6.2 JBoss</h3>
+						<ul>
+							<li>Same as Wildfly (see chapter 6.1)</li>
+							<li>Except usage of <strong>@WebServiceProvider</strong> - XSD include is not working (expected root is in WEB-INF directory)</li>
+						</ul>
+					</section>
+					
+					<section>
+						<h2>6.3 Tomcat</h2>
 						<ul>
 							<li>Tomcat is web-container. Therefore we need to add JAX-WS runtime libraries into <strong>%tomcat_home%/lib</strong> (approx. 32 files).</li>
-							<li>JAX-WS library (previous bullet) does not log endpoints URLs.</li>
-							<li>Web application must contain:
+							<li>Web application must be modified as:
 								<ul>
 									<li>Modify file <strong>web.xml</strong> to add listener <strong>WSServletContextListener</strong>.</li>
 									<li>Add file <strong>sun-jaxws.xml</strong> to defined exposed WS endpoints.</li>
 								</ul>
 							</li>
-							<li>Spring integration has to be done in every WS (@PostConstruct <strong>inheritance does not work</strong>)</li>
+							<li>Spring integration (to WS) has to be done in every WS (@PostConstruct <strong>inheritance does not work</strong>)</li>
 						</ul>
 					</section>
 
 					<section>
-						<h2>5.3 Spring boot (embedded Tomcat)</h2>
+						<h2>6.4 Spring boot</h2>
+						<h3>[Embedded Tomcat]</h3>
 						<ul>
 							<li>REST service is fine (working out of box) - just define spring context and REST controller.
 								<pre><code class="java">@RestController
@@ -721,7 +922,7 @@ public class HelloRestService {
 					</section>
 
 					<section>
-						<h2>5.4 Spring exporter</h2>
+						<h2>6.5 Spring exporter</h2>
 						<ul>
 							<li>Easy to use, but not working in the same context as AS (aka same port).</li>
 							<li>Definition of the spring bean (exporter).
@@ -736,18 +937,189 @@ public class CalculatorWebService implements WsTrainingPortType {
   ...
 }</code></pre></li>
 						</ul>
-						<p>
 					</section>
 
 					<section>
-						<h2>5.5 JAX-WS Endpoint</h2>
-						<!--p>TODO</p-->
+						<h2>6.5 CXF</h2>
+						<ul>
+							<li>Easy to use (even outside AS), but working independently.</li>
+							<li>Necessary to define servlet listener (similar to JAX-WS on Tomcat)</li>
+							<li>Easy integration to Spring, but most integration is in XML</li>
+						</ul>
+					</section>
+					<section>
+						<h2>6.6 JAX-WS Endpoint</h2>
+						<ul>
+							<li>Easy to use (completely in our hands)</li>
+							<li>Probably no integration to Spring</li>
+						</ul>
 						<pre><code class="java">public static void main(String[] args) {
-	   Endpoint.publish("http://localhost:9999/ws/calc", new CalculatorWebService());
+    Endpoint.publish("http://localhost:9999/ws/calc", 
+        new CalculatorWebService());
 }</code></pre>
 					</section>
 				</section>
 				
+				<section>
+					<section>
+						<h2>7. Microservices</h2>
+						<ol>
+							<li>Overview</li>
+							<li>Scaling</li>
+							<li>Decentralized Data Management</li>
+							<li>Evolutionary Design</li>
+						</ol>
+						<br/><br/>
+						<small>Based on <a href="http://martinfowler.com/articles/microservices.html" alt="Source link">Martin Fowler: Microservices</a></small>
+					</section>
+
+					<section>
+						<h2>7.1 Overview</h2>
+						<ul>
+							<li>The application is a suite of small services.</li>
+							<li>The implementation of each application can be done (written) with different programming languages (even can  be managed by different teams).</li>
+							<li>The services are independently deployable and scalable, each service also provides a firm module boundary.</li>
+							<li>Elimination of "Single point of failure".</li>
+							<li>Minimum of centralized management (e.g. ESB, BPEL, etc.).</li>
+							<li>Decentralized Data Management</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>7.2 Scaling</h2>
+						<img src="img/sketch.png" alt="Scaling of microservices"/>
+					</section>
+
+					<section>
+						<h2>7.3 Decentralized Data Management</h2>
+						<img src="img/decentralised-data.png" alt="Decentralized Data Management by microservices"/>
+					</section>
+
+					<section>
+						<h2>7.4 Evolutionary Design</h2>
+						<ol>
+							<li>Independent replacement and upgradeability (e.g. rewriting a component without affecting its collaborators).</li>
+							<li>Move service between component based on component's cohesion, service's stability, release plan, etc.</li>
+							<li>Add new features as a new service (useful for temporary solutions - it can be removed easily).</li>
+							<li>Component vs. Service - when some services are usually changed together then they shall be handled as 1 component.</li>
+						</ol>
+					</section>
+					
+				</section>
+				
+				<section>
+					<section>
+						<h2>8. REST</h2>
+						<ol>
+							<li>Overview</li>
+							<li>Principles</li>
+							<li>Methods</li>
+							<li>HATOES</li>
+							<li>Implementation</li>
+						</ol>
+						<br/><br/>
+						<small>Based on <a href="http://en.wikipedia.org/wiki/Representational_state_transfer" alt="Description of REST on Wikipedia">Wikipedia</a> and <a href="http://www.restapitutorial.com/" alt="Web REST API Tutorial">REST API Tutorial</a></small>
+					</section>
+
+					<section>
+						<h2>8.1 Overview</h2>
+						<p align="left"><strong>Representational state transfer</strong> known as REST is a new architecture approach to create web services.</p>
+						<p align="left">The concept is based on:
+							<ul>
+								<li>Proper usage of HTTP features</li>
+								<li>All is about (stateless) resources (URI)</li>
+								<li>URL represents resource, not an action</li>
+								<li>Easy and efficient use, but without strict</li>
+								<li>Support for multiple format - what server accepts and client prefers (e.g. XML, JSON, CSV, TXT, etc.)</li>
+							</ul>
+						</p>
+					</section>
+
+					<section>
+						<h2>8.2 Principles</h2>
+						<ul>
+							<li><strong>Uniform interface</strong>
+								<ul>
+									<li>Resource-Based</li>						
+									<li>Manipulation of Resources Through Representations</li>						
+									<li>Self-descriptive Messages</li>						
+									<li>Hypermedia as the Engine of Application State (<a href="http://en.wikipedia.org/wiki/HATEOAS" alt="Description of HATEOAS on Wikipedia">HATEOAS</a>)</li>						
+								</ul>
+							</li>
+							<li><strong>Client–server</strong> - the separation of clients from servers.</li>
+							<li><strong>Stateless</strong> - no state is hold on server-side.</li>
+							<li><strong>Cacheable</strong> - clients can cache responses.</li>
+							<li><strong>Layered system</strong> - clients do not know whether they are connected directly to the end server (or not).</li>
+							<li><strong>Code on demand (optional)</strong> - servers can temporarily extend or customize the functionality of a client by the transfer of executable code (Java applets, JS, etc.).</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>8.3 Methods</h2>
+						<table style="border: 1px solid white;">
+							<tr style="background-color: gray;">
+								<th>HTTP Method</th>
+								<th>Funtion</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<td>GET</td>
+								<td>Read/Select</td>
+								<td>Retrieves a resource</td>
+							</tr>
+							<tr>
+								<td>PUT</td>
+								<td>Update/Create</td>
+								<td>Creates or updates resource for known ID (overwrite action) - idempotent / repeatable action</td>
+							</tr>
+							<tr>
+								<td>POST</td>
+								<td>Create/Update/Add</td>
+								<td>Creates or updates resource for unknown ID (ID can to be predicted)- <strong>NOT idempotent</strong></td>
+							</tr>
+							<tr>
+								<td>DELETE</td>
+								<td>Delete/Remove</td>
+								<td>Deletes a resource</td>
+							</tr>
+							<tr>
+								<td>OPTION</td>
+								<td>Document API</td>
+								<td>Provide documentation to exposed API (URL)</td>
+							</tr>
+						</table>
+						<small>More information <a href="http://www.restapitutorial.com/lessons/httpmethods.html" alt="Using HTTP Methods for RESTful Services">here</a></small>
+					</section>
+					<section>
+						<h2>8.4 HATOES</h2>
+						<p align="left">Hypermedia as the Engine of Application State (<a href="http://en.wikipedia.org/wiki/HATEOAS" alt="Description of HATEOAS on Wikipedia">HATEOAS</a>) represents 
+						another network application architecture. The principle is that a client interacts with a network application entirely through hypermedia provided dynamically by application servers.</p>
+						<pre>Example request:<code class="xml">GET /book/12345 HTTP/1.1
+Host: coollibrary.com
+Accept: application/json
+...</code></pre>
+						<pre>Example response:<code class="xml">HTTP/1.1 200 OK
+Content-Type: application/json
+Response-Body:
+{"id": "54321", "title": "Jurassic Park", "author": "Michael Crichton", "status": "available",
+"links": [
+{"rel": "self", "method": "get",
+"href": "http://coollibrary.com/book/54321"},
+{"rel": "borrow", "method": "put",
+"href": "http://coollibrary.com/book/54321/borrow"},
+{"rel": "reserve", "method": "put",
+"href": "http://coollibrary.com/book/54321/reserve"},
+{"rel": "discard", "method": "delete",
+"href": "http://coollibrary.com/book/54321/discard"}
+]}</code></pre>
+					</section>
+					<section>
+						<h2>8.5 Implementation</h2>
+						<p>Check <a href="https://github.com/arnosthavelka/ws-training" alt="Souce code for lab">source code</a> ...</p>
+					</section>
+					
+				</section>
+
 				<section>
 					<h1>THE END</h1>
 					<h3>Thank you!</h3>

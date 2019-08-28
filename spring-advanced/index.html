@@ -1,0 +1,3283 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Spring Advanced (ACE Academy)</title>
+
+		<meta name="description" content="Presentation of Spring advanced topics">
+		<meta name="author" content="Havelka Arnošt">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<!--link rel="stylesheet" href="css/reveal.min.css"-->
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/blood.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<div class="slides">
+				<section>
+					<h2>Spring - Advanced</h2>
+					<h4>Advanced topics based on Spring Boot</h4>
+					<p>
+						<small>Created by <a href="http://cz.linkedin.com/in/arnosthavelka/">Arnošt Havelka</a></small>
+					</p>
+					<!-- 
+					<p class="fragment">text in sequence</p>
+					-->
+				</section>
+
+				<section>
+					<h2>About me</h2>
+					<ol>
+						<li>Job title: <strong>Solution Architect</strong></li>
+						<li>O2ITS employment: <strong>Since 1/2015</strong></li>
+						<li>Certifications:<br/>
+							<img src="img/scjp.jpg" alt="Sun Certified Programmer for the Java Platform, Standard Edition 6 (5/2010)">
+							<img src="img/owsd.gif" alt="Oracle Certified Professional, Java EE 5 Web Services Developer (12/2010)">
+							<img src="img/ojpad.gif" alt="Oracle Certified Expert, Java EE 6 Java Persistence API Developer (5/2014)">
+							<img src="img/owcd.gif" alt="Oracle Certified Expert, Java EE 6 Web Component Developer (5/2015)"><br/>
+							<img src="img/spring.jpg" alt="Spring Core 3.0 (7/2013)"><br/>
+						</li>
+					</ol>
+				</section>
+				
+				<section data-markdown>
+					<script type="text/template">
+						## Agenda
+						
+						1. Spring Core - Basics
+						2. Spring Core - Hints
+						3. BFPP & BPP
+						4. Testing
+						5. Spring MVC
+						6. Persistence
+						7. REST (Spring MVC)
+						8. JMX
+						9. AOP
+						
+						<small align="left">Former chapter Spring Boot was moved to its oqn <a href="http://arnosthavelka.github.io/presentation/spring-boot/index.html" alt="Presentation of Spring Boot framework">presentation</a>.</small>
+					</script>
+				</section>
+					
+				<!-- Chapter 1 - Spring Core - Basics -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## 1. Spring Core - Basics
+							
+							1. Overview
+							2. Inversion of Control
+							3. P-namespace
+							4. C-namespace
+							5. Abstract definition
+							6. SpEL
+							7. Java Specifications (JSR-250, JSR-303 and JSR-330)
+							8. Running Spring Application
+							9. Spring Notification
+							10. Context Configuration
+						</script>
+					</section>
+					
+					<section>
+						<h3>1.1 Overview</h3>
+						<ul>
+							<li><strong>Goal</strong>:Provide comprehensive infrastructural support for developing enterprise Java applications</li>
+							<li><strong>Core support</strong>:
+								<ul>
+									<li>Application Configuration</li>
+									<li>Enterprise Configuration</li>
+									<li>Testing</li>
+									<li>Data Access</li>
+								</ul>
+							</li>
+						</ul>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.2 IoC - Definition
+							
+							**Inversion of Control** (or IoC) is approach that is implemented by design pattern called [Dependency injection](http://en.wikipedia.org/wiki/Dependency_injection).
+							It promotes programming to interfaces, improves testability, etc.
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.2 IoC - Usage
+							
+							Property (setter) based
+```
+@Service
+public class MyService {
+    @Autowired
+    private MyDao dao;
+}
+```
+							
+							Constructor based
+```
+@Service
+public class MyService {
+    private MyDao dao;
+    @Autowired
+    public MyService(MyDao dao) {
+      this.dao = dao;
+    }
+}
+```
+						</script>
+					</section>
+					<section>
+						<h3>1.3 P-namespace</h3>
+						<p>Namespace P (for properties/setters)</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans ... xmlns:p="http://www.springframework.org/schema/p"&gt;
+    &lt;context:component-scan base-package="aha.poc" /&gt;
+    &lt;bean ... p:msg="Message value" p:dao-ref="myDAO"/&gt;
+&lt;/beans&gt;</code></pre>
+						<p><small>Note: the injection of collection is not possible (only as reference to the collection bean).</small></p>
+					</section>
+					<section>
+						<h3>1.4 C-namespace</h3>
+						<p>Namespace C (for constructors)</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans ... xmlns:c="http://www.springframework.org/schema/c"&gt;
+    &lt;context:component-scan base-package="aha.poc" /&gt;
+    &lt;bean ... c:_0="My Value" c:_1-ref="myDAO"/&gt;
+&lt;/beans&gt;</code></pre>
+						<p>
+							<small>Note: the injection of collection is not possible (only as reference to the collection bean).</small>
+							<small>Other options: <i>c:_dao-ref="myDAO"</i> (for named argument) or <i>c:_-ref="myDAO"</i> (for constructor with just 1 argument)</small>
+						</p>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.5 Abstract definition
+
+							```
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" ...>
+
+    <bean id="defBean" class="somepackage.AbstractComponent" 
+        p:user="sys" p:password="sys" abstract="true"/>
+	
+    <!-- instantiate bean "defBean" -->
+    <bean id="ABean" parent="defBean" p:url="http://host:8080/abc/"/>
+
+    <!-- instantiate and override password" -->
+    <bean id="BBean" parent="defBean" p:password="abc" 
+        p:url="http://host:8080/abc/" />
+
+    <!-- instantiate and override user and password -->
+    <bean id="CBean" parent="defBean" p:user="admin" 
+        p:password="xyz" p:url="http://host:8080/abc/" />
+</beans>
+							```
+							<small>Note : abstract bean is not possible in JavaConfig (only abstract Configuration).</small>
+						</script>
+					</section>
+					<section>
+						<h3>1.6 SpEL [1/2]</h3>
+						<ul>
+							<li>Reference bean
+<pre><code class="java">@Value("#{customBean.message}")
+private String foo;</code></pre>
+							</li>
+							<li>Invoking methods, do mathematical, relational and logical operations on values
+<pre><code class="java">@Value("#{T(java.lang.Math).random()}")
+private Double value;
+@Value("#{counter.total+42}")
+private Integer value;</code></pre>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>1.6 SpEL [2/2]</h3>
+						<ul>
+							<li>Regular expression matching
+<pre><code class="java">@Value("#{admin.email matches '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.com'}")
+private String email;</code></pre>
+							</li>
+							<li>Collection manipulation
+<pre><code class="xml">&lt;property name="chosenCity" value="#{cities[2]}" /&gt;</code></pre>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>1.7 Java Specifications</h3>
+						<ol>
+							<li><a href="http://en.wikipedia.org/wiki/JSR_250" alt="Link to JSR-250">JSR-250</a> - Semantic concept</li>
+							<li><a href="http://en.wikipedia.org/wiki/Bean_Validation" alt="Link to JSR-303">JSR-303</a> - Bean Validation</li>
+							<li><a href="https://jcp.org/en/jsr/detail?id=330" alt="Link to JSR-330">JSR-330</a> - Dependency Injection for Java</li>
+						</ol>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.7.1 JSR-250 - Definition [1/3]
+
+							[JSR-250](http://en.wikipedia.org/wiki/JSR_250) is a specification of annotations for common 
+						semantic concepts in the Java SE and Java EE platforms that apply across a variety of individual technologies.
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.7.1 JSR-250 - Comparation [2/3]
+
+							Annotation | Description
+							------------ | -------------
+							@Generated | Marks sources that have been generated
+							@Resource | Declares a reference to a resource (e.g. from JNDI, servlet context, etc.)
+							@PostConstruct | Do initialization
+							@PreDestroy | Do finalization
+							@RolesAllowed | Specifies the security roles permitted to access method(s) in an application
+						</script>
+					</section>
+					<section>
+						<h3>1.7.1 JSR-250 [3/3]</h3>
+						<p align="left">Definition:</p>
+						<pre><code class="xml">&lt;!-- process DI, JSR-250, etc. --&gt;
+&lt;context:annotation-config/&gt;
+&lt;!-- same as annotation-config + scan packages to register beans --&gt;
+&lt;context:component-scan/&gt;</code></pre>
+						<p align="left">Usage:</p>
+						<pre><code class="java">@Component
+public class MyService {
+    @Resource
+    private MyDao dao;
+  
+    @Value("${my_message}")
+    private String msg;
+  
+    @PostConstruct
+    private void init() {
+      msg = "N/A";
+  }
+}</code></pre>
+					</section>
+					<section>
+						<h3>1.7.2 JSR-303 - Definition [1/3]</h3>
+						<p align="left"><a href="http://en.wikipedia.org/wiki/Bean_Validation">Bean Validation</a> (JSR-303 for version 1.0 + JSR-349 for version 1.1) 
+						defines a metadata model and API for JavaBean validation. The metadata source is annotations, with the ability to override and extend the meta-data 
+						through the use of XML validation descriptors.</p>
+					</section>
+					<section>
+						<h3>1.7.2 JSR-303 - Usage [2/3]</h3>
+						<p align="left">Validator definition:</p>
+						<pre><code class="xml">&lt;bean id="val" class="o.s.v.beanvalidation.LocalValidatorFactoryBean" /&gt;</code></pre>
+						<p align="left">DTO definition:</p>
+						<pre><code class="java">public class AuditForm {
+    @NotNull
+    private Integer id;
+    @Past(message = "{basicValidationErrorNotPast}")
+    private Date platnostOd;
+    @Size(max = 10, message = "Username length exceeded!")
+    private String username;
+}</code></pre>
+						<small>Resources are located in <i>${project}\src\main\resources\ValidationMessages.properties.</i></small>
+					</section>
+					<section>
+						<h3>1.7.2 JSR-303 - Usage [3/3]</h3>
+						<p align="left">Usage:</p>
+						<pre><code class="java">@Autowired
+private Validator validator;
+
+private &lt;D&gt; List&lt;String&gt; process(D dto) {
+    Set&lt;ConstraintViolation&lt;D&gt;&gt; validationResult = 
+	    validator.validate(dto);
+    ...
+}</code></pre>
+					</section>
+					<section>
+						<h3>1.7.3 JSR-330 - Overview [1/2]</h3>
+						<p align="left"><a href="http://jcp.org/en/jsr/detail?id=330">JSR-330</a> is specification of Dependency Injection in java world. It was introduced in JavaEE 6 and supported from Spring 3.0.</p>
+						<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;javax.inject&lt;/groupId&gt;
+    &lt;artifactId&gt;javax.inject&lt;/artifactId&gt;
+    &lt;version&gt;1&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+						<p align="left">Usage:
+							<ul>
+								<li><b>@Inject</b> instead of Spring’s <b>@Autowired</b> to inject a bean (@Inject has 80% of @Autowired).</li>
+								<li><b>@Named</b> instead of Spring’s <b>@Component</b> to declare a bean.</li>
+							</ul>	
+						</p>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.7.3 JSR-330 - Comparation [2/2]
+
+							Spring | JSR-330 | Description
+							------------ | ------------- | -------------
+							@Autowired | @Inject | @Inject has no 'require' attribute
+							@Component | @Named | JSR-330 has default scope **prototype**
+							@Scope("singleton") | @Singleton | 
+							@Qualifier | @Named | 
+							@Value, @Required, @Lazy | N/A (no equivalent) | @Inject has no 'require' attribute
+						</script>
+					</section>
+
+					<section>
+						<h3>1.8 Running Spring Application</h3>
+						<ol>
+							<li>Web application listener (XML)</li>
+							<li>Web application listener (JavaConfig)</li>
+							<li>Custom usage</li>
+							<li>WebApplicationInitializer (no web.xml)</li>
+						</ol>
+					</section>
+					<section>
+						<h3>1.8.1 Web application listener</h3>
+						<h4>[XML]</h4>
+						<p align="left">Add to web.xml:</p>
+						<pre><code class="xml">&lt;context-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;classpath*:META-INF/spring/app-cfg-*.xml&lt;/param-value&gt;
+&lt;/context-param&gt;
+&lt;listener&gt;
+    &lt;listener-class&gt;o.s.web.context.ContextLoaderListener&lt;/listener-class&gt;
+&lt;/listener&gt;</code></pre>
+					</section>
+					<section>
+						<h3>1.8.2 Web application listener</h3>
+						<h4>[JavaConfig]</h4>
+						<p align="left">Add to web.xml:</p>
+						<pre><code class="xml">&lt;context-param&gt;
+    &lt;param-name&gt;contextClass&lt;/param-name&gt;
+    &lt;param-value&gt;o.s.web.context.support.AnnotationConfigWebApplicationContext&lt;/param-value&gt;
+&lt;/context-param&gt;
+&lt;listener&gt;
+    &lt;listener-class&gt;o.s.web.context.ContextLoaderListener&lt;/listener-class&gt;
+&lt;/listener&gt;</code></pre>
+						<p align="left">Add some class with annotation <i>@Configuration</i></p>
+					</section>
+					<section>
+						<h3>1.8.3 Custom usage</h3>
+						<p align="left">XML configuration:</p>
+						<pre><code class="java">ApplicationContext ctx = 
+    new ClasspathXmlApplicationContext("one.ctx","two.ctx");
+}</code></pre>
+						<p align="left">JavaConfig:</p>
+						<pre><code class="java">ApplicationContext ctx = 
+    new AnnotationConfigApplicationContext(AppConfig.class);
+}</code></pre>
+					</section>
+					<section>
+						<h3>1.8.4 WebApplicationInitializer</h3>
+						<p align="left">Add dependency on Servlet API (version 3+) and implement WebApplicationInitializer as:</p>
+						<pre><code class="java">public class AppInitializer implements WebApplicationInitializer {
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        WebApplicationContext context = getContext();
+        servletContext.addListener(new ContextLoaderListener(context));
+        ServletRegistration.Dynamic dispatcher = servletContext.addServlet("DispatcherServlet", new DispatcherServlet(context));
+        dispatcher.setLoadOnStartup(1);
+        dispatcher.addMapping("/*");
+    }
+
+    private AnnotationConfigWebApplicationContext getContext() {
+        AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+        context.setConfigLocation("xxx.yyy.zzz.config");
+        return context;
+    }
+}</code></pre>
+						<p align="left">Add some class with annotation <i>@Configuration</i> to package <i>xxx.yyy.zzz.config</i></p>
+					</section>
+					<section>
+						<h3>1.9 Spring Notification</h3>
+						<ol>
+							<li>Up to Spring 4.1
+								<ul>
+									<li>Definition&nbsp;of&nbsp;event&nbsp;&&nbsp;listener</li>
+									<li>Usage (send message)</li>
+								</ul>
+							</li>
+							<li>From Spring 4.2
+								<ul>
+									<li>Definition&nbsp;of&nbsp;event&nbsp;&&nbsp;listener</li>
+									<li>Usage (send message)</li>
+								</ul>
+							</li>
+						</ol>
+						<p><small>See: <a href="https://spring.io/blog/2015/02/11/better-application-events-in-spring-framework-4-2" alt="Better application events in Spring Framework 4.2">Blog post</a> and project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/" alt="Link to example project on GitHub">sat-core</a></small></p>
+					</section>
+					<section>
+						<h3>1.9.1 Def. (up to Spring 4.1)</h3>
+						<p align="left">Definition of event</p>
+						<pre><code class="java">public class CustomEvent extends ApplicationEvent {
+    private String msg;
+
+    public CustomEvent(Object source, final String msg) {
+        super(source);
+        this.msg = msg;
+    }
+
+}</code></pre>
+						<p align="left">Definition of listener</p>
+						<pre><code class="java">@Component
+public class CustomListener implements ApplicationListener&lt;CustomEvent&gt; {
+    @Override
+    public void onApplicationEvent(CustomEvent ce) {
+        ...
+    }
+}
+</code></pre>
+						<p><small>See: package <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/notification" alt="Link to example project on GitHub">notification </a> in the project sat-core</small></p>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.9.2 Usage (up to Spring 4.1)
+							
+							Definition of event
+```
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = NotificationApplication.class)
+public class NotificationTest {
+
+    @Autowired
+    private ApplicationContext ctx;
+
+    @Test
+    public void contextLoads() {
+        ctx.publishEvent(new CustomEvent(ctx, "Test message"));
+    }
+}
+```
+
+							<small>See: [NotificationTest.java](https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/github/aha/sat/core/notification/NotificationTest.java) in project sat-core</small>
+						</script>
+					</section>
+					<section>
+						<h3>1.9.3 Definition (Spring 4.2+)</h3>
+						<p align="left">Definition of event</p>
+						<pre><code class="java">public class CityEvent extends MyEvent&lt;City&gt; {
+    private boolean inEurope;
+
+    public CityEvent(Object source, final String inEurope) {
+        super(source);
+        this.inEurope = inEurope;
+    }
+
+}</code></pre>
+						<p align="left">Definition of listener</p>
+						<pre><code class="java">@Component
+public class CustomListener {
+    
+    @EventListener(condition = "#event.inEurope")
+    public void onApplicationEvent(MyEvent&lt;City&gt; event) {
+        ...
+    }
+}
+</code></pre>
+					</section>
+					<section>
+						<h3>1.9.4 Usage (Spring 4.2+)</h3>
+						<p align="left">Definition of event</p>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = NotificationApplication.clasz)
+public class NotificationTest {
+
+    @Autowired
+    private ApplicationContext ctx;
+
+    @Test
+    public void contextLoads() {
+        ctx.publishEvent(new CityEvent(ctx, true));
+        ctx.publishEvent(new CityEvent(ctx, false));
+    }
+}</code></pre>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-core/src/test/java/com/github/aha/sat/core/notification/NotificationTest.java" alt="Link to example project on GitHub">NotificationTest.java</a> in project sat-core</small></p>
+					</section>
+
+					<section>
+						<h3>1.10 Context Configuration</h3>
+						<ol>
+							<li>Simple configuratin in XML</li>
+							<li>Simple configuratin in JavaConfig</li>
+							<li>Global configuratin in XML</li>
+							<li>Global configuratin in JavaConfig</li>
+							<li>Abstract configuratin in JavaConfig</li>
+						</ol>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.10.1 Simple config in XML
+
+							Datasource config (file ds-config.xml)
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" ...>
+
+	<jdbc:embedded-database id="dataSource">
+		...
+	</jdbc:embedded-database>
+
+</beans>
+```
+							DAO config (file dao-config.xml)
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" ...>
+
+    <bean id="myDAO" p:datasource="dataSource"/>
+
+</beans>
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.10.2 Simple config in JavaConfig [1/2]
+							
+							Datasource config
+```
+@Configuration
+public class DatasourceConfig {
+
+	@Bean(destroyMethod="shutdown")
+	public Datasource datasource() {
+		return new EmbeddedDatabaseBuilder().addScript(...).build();
+	}	
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.10.2 Simple config in JavaConfig [2/2]
+
+							DAO config
+```
+@Configuration
+@Import(DatasourceConfig.class)
+public class DaoConfig {
+
+	@Bean
+	public MyDAO myDAO() {
+		return new MyDAO().datasource(datasource());
+	}	
+}
+```						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.10.3 Global config in XML
+
+							```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" ...>
+
+	<!-- definition in XML -->
+	<import resource="ds-config.xml" />
+	
+	<!-- definition in JavaConfig -->
+    <bean class="aha.poc.DaoConfig"/>
+
+</beans>
+							```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.10.4 Global config in JavaConfig
+
+							```
+@Configuration
+@Import(DaoConfig.class)
+@ImportResource("classpath:ds-config.xml")
+public class SystemConfig {
+
+}
+							```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.10.5 Abstract config in JavaConfig [1/2]
+							
+							Abstract config
+```
+@Configuration
+public abstract class DatasourceConfig {
+
+	@Bean
+	public MyDAO myDAO() {
+		return new MyDAO().datasource(datasource());
+	}	
+
+	@ExternalBean
+	public abstract Datasource datasource();
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 1.10.5 Abstract config in JavaConfig [2/2]
+							
+							DAO config
+```
+@Configuration
+public class DaoConfig {
+
+	@Bean
+	public Datasource datasource() {...};	
+}
+```						</script>
+					</section>
+				</section>
+
+				<!-- Chapter 2 - Spring Core - Hints -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## 2. Spring Core - Hints
+							
+							1. Application configuration
+							2. Profiles
+							3. Proxy for scope
+							4. Classpath scanning
+							5. Component scan & bean with no-arg constructor
+							6. Addressing ambiguity in autowiring
+							7. Conditional bean creation
+						</script>
+					</section>
+					<section>
+						<h3>2.1 Application configuration</h3>
+						<ol>
+							<li><strong>Place holder</strong> - to manage configuration properties (placeholders)</li>
+							<li><strong>Place override</strong> - to override bean's properties</li>
+						</ol>
+					</section>			
+					<section>
+						<h3>2.1.1 Place holder</h3>
+						<ul>
+							<li>Usage of system property (${my.env})</li>
+							<li>Usage of default values</li>
+						</ul>
+<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;context:property-placeholder location="classpath:db-${my.env}.properties" 
+      properties-ref="defaultConfig" ignore-resource-not-found="true" /&gt;
+	
+  &lt;util:map id="defaultConfig"&gt;
+    &lt;entry key="mySecretValue" value="7"/&gt;
+  &lt;/util:map&gt;
+&lt;/beans&gt;</code></pre>
+					</section>
+					<section>
+						<h3>2.1.2 Place override</h3>
+						<p align="left">Bean definition:</p>
+						<pre><code class="java">@Component
+public class CustomBean {
+    private String message = "default message";
+}</code></pre>
+						<p align="left">Define overridden rule:</p>
+						<pre><code>customBean.message=custom message</code></pre>
+						<p align="left">Load place-override definition (rules):</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;context:property-override location="classpath:override.properties"/&gt;
+
+&lt;/beans&gt;</code></pre>					</section>
+					
+					<section>
+						<h3>2.2 Profiles</h3>
+						<ol>
+							<li>Overview</li>
+							<li>Configuration in XML</li>
+							<li>Configuration in JavaConfig</li>
+							<li>Profile activation</li>
+							<li>Profile activation</li>
+							<li>Custom annotation (for configuration)</li>
+							<li>Example of usage</li>
+						</ol>
+						<p><br/><small>See: article <a href="http://www.mkyong.com/spring/spring-profiles-example/" alt="Link to article of spring profiles">Spring Profiles Example</a></small></p>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.2.1 Overview
+							
+							The profile definition allows Spring bean only for some context (in some situation). E.g. to distinguish between environment, 
+							code life-cycle (runtime, test, etc.).
+						
+							* properties
+							  * **spring.profiles.active** - active profile
+							  * **spring.profiles.default** - default profile (when no profile is defined)
+							* activation options: initialization/context parameters of a webapp, JNDI entries, environment variables, JVM system properties
+						</script>
+					</section>
+					<section>
+						<h3>2.2.2 XML Configuration</h3>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+    &lt;beans&gt;
+        &lt;import resource="classpath:/META-INF/spring/app-context-base.xml"/&gt;
+    &lt;/beans&gt;
+    &lt;beans profile="dev"&gt;
+        &lt;import resource="classpath:/META-INF/spring/app-context-dev.xml"/&gt;
+    &lt;/beans&gt;
+    &lt;beans profile="prod"&gt;
+        &lt;import resource="classpath:/META-INF/spring/app-context-prod.xml"/&gt;
+    &lt;/beans&gt;
+&lt;/beans&gt;</code></pre>
+					</section>
+					<section>
+						<h3>2.2.3 Annotation Configuration</h3>
+						<p align="left">Profile scope definition:</p>
+						<pre><code class="java">@Component
+@Profile("dev")
+public class UserDAOImpl implements UserDAO {
+}	
+
+@Component
+@Profile("prod")
+public class UserDAOImpl implements UserDAO {
+}</code></pre>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.2.4 Profile Activation
+							
+							* Activation by Java (system property): 
+```
+System.setProperty("spring.profiles.active", "dev");
+System.setProperty("spring.profiles.default", "local");
+```
+							* Activation by Java annotation (only for unit tests):
+```
+@ActiveProfiles("dev")
+```
+							* Activation by JVM parameter (e.g. through maven):
+```
+-Dspring.profiles.active="dev"
+```
+							* Activation by configuration (i.e. setting a property value):
+```
+spring.profiles.active=dev
+```
+							<small>Note : there are other options to define profile as system property (in environments) - see overview (JNDI, web params, etc.).</small>
+						</script>
+					</section>
+					<section>
+						<h3>2.2.5 Custom annotation</h3>
+						<h4>(for configuration)</h4>
+						<p align="left">Definition of profile annotation:</p>
+						<pre><code class="java">@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Profile("test")
+public @interface Mock {
+}</code></pre>
+						<p align="left">Usage:</p>
+						<pre><code class="java">@Component
+@Mock
+public class UserDAOMock implements UserDAO {
+	...
+}</code></pre>
+					</section>
+					<section>
+						<h3>2.2.6 Example of usage</h3>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+    &lt;bean profile="dev"&gt;
+        &lt;jdbc:embedded-database id="dataSource"&gt;
+            &lt;jdbc:script location="classpath:com/bank/config/sql/schema.sql"/&gt;
+            &lt;jdbc:script location="classpath:com/bank/config/sql/test-data.sql"/&gt;
+        &lt;/jdbc:embedded-database&gt;
+    &lt;/bean&gt;
+
+    &lt;bean profile="prod"&gt;
+        &lt;jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/datasource"/&gt;
+    &lt;/bean&gt;
+
+&lt;/beans&gt;</code></pre>
+					</section>				
+					
+					<section>
+						<h3>2.3 Proxy for scope</h3>
+						<p>
+							<ol>
+								<li>Overview</li>
+								<li>XML Configuration</li>
+								<li>Annotation Configuration</li>
+							</ol>
+						</p>
+						<small>Source: <a href="http://stackoverflow.com/questions/4503606/annotation-equivalent-of-aopscoped-proxy" alt="Source link">http://stackoverflow.com/questions/4503606/annotation-equivalent-of-aopscoped-proxy</a></small>
+					</section>
+					<section>
+						<h3>2.3.1 Overview</h3>
+						<ul>
+							<li>Proxy purpose - handle beans lifecycle correctly</li>
+							<li>Scopes:
+								<ul>
+									<li><strong>Singleton</strong> (default) -  just one instance</li>
+									<li><strong>Prototype</strong> - always new instance</li>
+									<li><strong>Request</strong> (for web) - an instance per HTTP request</li>
+									<li><strong>Session</strong> (for web) - an instance per HTTP session</li>
+									<li><strong>Flow</strong> (for Spring WebFlow) or <strong>Step</strong> (for Spring Batch) - special Spring scopes</li>
+									<li><strong>Custom</strong> (to be implemented) - an instance per custom rule</li>
+								</ul>
+							</li>
+						</ul>
+
+					</section>
+					<section>
+						<h3>2.3.2 XML Configuration</h3>
+						<p>Single bean:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+    &lt;bean id="wsService" p:service-ref="sessinService" /&gt;
+
+    &lt;bean id="sessinService" scope="session"&gt;
+        &lt;aop:scoped-proxy/&gt;
+    &lt;/bean&gt;
+
+&lt;/beans&gt;</code></pre>
+						<p>All beans:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;context:component-scan base-package="x.y.z" scoped-proxy="interfaces¦target_class" /&gt;
+
+&lt;/beans&gt;</code></pre>
+					</section>
+					<section>
+						<h3>2.3.3 Annotation Configuration</h3>
+						<pre><code class="java">@Component
+public class WsService {
+  @Autowire
+  private MyService service;
+}
+
+@Component
+@Scope(value = "prototype", proxyMode = ScopedProxyMode.INTERFACES)
+public class PrivateService implement MyService {
+  ...
+}</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/scope/ScopeApplication.java" alt="Example of proxy mode">ScopeApplication.java</a></small>
+					</section>
+					<section>
+						<h3>2.4 Classpath scanning [1/2]</h3>
+						<p align="left"><strong>Use case</strong>: find some classes (in classpath) based on some criteria.</p>
+						<p align="left"><strong>Solution</strong>: use <i>ClassPathScanningCandidateComponentProvider</i>.</p>
+						<pre><code class="java">ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
+// Filter to include only classes that have a particular annotation.
+provider.addIncludeFilter(new AnnotationTypeFilter(MyAnnotation.clasz));
+// Find classes in the given package (or subpackages)
+Set&lt;BeanDefinition&gt; beans = provider.findCandidateComponents("com.xyz.abc");
+for (BeanDefinition bd : beans) {
+  // The BeanDefinition class gives access to the Class&lt;?&gt; and other attributes.
+}</code></pre>
+					</section>
+					<section>
+						<h3>2.4 Classpath scanning [2/2]</h3>
+						<ul>Filters
+							<li>AnnotationTypeFilter -  based on annotations (on the class)</li>
+							<li>AssignableTypeFilter - based on superclass or interface</li>
+							<li>RegexPatternTypeFilter - based on a fully qualified class name against a regular expression.</li>
+						</ul>
+						<small>Source: <a href="http://www.eclecticlogic.com/2014/09/01/classpath-scanning/" alt="Source link">http://www.eclecticlogic.com/2014/09/01/classpath-scanning/</a></small>
+					</section>
+					<section>
+						<h3>2.5 Component scan with no no-args constructor bean</h3>
+						<p>
+							<ol>
+								<li>Overview</li>
+								<li>Solution</li>
+								<li>Conclusion</li>
+							</ol>
+						</p>
+						<small>Source: <a href="http://java.dzone.com/articles/spring-component-scan-beans-no" alt="Source link">http://java.dzone.com/articles/spring-component-scan-beans-no</a></small>
+					</section>
+					<section>
+						<h3>2.5.1 Overview</h3>
+						<pre>Bean definition:<code class="java">@Component
+public class User {
+
+    public User(String name) {
+        ...
+    }
+}</code></pre>
+						<pre>Bean usage:<code class="java">@Bean
+public User userArny() {
+    return new User("Arny");
+}</code></pre>
+						<pre>Spring error:<code>Caused by: o.s.b.BeanInstantiationException: Could not instantiate bean 
+    class [com...config.User]: No default constructor found; 
+        nested exception is java.lang.NoSuchMethodException: com.github.aha.sat.core.config.User.&lt;init&gt;()
+	    at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:85) ~[spring-beans-4.0.8.RELEASE.jar:4.0.8.RELEASE]
+	    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1070) ~[spring-beans-4.0.8.RELEASE.jar:4.0.8.RELEASE]
+	    ... 16 common frames omitted
+</code></pre>
+					</section>
+					<section>
+						<h3>2.5.2 Solution [1/4]</h3>
+						<h4>Variant 1</h4>
+						<p align="left">Modify bean definition for autowiring with default values (annotations @Autowired and @Value).</p>
+						<pre>Spring Bean<code class="java">@Component
+public class User {
+
+    @Autowired
+    public User(@Value("") String name) {
+        ...
+    }
+}</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/config/JavaConfigApplication.java">JavaConfigApplication.java</a></small>
+					</section>
+					<section>
+						<h3>2.5.2 Solution [2/4]</h3>
+						<h4>Variant 2</h4>
+						<p align="left">Just not define POJO as Spring Bean. It will be marked as bean by JavaConfig.</p>
+						<pre><code class="java">public class User {
+
+    public User(String name) {
+        ...
+    }
+}</code></pre>
+					</section>
+					<section>
+						<h3>2.5.2 Solution [3/4]</h3>
+						<h4>Variant 3</h4>
+						<p align="left">Remove component scan from JavaConfig.</p>
+						<pre><code class="java">@Configuration
+@EnableAutoConfiguration
+public class JavaConfigApplication {
+    ...
+}</code></pre>
+					</section>
+					<section>
+						<h3>2.5.2 Solution [4/4]</h3>
+						<h4>Variant 4</h4>
+						<p align="left">Use excluding feature in component scan.</p>
+						<pre><code class="java">@Configuration
+@ComponentScan(basePackages = { "com.github.aha.sat.core.config" }, 
+    excludeFilters = @ComponentScan.Filter(
+        type = FilterType.ANNOTATION, 
+        value = Component.class))
+@EnableAutoConfiguration
+public class JavaConfigApplication {
+    ...
+}</code></pre>
+					</section>
+					<section>
+						<h3>2.5.3 Conclusion</h3>
+						<ul>
+							<li>If component scanning is enabled, spring will try to create a bean even though a bean of that class has already been defined in the spring config xml.</li>
+							<li>However if the bean defined in the spring config file and the auto-discovered bean have the same name, spring will not to create a new bean while it does component scanning.</li>
+							<li>If a bean does not have a no-args constructor, at-least one of the constructors must be auto-wired.</li>
+							<li>If no constructor is auto-wired, spring will try to create an object using default no-args constructor.</li>
+						</ul>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.6 Addressing ambiguity in autowiring
+							
+							1. Primary Bean
+							2. Selection by Traits
+							
+							<small>See: package [wiring](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/wiring) and 
+							[WiringTest](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/wiring/WiringTest.java) in project **sat-core**.</small>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.6.1. Primary Bean
+							
+							Use **@Primary** annotation to define the default Spring bean (when more than 1 reference is found).
+							
+```java
+@Component
+@Primary
+public class Tea implements Drink {
+
+    ...
+
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.6.2 Selection by Traits
+							
+							Trait definition (as annotation):
+							
+```
+@Target({ElementType.CONSTRUCTOR, ElementType.FIELD,
+ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+public @interface Alcoholic {
+
+}
+```
+
+							Example of usage:
+```
+@Autowired
+@Alcoholic
+@Sparkling
+private Drink beer;
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 2.7 Conditional bean creation
+							
+							1. Overview
+							2. Condition definition
+							3. Usage in Spring
+							4. Extended usage in Spring Boot
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.7.1 Overview
+							
+							The annotation **@Conditional** is purposued to limit bean creation to some condition, defined by interface **Condition** as:
+						
+```java
+public interface Condition {
+	boolean matches(ConditionContext ctxt, 
+		AnnotatedTypeMetadata metadata);
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.7.2 Condition definition
+							
+```java
+public class SodaCondition implements Condition {
+
+	@Override
+	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+		return context.getEnvironment().containsProperty("soda");
+	}
+}
+```
+							Other options are based on:
+							* profile
+```java
+context.getEnvironment().acceptsProfiles("some value")
+```
+							* metadata, e.g. based on annotation existence or its attributes 
+```java
+boolean annotated = metadata.isAnnotated("MyAnnotation");
+MultiValueMap<String, Object> = metadata.getAllAnnotationAttributes(...);
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.7.3 Usage in Spring
+							
+```java
+	@Bean
+	@Conditional(SodaCondition.class)
+	public Drink cola() {
+		return new Drink() {
+			@Override
+			public String getName() {
+				return "cola";
+			}
+		};
+	}
+```
+							<small>See: test class [SodaConditionalTest](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/conditional/SodaConditionalTest.java) in project **sat-core**.</small>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 2.7.4 Extended usage in Spring Boot
+							
+							Spring Boot has extension with several other annotations:
+							* ConditionalOnClass, ConditionalOnMissingClass
+							* ConditionalOnBean, ConditionalOnMissingBean
+							* ConditionalOnProperty
+							* etc.
+							
+							Example:
+```java
+@Configuration
+@ConditionalOnProperty(prefix = "auth", name = "type", 
+	havingValue = "IN_MEMORY", matchIfMissing = true)
+public class InMemorySecurityConfig {
+```
+						</script>
+					</section>
+				</section>
+
+				<!-- Chapter 3 - BFPP & BPP -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							##3. BFPP & BPP
+							
+							1. Spring lifecycle
+							2. Factory bean
+							3. BFPP
+							4. BPP
+						</script>
+					</section>
+					<section>
+						<h3>3.1 Spring life-cycle</h3>
+						<ol>
+							<li>Life-cycle Schema</li>
+							<li>Bean initialization order</li>
+							<li>Bean disposal order</li>
+						</ol>
+					</section>
+					<section>
+						<h3>3.1.1 Life-cycle Schema</h3>
+						<svg style="width:100%; height:450px;">
+							<text x="280" y="30" fill="gray">Definition of application context</text>
+							<line x1="470" y1="35" x2="470" y2="80" stroke=gray stroke-width="2"/>
+							<line x1="460" y1="70" x2="470" y2="80" stroke=gray stroke-width="2"/>
+							<line x1="480" y1="70" x2="470" y2="80" stroke=gray stroke-width="2"/>
+							<text x="480" y="65" fill="yellow">1</text>
+							
+							<text x="130" y="130" fill="gray">BFPP</text>
+							<line x1="220" y1="120" x2="360" y2="120" stroke=gray stroke-width="2"/>
+							<line x1="350" y1="110" x2="360" y2="120" stroke=gray stroke-width="2"/>
+							<line x1="350" y1="130" x2="360" y2="120" stroke=gray stroke-width="2"/>
+							<text x="280" y="115" fill="yellow">2</text>
+										
+							<rect x="360" y="80" width="280" height="80" stroke=black stroke-width="4" fill="#AAAAFF" />
+							<text x="380" y="130">Bean Definition</text>
+							
+							<line x1="470" y1="160" x2="470" y2="250" stroke=gray stroke-width="2"/>
+							<line x1="460" y1="240" x2="470" y2="250" stroke=gray stroke-width="2"/>
+							<line x1="480" y1="240" x2="470" y2="250" stroke=gray stroke-width="2"/>
+							<text x="480" y="210" fill="yellow">3</text>
+							
+							<text x="130" y="300" fill="gray">BPP</text>
+							<line x1="220" y1="290" x2="360" y2="290" stroke=gray stroke-width="2"/>
+							<line x1="350" y1="280" x2="360" y2="290" stroke=gray stroke-width="2"/>
+							<line x1="350" y1="300" x2="360" y2="290" stroke=gray stroke-width="2"/>
+							<text x="280" y="285" fill="yellow">4</text>
+
+							<rect x="360" y="250" width="280" height="80" stroke=black stroke-width="4" fill="#AAAAFF" />
+							<text x="420" y="300">Instance</text>
+							
+							<line x1="470" y1="330" x2="470" y2="380" stroke=gray stroke-width="2"/>
+							<line x1="460" y1="370" x2="470" y2="380" stroke=gray stroke-width="2"/>
+							<line x1="480" y1="370" x2="470" y2="380" stroke=gray stroke-width="2"/>
+							<text x="480" y="370" fill="yellow">5</text>
+							
+							<text x="440" y="410" fill="gray">Ready</text>
+						</svg>
+					</section>
+					<section>
+						<h3>3.1.2 Bean Initialization Order</h3>
+						<ul>
+							<li>[1] Load all bean defintions to create ordered graph</li>
+							<li>[2] Instantiate and run BeanFactoryPostProcessors</li>
+							<li>[3] Instantiate each bean</li>
+							<li>[3] Set bean's properties</li>
+							<li>[4] <a href="http://www.tutorialspoint.com/spring/spring_bean_post_processors.htm">BeanPostProcessor</a> (for all beans) - postProcessBeforeInitialization</li>
+							<li>[4] @PostConstruct (for bean instance)</li>
+							<li>[4] <a href="http://www.mkyong.com/spring/spring-initializingbean-and-disposablebean-example/">InitializingBean</a> (for bean instance) - afterPropertiesSet</li>
+							<li>[4] XML (for bean instance) - init-method</li>
+							<li>[4] <a href="http://www.tutorialspoint.com/spring/spring_bean_post_processors.htm">BeanPostProcessor</a> (for all beans) - postProcessAfterInitialization</li>
+						</ul>
+					</section>
+					<section>
+						<h3>3.1.3 Bean Disposal Order</h3>
+						<ul>
+							<li>@PreDestroy (for bean instance)</li>
+							<li><a href="http://www.mkyong.com/spring/spring-initializingbean-and-disposablebean-example/">DisposableBean</a> (for bean instance) - destroy</li>
+							<li>XML (for bean instance) - destroy-method</li>
+						</ul>
+					</section>
+					<section>
+						<h3>3.2 Factory bean</h3>
+						<ol>
+							<li>Overview</li>
+							<li>Factory Methods</li>
+							<li>POJOs as Factory Beans</li>
+							<li>Factory Bean</li>
+						</ol>
+					</section>
+					<section>
+						<h3>3.2.1 Overview</h3>
+						<ol>
+							<li>Factory Methods
+								<ul>
+									<li>Simple usage for static methods (the old singletons)</li>
+								</ul>
+							</li>
+							<li>POJOs as Factory Beans
+								<ul>
+									<li>Simple usage</li>
+								</ul>
+							</li>
+							<li>The FactoryBean Interface
+								<ul>
+									<li>Spring uses (such approach) for looking up JNDI objects, creating remote proxies, configuring data access (e.g. Hibernate, JPA, etc.).</li>
+									<li>Beans with FactoryBean interface are detected automatically.</li>
+								</ul>
+							</li>
+						</ol>
+					</section>
+					<section>
+						<h3>3.2.2 Factory Methods</h3>
+						<p align="left">Class definition:</p>
+						<pre><code class="java">public class OldSingleton {
+						
+  private static OldSingleton singleton = new OldSingleton();
+  private OldSingleton() {...}
+  
+  public OldSingleton getInstance() {
+	return singleton;
+  }
+}
+</code></pre>
+						<p align="left">Spring definition:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;bean id="foo" class="abc.OldSingleton" factory-method="getInstance" /&gt;
+
+&lt;/beans&gt;</code></pre>
+					</section>
+					<section>
+						<h3>3.2.3 POJOs as Factory Beans</h3>
+						<p align="left">POJO definition:</p>
+						<pre><code class="java">public class PojoFactory {
+						
+  public MyService getInstance() {...}
+
+}</code></pre>
+						<p align="left">Spring definition:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;bean id="pojoFactory" class="abc.PojoFactory" /&gt;
+  
+  &lt;bean id="myService" factory-bean="pojoFactory" factory-method="getInstance" /&gt;
+
+&lt;/beans&gt;</code></pre>
+					</section>
+					<section>
+						<h3>3.2.4 Factory Bean</h3>
+						<p align="left">FactoryBean implementation:</p>
+						<pre><code class="java">public class MyFactoryBean implements FactoryBean&lt;MyService&gt; {
+  // ... instantiate ClientService class as clientService...
+  
+  public MyService getObject() throws Exception { return clientService; }
+  public Class&lt;?&gt; getObjectType() { return ClientService.class }
+  public MyService isSingleton() throws Exception { return true ¦ false; }
+
+}</code></pre>
+						<p align="left">Spring definition:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;bean id="myFB" class="abc.MyFactoryBean" /&gt;
+  
+  &lt;bean id="myService" p:service-ref="myFB" /&gt;
+
+&lt;/beans&gt;</code></pre>
+					</section>
+					<section>
+						<h3>3.3 BFPP - overview [1/2]</h3>
+						<ol>
+							<li>Called after bean definition is loaded, but before bean is instantiated.</li>
+							<li>Useful for applying modifications on some beans or groups of beans.</li>
+							<li>Just implement interface <i>BeanFactoryPostProcessor</i></li>
+							<li>Example: <i>PropertyPlaceholderConfigurer</i></li>
+						</ol>
+					</section>
+					<section>
+						<h3>3.3 BFPP - usage [2/2]</h3>
+						<p align="left">BFPP implementation:</p>
+						<pre><code class="java">public class MyBfpp implements BeanFactoryPostProcessor {
+    public void postProcessBeanFactory(
+      ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        String[] beanNames = beanFactory.getBeanDefinitionNames();
+        ...
+    }
+}</code></pre>
+						<p align="left">Spring definition:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;bean id="myBfpp" class="abc.MyBfpp" /&gt;
+
+&lt;/beans&gt;</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/postprocessor/PostProcessorApplication.java">PostProcessorApplication.java</a></small>
+					</section>
+					<section>
+						<h3>3.4 BPP - overview [1/2]</h3>
+						<ol>
+							<li>Can modify bean instance in any way.</li>
+							<li>Just implement interface <i>BeanPostProcessor</i></li>
+							<li>Example: <i>BeanValidationPostProcessor</i> (for JSR-303), <i>CommonAnnotationBeanPostProcessor</i> (for JSR-250), <i>RequiredAnnotationBeanPostProcessor</i>, etc.</li>
+						</ol>
+					</section>
+					<section>
+						<h3>3.4 BPP - usage [2/2]</h3>
+						<p align="left">BPP implementation:</p>
+						<pre><code class="java">public class MyBpp implements BeanPostProcessor {
+  @Override
+  public Object postProcessBeforeInitialization(Object bean, String beanName) 
+      throws BeansException { ... }
+
+  @Override
+  public Object postProcessAfterInitialization(Object bean, String beanName) 
+      throws BeansException { ... }
+}</code></pre>
+						<p align="left">Spring definition:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;bean id="myBpp" class="abc.MyBpp" /&gt;
+
+&lt;/beans&gt;</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/postprocessor/PostProcessorApplication.java">PostProcessorApplication.java</a></small>
+					</section>					
+				</section>
+
+				<section>
+					<section>
+						<h2>4. Testing</h2>
+						<ol>
+							<li>Overview</li>
+							<li>Spring&nbsp;configuration&nbsp;for&nbsp;testing</li>
+							<li>Special annotations</li>
+							<li>JUnit Rules</li>
+							<li>Controller</li>
+							<li>Springockito</li>
+						</ol>
+						<small>See: my presentation of <a href="http://arnosthavelka.github.com/presentation/devday/automated_testing/template.html" alt="Link to presentation of automated testing">automated testing</a> or <a href="http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/html/testing.html" alt="Spring documentation for testing">Spring documentation</a></small>
+					</section>
+					<section>
+						<h3>4.1 Overview</h3>
+						<ol>
+							<li>Test Types & Approaches</li>
+							<li>Test Levels</li>
+							<li>Mocks & Stubs</li>
+							<li>Rules for writting tests</li>
+							<li>Unit tests</li>
+						</ol>
+					</section>
+					<section>
+						<h3>4.1.1 Test Types & Approaches</h3>
+						<ol>
+							<li>Types:
+								<ul>
+									<li>Static (e.g. review of documentation, inspection, etc.)</li>
+									<li>Dynamic (execution of program againt test case)</li>
+								</ul>
+							</li>
+							<li>Approaches:
+								<ul>
+									<li>Black box (examining functionality without any knowledge of internal implementation)</li>
+									<li>White box(tests internal structures or workings of a program)</li>
+									<li>Gray box (executing tests at the user, or black-box level, with having knowledge of internal data structures and algorithms for purposes of designing tests)</li>
+								</ul>
+							</li>
+						</ol>
+					</section>
+					<section>
+						<h3>4.1.2 Test Levels</h3>
+						<ul>
+							<li>Unit (component testing)</li>
+							<li>Integration (testing interfaces between components against a software design)</li>
+							<li>System(tests a completely integrated system to verify that it meets its requirement)</li>
+							<li>Acceptance (UAT)</li>
+						</ul>
+					</section>
+					<section>
+						<h3>4.1.3 Mocks & Stubs</h3>
+						<table style="border: 1px solid gray;">
+							<tr style="background-color: gray;">
+								<th></th>
+								<th>Advantages</th>
+								<th>Disadvantages</th>
+							</tr>
+							<tr>
+								<th style="border-top: 1px solid gray; background-color: silver;">Mock</th>
+								<td style="border-top: 1px solid gray;">
+									<small>
+									<ol>
+										<li>No additional class to maintain</li>
+										<li>Only relevant for the test</li>
+										<li>Test behavior and state</li>
+									</ol>
+									</small>
+								</td>
+								<td style="border-top: 1px solid gray;">
+									<small>
+									<ol>
+										<li>A little harder to understand (at first)</li>
+									</ol>
+									</small>
+								</td>
+							</tr>
+							<tr>
+								<th style="border-top: 1px solid gray; background-color: silver;">Stub</th>
+								<td style="border-top: 1px solid gray;">
+									<small>
+									<ol>
+										<li>Easy to implement and understand</li>
+										<li>Reusable</li>
+									</ol>
+									</small>
+								</td>
+								<td style="border-top: 1px solid gray;">
+									<small>
+									<ol>
+										<li>Needs update when the interface is changed</li>
+										<li>Must implement all methods</li>
+										<li>Refactoring can break other test (where the stub is reused)</li>
+									</ol>
+									</small>
+								</td>
+							</tr>
+						</table>
+					</section>
+					<section>
+						<h3>4.1.4 Rules for writting tests</h3>
+						<ul>
+							<li>Independency</li>
+							<li>Performance</li>
+							<li>Only in test package</li>
+							<li>High test coverage != good tests</li>
+						</ul>
+					</section>
+					<section>
+						<h3>4.1.5 Unit tests</h3>
+						<ul>
+							<li>Usage of JUnit</li>
+							<li>Mocking - EasyMock + Mockito + PowerMock</li>
+							<li>Hamcrest - clearer syntax/declarations and customized assertion matchers</li>
+						</ul>
+					</section>
+					
+					<section>
+						<h3>4.2 Spring configuration for testing</h3>
+						<ol>
+							<li>Spring way</li>
+							<li>Spring Boot way (XML)</li>
+							<li>Spring Boot way (JavaConfig)</li>
+						</ol>
+					</section>
+					<section>
+						<h3>4.2.1 Spring way (XML)</h3>
+						<h4>Default XML location</h4>
+						<p align="left">Configuration:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;bean id="user" class="com...core.config.User" c:name="Michel"/&gt;
+
+&lt;/beans&gt;</code></pre>
+						<p align="left">Usage:</p>
+						<pre><code class="java">// path is com/github/aha/sat/core/config/XmlDefaultConfigTest-context.xml
+@ContextConfiguration
+@RunWith(SpringJUnit4ClassRunner.class)
+public class XmlDefaultConfigTest {
+    ...
+}</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/testing/XmlDefaultConfigTest.java">XmlDefaultConfigTest.java</a></small>
+					</section>
+					<section>
+						<h3>4.2.2 Spring way (XML)</h3>
+						<h4>Define XML location</h4>
+						<p align="left">Configuration:</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" ...&gt;
+
+  &lt;bean id="user" class="com...core.config.User" c:name="Arny"/&gt;
+
+&lt;/beans&gt;</code></pre>
+						<p align="left">Usage:</p>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@ContextConfiguration(locations = "classpath:spring/xml-config.xml")
+public class XmlDirectConfigTest {
+    ...
+}</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/testing/XmlDirectConfigTest.java">XmlDirectConfigTest.java</a></small>
+					</section>
+					<section>
+						<h3>4.2.3 Spring Boot way (JavaConfig)</h3>
+						<p align="left">Configuration:</p>
+						<pre><code class="java">@SpringBootApplication
+//@ComponentScan("com.github.aha.sat.core.config")
+public class JavaConfigApplication {
+    ...
+}</code></pre>
+						<p align="left">Usage:</p>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = JavaConfigApplication.clasz)
+public class JavaConfigTest {
+    ...
+}</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/config/JavaConfigTest.java">JavaConfigTest.java</a></small>
+					</section>
+
+					<section>
+						<h3>4.3 Special annotations</h3>
+						<ol>
+							<li>@Timed</li>
+							<li>@Repeat</li>
+							<li>@ActiveProfiles</li>
+							<li>@IfProfileValue</li>
+						</ol>
+					</section>
+					<section>
+						<h3>4.3.1 @Timed</h3>
+						<p align="left">Indicates that the annotated test method must finish execution in a specified time period (in milliseconds).</p>
+						<pre><code class="java">@Test
+@Timed(millis = 10)
+public void testSpringTimeout() throws InterruptedException {
+    Thread.sleep(50);
+    assertThat(Boolean.TRUE, equalTo(1 == 1));
+}</code></pre>
+						<p align="left"><small>Note: spring annotation waits till the end to raise an exception. On the other hand JUnit solution raise the exception immediately when the test takes too long.</small></p>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/testing/TimedAnnotationTest.java">TimedAnnotationTest.java</a></small>
+					</section>
+					<section>
+						<h3>4.3.2 @Repeat</h3>
+						<p align="left">Indicates that the annotated test method must be executed repeatedly.</p>
+						<pre><code class="java">@Test
+@Repeat(10)
+public void testRepeatAnnotation() {
+    assertThat(2, equalTo(1 + 1));
+}</code></pre>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/testing/RepeatAnnotationTest.java">RepeatAnnotationTest.java</a></small>
+					</section>
+					<section>
+						<h3>4.3.3 @ActiveProfiles</h3>
+						<p align="left">Activation profile for tests:</p>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(
+    classes = { MyConfig.clasz, RichardConfig.clasz, BarbaraConfig.clasz })
+@ActiveProfiles("richard")
+public class RichardConfigTest {
+
+    @Test
+    public void testHello() {
+        assertThat(user.getName(), equalTo("Richard"));
+    }
+}</code></pre>
+						<p><small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/testing/RichardConfigTest.java">RichardConfigTest.java</a></small></p>
+					</section>
+					<section>
+						<h3>4.3.4 @IfProfileValue</h3>
+						<p align="left">Define test with <i>@IfProfileValue</i> annotation.</p>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = { MyConfig.clasz, BarbaraConfig.clasz })
+@ActiveProfiles("richard")
+public class RichardConfigTest {
+
+    @Test
+    @IfProfileValue(name = "test-group", values = { "training" })
+    public void testHello() {
+        assertThat(user.getName(), not(equalTo("Arny")));
+    }
+}</code></pre>
+						<p align="left">Use profile by calling JVM with e.g. <i>-Dtest-group=training</i>. Annotation reflects JVM parameters, environments properties (e.g. OS), etc.</p>
+						<small>Example: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/testing/BarbaraConfigTest.java">BarbaraConfigTest.java</a></small>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## 4.4 JUnit Rules
+							
+							1. TestWatcher
+							2. System Rules
+						</script>
+					</section>
+					<section>
+						<h3>4.4.1 TestWatcher</h3>
+						<p align="left">Logging of test method can be done by TestWatcher clacc from JUnit.</p>
+						<pre><code class="java">/**
+ * Log method execution (start & stop).
+ */
+@Rule
+public TestRule watcher = new TestWatcher() {
+    protected void starting(Description description) {
+        LOG.debug("Starting test {}#{}", description.getTestClass().getSimpleName(), description.getMethodName());
+    }
+
+    protected void finished(Description description) {
+        LOG.debug("Finished test {}#{}", description.getTestClass().getSimpleName(), description.getMethodName());
+    }
+
+    protected void skipped(AssumptionViolatedException e, Description description) {
+        LOG.debug("Skipped test {}#{}", description.getTestClass(), description.getMethodName());
+    }
+
+};</code></pre>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### 4.4.2 System Rules [1/3]
+							
+							<div align="left">**System Rules** is library (a collection of JUnit rules) for testing code that uses java.lang.System, e.g.:</div>
+							
+							1. Command-Line Applications
+							2. System.exit
+							3. System properties
+							4. Security Managers
+
+							<small>See: [project site](http://stefanbirkner.github.io/system-rules/index.html)</small>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 4.4.2 System Rules [2/3]
+							
+							<div align="left">Spring bean definition (to be tested)</div>
+```
+@Service
+public class HelloService {
+    
+    public vois sayHello(String name) {
+        System.out.println("Hello " + name);
+    };
+	
+}
+```
+							<div align="left">Maven dependency</div>
+```
+<dependency>
+	<groupId>com.github.stefanbirkner</groupId>
+	<artifactId>system-rules</artifactId>
+	<version>1.12.1</version>
+</dependency>
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 4.4.2 System Rules [3/3]
+							
+							<div align="left">Example of testing System.out</div>
+```
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(...)
+public class HelloServiceTest {
+
+    @Rule
+	public final SystemOutRule log = new SystemOutRule().enableLog();
+	
+    @Autowired
+	private HelloService service;
+	
+	@Test
+    public testService() {
+      service.sayHello("Arny");
+	  assertThat(log.getLog(), equalTo("Hello Arny"));
+    }
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 4.5 Controller
+							
+							1. Controller (with JSP view)
+							2. REST Controller (just JSON)
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 4.5.1 Controller (with JSP view)
+							
+```
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = { ControllerApplication.class })
+@WebAppConfiguration
+public class HelloControllerTest {
+
+	@Test
+	public void test() throws Exception {
+		HelloController controller = new HelloController();
+		MockMvc mockMvc = standaloneSetup(controller)
+				.setSingleView(new InternalResourceView("/WEB-INF/jsp/hello.jsp")).build();
+
+		mockMvc.perform(get("/hello/Arny"))
+			.andExpect(view().name("hello"))
+			.andExpect(model().attributeExists("name"))
+			.andExpect(model().attribute("name", "Arny"));
+	}
+}
+```
+							
+							<small>See: [HelloControllerTest.java](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/controller/HelloControllerTest.java) in project sat-core</small>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## 4.5.2 REST Controller (just JSON)
+							
+```
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = { ControllerApplication.class })
+@WebAppConfiguration
+public class GreetingControllerTest {
+
+	@Autowired
+	private WebApplicationContext webApplicationContext;
+
+	@Test
+	public void testArny() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+		mockMvc.perform(get("/arny").contentType(MediaType.APPLICATION_JSON_VALUE))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+			.andExpect(content().string("Hello!"));
+	}
+}
+```
+
+							<small>See: [GreetingControllerTest.java](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/test/java/com/github/aha/sat/core/controller/GreetingControllerTest.java) in project sat-core</small>
+						</script>
+					</section>
+					<section>
+						<h3>4.6 Springockito</h3>
+						<p align="left">Springockito  is a small extension to spring that simplifies way of creation mockito mocks in the integration tests' related context xml files.</p>
+						<p align="left">XML</p>
+						<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans ... xmlns:mockito="http://www.mockito.org/spring/mockito" xsi:schemaLocation="..." &gt;
+  &lt;mockito:mock id="myService" class="com.github.aha.sat.core.testing.HelloService" /&gt;
+&lt;/beans&gt;</code></pre>
+						<p align="left">Annotation</p>
+						<pre><code class="java">@ReplaceWithMock
+@Autowired
+private HelloService helloService;</code></pre>
+						<small>See: <a href="https://bitbucket.org/kubek2k/springockito/wiki/Home">Springockito WIKI</a></small>
+					</section>
+				</section>
+
+				<!-- Chapter 5 - Spring MVC -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5. Spring MVC
+							
+							1. Setup for JSP
+							2. Error handling
+							3. Redirect options
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.1 Setup for JSP
+							
+							1. Maven
+							2. Application & Configuration
+							3. Controller
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.1.1 Maven
+							
+```
+<packaging>war</packaging>
+
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<!-- to properly auto-configure MVC beans for JSP usage -->
+<dependency>
+	<groupId>org.apache.tomcat.embed</groupId>
+	<artifactId>tomcat-embed-jasper</artifactId>
+	<scope>provided</scope>
+</dependency>
+<!-- to use JSTL tags-->
+<dependency>
+	<groupId>org.apache.tiles</groupId>
+	<artifactId>tiles-jsp</artifactId>
+	<version>3.0.5</version>
+</dependency>
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.1.2 Application & Configuration
+							
+```
+@SpringBootApplication
+public class ControllerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ControllerApplication.class, args);
+    }
+
+	// to define JSPs location
+	@Bean
+	public ViewResolver getViewResolver() {
+		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+		resolver.setPrefix("/WEB-INF/jsp/");
+		resolver.setSuffix(".jsp");
+		return resolver;
+	}
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.1.3 Controller
+							
+```
+@Controller
+public class HelloController {
+
+	@RequestMapping(value = "hello/{name}", method = RequestMethod.GET)
+	public String sayHello(@PathVariable String name, Model model) {
+		model.addAttribute("name", name);
+		return "hello";
+	}
+
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.2 Error handling
+							
+							1. Basic / Manual
+							2. Exception
+							3. Exception Handler
+							3. Controller Advice
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.2.1 Basic / Manual
+							
+```
+@Controller
+public class HelloController {
+
+	@RequestMapping(value = "hello/{name}", method = RequestMethod.GET)
+	public String sayHello(@PathVariable String name, Model model) {
+
+		if (StringUtils.hasText(name)) {
+			model.addAttribute("name", name);
+			return "hello";
+		}
+
+		throw new IllegalArgumentException("Name not found");
+	}
+
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.2.2 Exception
+							
+```
+@ResponseStatus(value=HttpStatus.NOT_FOUND, reason="Item Not Found")
+public class ItemNotFoundException extends RuntimeException {
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.2.3 Exception Handler
+							
+							Usage for all methods in controller is:
+```
+@ExceptionHandler(IllegalArgumentException.class)
+public String handleNotFoundException() {
+	return "error/notFound";
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.2.4 Controller Advice
+							
+							<div align="left">Used for:</div>
+							1. @ExceptionHandler (see chapter 5.2.3)
+							2. @InitBinder
+							3. @ModelAttribute
+
+							<div align="left">Example:</div>
+```
+@ControllerAdvice
+public class GeneralExceptionHandler {
+	@ExceptionHandler(IllegalArgumentException.class)
+	public String handleNotFoundException() {
+		return "error/notFound";
+	}
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.3 Redirect Options
+							
+							1. Basic usage
+							2. Templating
+							3. Flash attribute
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.3.1 Basic Usage
+							
+```
+@Controller
+public class SomeItemController {
+
+	@RequestMapping(value = "item/{id}", method = RequestMethod.GET)
+	public String saveItem(@PathVariable long id, ItemDTO dto) {
+
+		// persist DTO
+		...
+		
+		// go to view
+		return "redirect:item/" + id;
+	}
+
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.3.2 Templating
+							
+							* The values used in templating have to be placed in the model
+							* Any attribute not used as template variable is added as query parameters
+							
+```
+@Controller
+public class SomeItemController {
+
+	@RequestMapping(value = "item/{id}", method = RequestMethod.GET)
+	public String someOperation(@PathVariable long id, Model model) {
+
+		// some advanced logic
+		...
+		
+		// go to view ad redirect:item/1?name=Arny
+		model.addAttribute("id", id);
+		model.addAttribute("name", "Arny");
+		return "redirect:item/{id}";
+	}
+
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 5.3.3 Flash attribute
+							
+							<div align="left">Flash attribute (accessible via model) can survive redirect. All **flash** attributes are added to HTTP session
+							and removed (after adding to the model) from HTTP session after redirect.</div>
+							
+```
+@Controller
+public class SomeItemController {
+
+	@RequestMapping(value = "item/{id}", method = RequestMethod.GET)
+	public String someOperation(@PathVariable long id, Model model) {
+
+		model.addAttribute("id", id);
+		model.addFlashAttribute("name", "Arny");
+		
+		// go to view
+		return "redirect:item/{id}";
+	}
+
+}
+```
+						</script>
+					</section>
+				</section>
+				
+				<!-- Chapter 6 - Persistence -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							### 6. Persistence
+							
+							1. Goal
+							2. Transaction Theory
+							3. JDBC
+							4. JPA
+							5. Other Resources
+						</script>
+					</section>
+					<section>
+						<h3>6.1 Goal</h3>
+						<ol>
+							<li>Hide away large amount of boilerplate codes</li>
+							<li>Separate business logic and technology configuration</li>
+							<li>Declarative transaction management (XML or annotations)</li>
+							<li>Automatic connection management (automatic acquire and release)</li>
+							<li>Intelligent exception handling</li>
+						</ol>
+					</section>
+					
+					<section>
+						<h3>6.2 Transaction Theory</h3>
+						<ol>
+							<li>ACID Principle</li>
+							<li>Read Phenomena</li>
+							<li>Isolation Levels</li>
+							<li>Propagation Levels</li>
+							<li>Proxy Phenomena</li>
+						</ol>
+					</section>
+					<section>
+						<h3>6.2.1 ACID Principle</h3>
+						<ol>
+							<li><strong>Atomic</strong> - all operations (changes) are done or none</li>
+							<li><strong>Consistent</strong> - database integrity is honoured (no constraint is violated)</li>
+							<li><strong>Isolated</strong> - transaction are isolated form each other</li>
+							<li><strong>Durable</strong> - committed changes are permanent</li>
+						</ol>
+					</section>
+					<section>
+						<h3>6.2.2 Read Phenomena</h3>
+						<p>
+							<ol>
+								<li><strong>Dirty reads</strong> - when a transaction is allowed to read data from a row that has been modified by another running transaction and not yet committed</li>
+								<li><strong>Non-repeatable reads</strong> - when during the course of a transaction, a row is retrieved twice and the values within the row differ between reads</li>
+								<li><strong>Phantom reads</strong> - when two identical queries are executed, and the collection of rows returned by the second query is different from the first</li>
+							</ol>
+						</p>
+						<small>See: <a href="http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Read_phenomena" alt="Link to Wikipeda with description of Phantom phenomena">Wikipedia</a></small>
+					</section>
+					<section>
+						<h3>6.2.3 Isolation Levels</h3>
+						<p>
+							<ol>
+								<li><strong>READ_UNCOMMITTED</strong> (lowest level) - allows Dirty read</li>
+								<li><strong>READ_COMMITTED</strong> (default) - does not allow Dirty read</li>
+								<li><strong>REPEATABLE_READ</strong> - does not allow Dirty read and prevents non-repeatable read</li>
+								<li><strong>SERIALIZABLE</strong> (slowest) - prevents all phenomenons</li>
+							</ol>
+						</p>
+						<small>See: <a href="http://en.wikipedia.org/wiki/Isolation_(database_systems)#Isolation_levels" alt="Link to Wikipeda with description of Isolations levels">Wikipedia</a></small>
+					</section>
+					<section>
+						<h3>6.2.4 Propagation Levels [1/3]</h3>
+						<p>
+							<ul>
+								<li><strong>REQUIRED</strong> (default) - If there’s an existing transaction in progress, the current method should run within this transaction. Otherwise, it should start a new transaction and run within its own transaction.</li>
+								<li><strong>REQUIRES_NEW</strong> - The current method must start a new transaction and run within its own transaction. If there’s an existing transaction in progress, it should be suspended.</li>
+								<li><strong>SUPPORTS</strong> - If there’s an existing transaction in progress, the current method can run within this transaction. Otherwise, it is not necessary to run within a transaction.</li>
+							</ul>
+						</p>
+					</section>
+					<section>
+						<h3>6.2.4 Propagation Levels [2/3]</h3>
+						<p>
+							<ul>
+								<li><strong>NOT_SUPPORTED</strong> - The current method should not run within a transaction. If there’s an existing transaction in progress, it should be suspended.</li>
+								<li><strong>MANDATORY</strong> - The current method must run within a transaction. If there’s no existing transaction in progress, an exception will be thrown.</li>
+								<li><strong>NEVER</strong> - The current method should not run within a transaction. If there’s an existing transaction in progress, an exception will be thrown.</li>
+							</ul>
+						</p>
+					</section>
+					<section>
+						<h3>6.2.4 Propagation Levels [3/3]</h3>
+						<p>
+							<ul>
+								<li><strong>NESTED</strong> (unique Spring feature) - If there’s an existing transaction in progress, the current method should run within the nested transaction (supported by the JDBC 3.0 save point feature) of this transaction. Otherwise, it should start a new transaction and run within its own transaction.</li>
+							</ul>
+						</p>
+					</section>
+					<section>
+						<h3>6.2.5 Question</h3>
+						<p align="left">Sample code:</p>
+						<pre><code class="java">@Transactional
+public City getCity(long id) {
+    audit("city", id);
+    ...
+    new RuntimeException("some exception is raised here");
+}
+
+@Transactional(propagation=Propagation.REQUIRES_NEW)
+public void audit(String entity, long id) {
+	// do some audit logic
+}</code></pre>
+						<p align="left">What's the propagation level in method audit? Is the audit record stored or not (by calling method <i>getCity</i>)?</p>
+					</section>
+					<section>
+						<h3>6.3 JDBC</h3>
+						<ol>
+							<li>Embedded H2 with Spring</li>
+							<li>Embedded H2 with Spring Boot</li>
+							<li>Loading SQL scripts</li>
+							<li>Loading Liquibase scripts</li>
+							<li>JDBC Template usage</li>
+							<li>Intelligent exception handling</li>
+						</ol>
+					</section>
+					<section>
+						<h3>6.3.1 Embedded HSQL with Spring</h3>
+						<pre><code class="xml">&lt;beans ... xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xsi:schemaLocation="... 
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd"&gt;
+    &lt;!-- Embedded (in-memory) database. --&gt;
+    &lt;jdbc:embedded-database id="dataSourceHSQL" type="HSQL"&gt;
+        &lt;jdbc:script location="classpath:schema.sql" encoding="UTF-8"/&gt;
+        &lt;jdbc:script location="classpath:data.sql" encoding="UTF-8"/&gt;
+    &lt;/jdbc:embedded-database&gt;
+&lt;/beans&gt;
+</code></pre>
+					</section>
+					<section>
+						<h3>6.3.2 Embedded H2 with Spring Boot</h3>
+						<p align="left">Maven dependency (+ dependency for JDBC driver - e.g. hsqldb):</p>
+						<pre><code class="xml">&lt;dependency/&gt;
+    &lt;groupId/&gt;org.springframework.boot&lt;/groupId/&gt;
+    &lt;artifactId/&gt;spring-boot-starter-jdbc&lt;/artifactId/&gt;
+&lt;/dependency/&gt;</code></pre>
+						<p align="left">DB properties (in YML file):</p>
+						<pre><code>spring:
+    datasource:
+        platform:H2
+        url=jdbc:h2:mem
+        username=sa
+        password=
+        driverClassName=org.h2.Driver.class</code></pre>
+					</section>
+					<section>
+						<h3>6.3.3 Loading SQL scripts</h3>
+						<p align="left">Use these files on classpath (located in <i>src/main/resources</i> or <i>src/test/resources</i>):</p>
+						<ul>
+							<li><strong>schema.sql</strong> - load DB structures (create schema by DDL)</li>
+							<li><strong>data.sql</strong> - load DB data (by DML)</li>
+						</ul>
+						<p><small>See: project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jdbc/" alt="Link to example project on GitHub">sat-jdbc</a></small></p>
+					</section>
+					<section>
+						<h3>6.3.4 Loading Liquibase scripts</h3>
+						<p align="left">Maven dependency (plus dependency from chapter 6.3.2):</p>
+						<pre><code class="xml">&lt;dependency/&gt;
+    &lt;groupId/&gt;org.liquibase&lt;/groupId/&gt;
+    &lt;artifactId/&gt;liquibase-core&lt;/artifactId/&gt;
+&lt;/dependency/&gt;</code></pre>
+						<p align="left">Use file <strong>/db/changelog/db.changelog-master.yaml</strong> on classpath 
+						(located in <i>src/main/resources</i> or <i>src/test/resources</i>) to load Liquibase script.</p>
+						<p><small>See: project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-liquibase/" alt="Link to example project on GitHub">sat-liquibase</a></small></p>
+					</section>
+					<section>
+						<h3>6.3.5 JDBC Template usage</h3>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = JdbcApplication.clasz)
+public class JdbcTests {
+
+    @Autowired
+    JdbcTemplate jt;
+
+    private static final String SQL = "select count(*) from CATCIS";
+	
+    @Test
+    public void testCount() {
+        Integer count = jt.queryForObject(SQL, Integer.clasz);
+        assertThat(count, equalTo(7));
+    }
+
+}
+</code></pre>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-jdbc/src/test/java/com/github/aha/sat/jdbc/JdbcTests.java" alt="Link to example project on GitHub">JdbcTests.java</a> in project sat-jdbc</small></p>
+					</section>
+					<section>
+						<h3>6.3.6 Intelligent exception handling</h3>
+						<p align="left">The idea is to hide technology exceptions (SQL, JDBC, JPA, Hibernate, iBatis, etc.) and re-throw independent Spring exceptions. To do so just add post-processor definition to spring configuration:</p>
+						<pre><code class="xml">&lt;!--  Post processor to apply translation of JPA specific exceptions 
+      upon objects annotated with @Repository annotation. --&gt;
+&lt;bean class="o.s.dao.annotation.PersistenceExceptionTranslationPostProcessor" /&gt;</code></pre>
+					</section>
+
+					<section>
+						<h3>6.4 JPA</h3>
+						<ol>
+							<li>Component Diagram</li>
+							<li>Embedded H2 with Spring</li>
+							<li>Embedded H2 with Spring Boot</li>
+							<li>Importing data</li>
+							<li>Spring Data</li>
+							<li>JavaConfig</li>
+						</ol>
+						<p><small>See: project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/" alt="Link to example project on GitHub">sat-jpa</a></small></p>
+					</section>
+					<section>
+						<h3>6.4.1 Component Diagram</h3>
+						<img src="img/jpa_diagram.png" alt="Component diagram of JPA components">
+					</section>
+					<section>
+						<h3>6.4.2 Embedded HSQL with Spring</h3>
+						<pre><code class="xml">&lt;!-- Usage of embedded (in-memory) database is described in the chapter 6.3.1. --&gt;
+
+&lt;bean id="transactionManagerHSQL" 
+    class="org.springframework.orm.jpa.JpaTransactionManager" p:entityManagerFactory-ref="entityManagerFactoryHSQL"/&gt;
+
+&lt;bean id="entityManagerFactoryHSQL" 
+    class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+    p:persistenceProviderClass="org.hibernate.ejb.HibernatePersistence" 
+    p:packagesToScan="com.github.aha.sat.jpa.domain"
+    p:dataSource-ref="dataSourceHSQL" 
+    p:jpaVendorAdapter-ref="jpaVendorAdapterHSQL"/&gt;
+
+&lt;bean id="jpaVendorAdapterHSQL" 
+    class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"&gt;
+    &lt;property name="database" value="HSQL" /&gt;
+    &lt;property name="showSql" value="true" /&gt;
+    &lt;property name="generateDdl" value="false" /&gt;
+&lt;/bean&gt;</code></pre>
+					</section>
+					<section>
+						<h3>6.4.3 Embedded H2 with Spring Boot</h3>
+						<p align="left">Maven dependency:</p>
+						<pre><code class="xml">&lt;dependency/&gt;
+    &lt;groupId/&gt;org.springframework.boot&lt;/groupId/&gt;
+    &lt;artifactId/&gt;spring-boot-starter-data-jpa&lt;/artifactId/&gt;
+&lt;/dependency/&gt;</code></pre>
+						<p align="left">Optional: DB properties (same as in chapter 6.3.2):</p>
+						<pre><code>spring:
+    datasource:
+        platform:H2
+        url=jdbc:h2:mem
+        username=sa
+        password=
+        driverClassName=org.h2.Driver.class</code></pre>
+					</section>
+					<section>
+						<h3>6.4.4 Importing data</h3>
+						<p align="left">Use file <strong>import.sql</strong> on classpath (located in <i>src/main/resources</i> 
+						or <i>src/test/resources</i>) to import data (to initialize DB).</p>
+						<p align="left">Example of imported data:</p>
+						<pre><code>-- AUSTRALIA
+insert into city(country, name, state)
+values ('Australia', 'Brisbane', 'Queensland')
+insert into city(country, name, state)
+values ('Australia', 'Melbourne', 'Victoria')
+...</code></pre>
+					</section>
+					<section>
+						<h3>6.4.5 Spring Data</h3>
+						<ol>
+							<li>Entity Definition</li>
+							<li>Repository Definition</li>
+							<li>Simple Queries</li>
+							<li>Named Queries</li>
+							<li>CRUD Operations</li>
+							<li>Dynamic Queries</li>
+							<li>Mixed Repository</li>
+						</ol>
+						<p><small>See: project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/" alt="Link to example project on GitHub">sat-jpa</a> or 
+						<a href="http://docs.spring.io/spring-data/data-jpa/docs/current/reference/html/#jpa.query-methods.query-creation" alt="Link to Spring Data documentation">Spring Data documentation</a></small></p>
+					</section>
+					<section>
+						<h3>6.4.5.1 Entity Definition</h3>
+						<pre><code class="java">@Entity
+@NamedQueries(value = {
+    @NamedQuery(
+        name = "City.findByName", 
+        query = "select c from City c where c.name = ?1"),
+    @NamedQuery(
+        name = "City.findByNameAndCountry",
+        query = "select c from City c where c.name like ?1 and c.country = ?2") })
+public class City implements Serializable {
+
+    @Id @GeneratedValue private Long id;
+    @Column(nullable = false) private String name;
+    @Column(nullable = false) private String state;
+    @Column(nullable = false) private String country;
+    ...
+}</code></pre>
+					</section>
+					<section>
+						<h3>6.4.5.2 Repository definition</h3>
+						<pre><code class="java">public interface CityRepository 
+    extends JpaRepository&lt;City, Long&gt;, JpaSpecificationExecutor&lt;City&gt; {
+
+    // Page&lt;City&gt; findAll(Pageable pageable); - just for Repository interface
+
+    Page&lt;City&gt; findByNameContainingAndCountryContainingAllIgnoringCase(String name, String country, Pageable pageable);
+
+    City findByNameAndCountryAllIgnoringCase(String name, String country);
+
+    // queries are defined by @NamedQuery (in the entity City)
+    City findByName(String name);
+    List&lt;City&gt; findByNameAndCountry(String name, String country);
+	
+    @Query("SELECT c FROM City c WHERE LOWER(c.name) = LOWER(:name)")
+    City retrieveByName(@Param("name") String name);
+}</code></pre>
+					</section>
+					<section>
+						<h3>6.4.5.3 Simple Queries</h3>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = JpaApplication.clasz)
+@Transactional(readOnly = true)
+public class QueryTests extends AbstractCityTests {
+
+    @Test
+    public void testCount() {
+        long count = cityRepository.count();
+        assertThat(count, equalTo(15L));
+    }
+
+    @Test
+    public void testPaging() {
+        Page&lt;City&gt; page = cityRepository.findAll(new PageRequest(0, 5));
+        ...
+    }
+
+    @Test
+    public void testSorting() {
+        Page&lt;City&gt; page = cityRepository.findAll(new PageRequest(0, 5, Sort.Direction.DESC, "country", "name"));
+        ...
+    }
+}</code></pre>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/github/aha/sat/jpa/QueryTests.java" alt="Link to test example on GitHub">QueryTests.java</a> in project sat-jpa</small></p>
+					</section>
+					<section>
+						<h3>6.4.5.4 Named Queries [1/2]</h3>
+						<h4>Query definition by @NamedQuery in the entity</h4>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = JpaApplication.clasz)
+@Transactional(readOnly = true)
+public class NamedQueryTests extends AbstractCityTests {
+
+    @Test
+    public void testQueryCityByName() {
+        City city = cityRepository.findByName("Miami");
+        ...
+    }
+
+    @Test
+    public void testQueryCityAndCountry() {
+        List&lt;City&gt; result = cityRepository.findByNameAndCountry("% %", "USA");
+        ...
+    }
+}</code></pre>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/github/aha/sat/jpa/NamedQueryTests.java" alt="Link to test example on GitHub">NamedQueryTests.java</a> in project sat-jpa</small></p>
+					</section>
+					<section>
+						<h3>6.4.5.4 Named Queries [2/2]</h3>
+						<h4>Query definition by @Query in the repository interface</h4>
+						<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.clasz)
+@SpringApplicationConfiguration(classes = JpaApplication.clasz)
+@Transactional(readOnly = true)
+public class NamedQueryTests extends AbstractCityTests {
+    @Test
+    public void testInterfaceQueryRetrieveByName() {
+        City city = cityRepository.retrieveByName("prague");
+        ...
+    }
+
+}</code></pre>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/github/aha/sat/jpa/NamedQueryTests.java" alt="Link to test example on GitHub">NamedQueryTests.java</a> in project sat-jpa</small></p>
+					</section>
+					<section>
+						<h3>6.4.5.5 CRUD Operations</h3>
+						<pre><code class="java">@Transactional(readOnly = false)
+@TransactionConfiguration(defaultRollback = true)
+public class CrudTests extends AbstractCityTests {
+
+    @Test
+    public void testCreate() {
+        City city = cityRepository.save(new City("Frankfurt", "Germany", ""));;
+        ...
+    }
+
+    @Test
+    public void testDelete() {
+        City city = cityRepository.findByName("Prague");
+        ...
+        cityRepository.delete(city);
+        ...
+    }
+}</code></pre>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/github/aha/sat/jpa/DynamicQueryTests.java" alt="Link to test example on GitHub">DynamicQueryTests.java</a> in project sat-jpa</small></p>
+					</section>
+					<section>
+						<h3>6.4.5.6 Dynamic Queries [1/2]</h3>
+						<p align="left">Define <i>Specification</i> for each desired predicate:</p>
+						<pre><code class="java">public class CitySpecifications {
+
+    public static Specification&lt;City&gt; cityFromState(final String state) {
+        return new Specification&lt;City&gt;() {
+
+            @Override
+            public Predicate toPredicate(Root&lt;City&gt; root, 
+              CriteriaQuery&lt;?&gt; query, CriteriaBuilder cb) {
+                return cb.equal(root.get("country"), state);
+            }
+        };
+    }
+}</code></pre>
+						<p><small>See: <a href="http://spring.io/blog/2011/04/26/advanced-spring-data-jpa-specifications-and-querydsl/" alt="Link to specification example">Advanced Spring Data JPA - Specifications and Querydsl</a></small></p>
+					</section>
+					<section>
+						<h3>6.4.5.6 Dynamic Queries [2/2]</h3>
+						<p align="left">Extend interface <i>JpaSpecificationExecutor&lt;T&gt;</i> in your repository. Key words <i>where</i>, <i>and</i>, <i>or</i> and <i>not</i> are used from utility class <i>Specifications</i>.</p>
+						<pre><code class="java">@Test
+public void testCitiesWithoutStateInUsa() {
+    List&lt;City&gt; result = cityRepository.findAll(
+        where(cityHasNoState()).and(cityFromState("USA")),
+        new Sort("country", "name"));
+    ...
+}</code></pre>
+						<p><small>See: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-jpa/src/test/java/com/github/aha/sat/jpa/DynamicQueryTests.java" alt="Link to test example on GitHub">DynamicQueryTests.java</a> in project sat-jpa</small></p>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 6.4.5.7 Mixed Repository [1/2]
+							
+							
+							<div align="left">Define interface</div>
+							
+```
+public interface CityService {
+	List<City> findByState(String state);
+}
+```
+
+							<div align="left">Implement interface</div>
+							
+```
+public class CityServiceImpl implements CityService {
+
+	private static final String JPQL = "select c from City c where c.state = ?1";
+	
+	@PersistenceContext
+	private EntityManager em;
+
+	public List<City> findByState(String state) {
+		TypedQuery<City> query = em.createQuery(JPQL, City.class);
+		query.setParameter(1, state);
+		return query.getResultList();
+	}
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 6.4.5.7 Mixed Repository [2/2]
+							
+							
+							<div align="left">Use interface (just extends defined interface)</div>
+							
+```java
+public interface CityRepository extends JpaRepository<City, Long>, CityService {
+	...
+}
+```
+
+							<div align="left">Test feature</div>
+							
+```java
+public class MixedQueryTests extends AbstractCityTests {
+
+    @Test
+    public void testCitiesWithState() {
+		List<City> result = cityRepository.findByState("CA");
+		assertThat(...);
+	}
+}
+```
+						</script>
+					</section>
+					<section>
+						<h3>6.4.6 Configuration</h3>
+						<ol>
+							<li>Datasource & Error handling BPP</li>
+							<li>Entity Manager Factory</li>
+							<li>Transaction Manager</li>
+						</ol>
+					</section>
+					<section>
+						<h3>6.4.6.1 Datasource & Error handling</h3>
+						<p align="left">Datasource and intelligent exception handling (by BPP):</p>
+						<pre><code class="java">@Configuration
+@EnableTransactionManagement
+public class PersistenceJPAConfig{
+   @Bean
+   public DataSource dataSource(){
+      DriverManagerDataSource dataSource = new DriverManagerDataSource();
+      dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+      dataSource.setUrl("jdbc:mysql://localhost:3306/spring_jpa");
+      dataSource.setUsername( "tutorialuser" );
+      dataSource.setPassword( "tutorialmy5ql" );
+      return dataSource;
+   }
+   @Bean
+   public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
+      return new PersistenceExceptionTranslationPostProcessor();
+   }
+}</code></pre>
+						<p><small>See: <a href="http://www.baeldung.com/2011/12/13/the-persistence-layer-with-spring-3-1-and-jpa/" alt="Link to JavaConfig example">Spring 4 and JPA with Hibernate</a></small></p>
+					</section>
+					<section>
+						<h3>6.4.6.2 Entity Manager Factory</h3>
+						<pre><code class="java">public class PersistenceJPAConfig{
+ 
+   @Bean
+   public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+      LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+      em.setDataSource(dataSource());
+      em.setPackagesToScan(new String[] { "org.baeldung.persistence.model" });
+ 
+      JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+      em.setJpaVendorAdapter(vendorAdapter);
+      em.setJpaProperties(additionalProperties());
+ 
+      return em;
+   }
+ 
+   public Properties additionalProperties() {
+      Properties properties = new Properties();
+      properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+      properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+      return properties;
+   }
+}</code></pre>
+					</section>
+					<section>
+						<h3>6.4.6.3 Transaction Manager</h3>
+						<pre><code class="java">public class PersistenceJPAConfig {
+   @Bean
+   public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
+      JpaTransactionManager transactionManager = new JpaTransactionManager();
+      transactionManager.setEntityManagerFactory(emf);
+ 
+      return transactionManager;
+   }
+ 
+}</code></pre>
+					</section>
+					<section>
+						<h3>6.5 Other Resources</h3>
+						<ol>
+							<li>Explanation of <a href="http://doanduyhai.wordpress.com/2011/11/20/spring-transactional-explained/">Spring @Transactional</a></li>
+							<li>Explanation of <a href="http://doanduyhai.wordpress.com/2011/11/21/spring-persistencecontext-explained/">@PersistenceContext/@PersistenceUnit</a></li>
+						</ol>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>7. REST (Spring MVC)</h2>
+						<ol>
+							<li>Overview</li>
+							<li>Principles</li>
+							<li>Methods</li>
+							<li>Richardson&nbsp;Maturity&nbsp;Model</li>
+							<li>REST Example</li>
+							<li>Swagger&nbsp;Documentation</li>
+							<li>HATEOAS</li>
+							<li>Check implementation</li>
+						</ol>
+						<br/><br/>
+						<small>Based on <a href="http://en.wikipedia.org/wiki/Representational_state_transfer" alt="Description of REST on Wikipedia">Wikipedia</a> and <a href="http://www.restapitutorial.com/" alt="Web REST API Tutorial">REST API Tutorial</a></small>
+					</section>
+
+					<section>
+						<h3>7.1 Overview</h3>
+						<p align="left"><strong>Representational state transfer</strong> known as REST is a new architecture approach to create web services.</p>
+						<p align="left">The concept is based on:
+							<ul>
+								<li>Proper usage of HTTP features</li>
+								<li>All is about (stateless) resources (URI)</li>
+								<li>URL represents resource, not an action</li>
+								<li>Easy and efficient use, but without strict</li>
+								<li>Support for multiple format - what server accepts and client prefers (e.g. XML, JSON, CSV, TXT, etc.)</li>
+							</ul>
+						</p>
+					</section>
+
+					<section>
+						<h3>7.2 Principles 1/2</h3>
+						<ul>
+							<li><strong>Uniform interface</strong>
+								<ul>
+									<li>Resource-Based</li>						
+									<li>Manipulation of Resources Through Representations</li>						
+									<li>Self-descriptive Messages</li>						
+									<li>Hypermedia as the Engine of Application State (<a href="http://en.wikipedia.org/wiki/HATEOAS" alt="Description of HATEOAS on Wikipedia">HATEOAS</a>)</li>						
+								</ul>
+							</li>
+							<li><strong>Client–server</strong> - the separation of clients from servers.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>7.2 Principles 2/2</h3>
+						<ul>
+							<li><strong>Stateless</strong> - no state is hold on server-side.</li>
+							<li><strong>Cacheable</strong> - clients can cache responses.</li>
+							<li><strong>Layered system</strong> - clients do not know whether they are connected directly to the end server (or not).</li>
+							<li><strong>Code on demand (optional)</strong> - servers can temporarily extend or customize the functionality of a client by the transfer of executable code (Java applets, JS, etc.).</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>7.3 Methods [1/2]</h3>
+						<table style="border: 1px solid white;">
+							<tr style="background-color: gray;">
+								<th>Operation</th>
+								<th>HTTP Method</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<td>Create/Insert</td>
+								<td>POST</td>
+								<td>Create a new resource</td>
+							</tr>
+							<tr>
+								<td>Read/Select</td>
+								<td>GET</td>
+								<td>Retrieve a resource</td>
+							</tr>
+							<tr>
+								<td>Update</td>
+								<td>PUT</td>
+								<td>Update an existing resource</td>
+							</tr>
+							<tr>
+								<td>Update</td>
+								<td>PATCH</td>
+								<td>Update minor changes to an existing resource (e.g. one attribute)</td>
+							</tr>
+						</table>
+					</section>
+					<section>
+						<h3>7.3 Methods [1/2]</h3>
+						<table style="border: 1px solid white;">
+							<tr style="background-color: gray;">
+								<th>Operation</th>
+								<th>HTTP Method</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<td>Delete/Remove</td>
+								<td>DELETE</td>
+								<td>Deletes a resource</td>
+							</tr>
+							<tr>
+								<td>Document API</td>
+								<td>OPTION</td>
+								<td>Provide documentation to exposed API (URL)</td>
+							</tr>
+						</table>
+						<small>More information <a href="http://www.restapitutorial.com/lessons/httpmethods.html" alt="Using HTTP Methods for RESTful Services">here</a></small>
+					</section>
+					
+					<section>
+						<h3>7.4 Richardson Maturity Model</h3>
+						<table style="border: 1px solid white;">
+							<tr style="background-color: gray;">
+								<th>Level</th>
+								<th>Name</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<td>0</td>
+								<td>RPC</td>
+								<td>Call requests against universal service endpoint</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>Resources</td>
+								<td>Call requests against specialized resource endpoint</td>
+							</tr>
+							<tr>
+								<td>2</td>
+								<td>HTTP Verbs</td>
+								<td>Use HTTP method when invoking the resource</td>
+							</tr>
+							<tr>
+								<td>3</td>
+								<td>Hypermedia Controls</td>
+								<td>Use HATEOAS when invoking the resource</td>
+							</tr>
+						</table>
+						<small>More information <a href="http://martinfowler.com/articles/richardsonMaturityModel.html" alt="Richardson Maturity Model">here</a></small>
+					</section>					
+
+					<section>
+						<h3>7.5 REST Example</h3>
+						<pre><code class="java">@RequestMapping(
+    value = "/{id}",
+    method = RequestMethod.GET,
+    produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+public List&lt;City&gt; list(@PathVariable String country,
+                       @PathParam("sorting") String sorting) {
+    List&lt;City&gt; data = cityService.list(country, sorting);
+    if (data.size() == 0) {
+        throw new NoItemFoundException(String.format("No city for country %s was  found!", country));
+    }
+    return data;
+}
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class NoItemFoundException extends RuntimeException { ... }</code></pre>
+					</section>
+					
+					<section>
+						<h2>7.6 Swagger Documentation</h2>
+						<pre><code class="java">@RequestMapping(value = "/"})
+@ApiOperation(
+  value = "Returns list of cities", notes = "Returns a list of found city details.", 
+  response = City.class, responseContainer = "List")
+@ApiResponses(value = { 
+  @ApiResponse(code = 200, message = "Successful retrieval of the list of cities (with simple detail)")
+})
+public List&lt;City&gt; list(
+  @ApiParam(name = "country", required = false) @PathParam("country") String country,
+  @ApiParam(name = "sorting", required = false) @PathParam("sorting") String sorting) {
+	return cityService.list(country, sorting);
+}</code></pre>
+						<p><small>See: <a href="http://swagger.io/" alt="Link to Swagger home page">Swagger home page</a></small></p>
+					</section>
+					<section>
+						<h3>7.7 HATEOAS</h3>
+						<p align="left">Define resource:</p>
+						<pre><code class="java">public class CityResource extends Resource&lt;City&gt; {
+
+    public CityResource(City entity) {
+        super(entity, linkTo(methodOn(CityHateoasController.class).item(entity.getId())).withSelfRel(), linkTo(
+            CityHateoasController.class).slash(entity.getId()).withRel("delete"));
+        }
+}</code></pre>
+						<p align="left">Define controller method:</p>
+						<pre><code class="java">@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { "application/hal+json" })
+public CityResource item(@PathVariable("id") long id) {
+    // retrieve data
+    City city = cityService.item(id);
+    // prepare resource
+    return assembler.toResource(city);
+}</code></pre>
+						<p><small>See: project <a href="https://github.com/spring-projects/spring-hateoas" alt="Link to project on GitHub">spring-hateoas</a>
+						    and example in the class <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-rest/src/main/java/com/github/aha/sat/rest/rest/CityHateoasController.java">CityHateoasController</a> (project <i>sat-rest</i>)</small></p>
+					</section>
+					<section>
+						<h3>7.8 Check implementation</h3>
+						<ol>
+							<li>Application (commented code, Spring Boot initialization)</li>
+							<li>Controller
+								<ul>
+									<li>Spring annotations (@RequestMapping, @PathVariable, @PathParam, @RequestBody, etc.)</li>
+									<li>Consuming/producing defined MIME types (JSON/XML)</li>
+									<li>CRUD operations</li>
+									<li>Exception handling</li>
+									<li>@JsonView Annotation</li>
+									<li>Swagger UI</li>
+								</ul>
+							</li>
+							<li>Unit tests (RestTemplate, integration test, repository)</li>
+							<li>SoapUI tests (CRUD operations, JSON/XML, etc.)</li>
+						</ol>
+						<p><small>See: project <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-rest/" alt="Link to example project on GitHub">sat-rest</a></small></p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>8. JMX</h2>
+						<ol>
+							<li>Goals</li>
+							<li>Overview</li>
+							<li>Spring way</li>
+							<li>JConsole</li>
+							<li>Jolokia</li>
+							<li>Dropwizard Metrics</li>
+							<li>Hibernate statistics</li>
+							<li>Other Resources</li>
+						</ol>
+					</section>
+					<section>
+						<h3>8.1 Goals</h3>
+						<ol>
+							<li>Allow monitoring JVM metrics of running application (e.g. jconcole, jvisualvm, etc.)</li>
+							<li>Gather information about application during runtime</li>
+							<li>Trigger operations inside the application</li>
+						</ol>
+					</section>
+					<section>
+						<h3>8.2 Overview</h3>
+						<ol>
+							<li>JMX is specified by <a href="https://jcp.org/en/jsr/detail?id=160" alt="Link to JSR-160">JSR-160</a></li>
+							<li>MBean is an object which allows operations on attributes or operations (management metadata).</li>
+							<li>The management metadata cab be exposed statically (by Java interface) or dynamically during runtime</li>
+						</ol>
+					</section>
+					<section>
+						<h3>8.3 Spring way</h3>
+						<p align="left">Define JMX exporter:</p>
+						<pre><code class="xml">&lt;context:mbean-export /&gt;</code></pre>
+						<p align="left">Spring configuration:</p>
+						<pre><code class="java">@Component
+@ManagedResource(description = "MBean about entity City")
+public class CityMBean {
+    ...
+	
+    @ManagedAttribute
+    public String getAuthor() {
+        return author;
+    }
+
+    @ManagedOperation(description = "Get City by ID")
+    public String getCityNameById(int id) {
+        ...
+    }
+
+}</code></pre>
+						<small>See: <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-jmx.html">Managing JMX via Spring Boot</a></small>
+					</section>
+					<section>
+						<h3>8.4 JConsole</h3>
+						<ol>
+							<li>Attach to local JVM process (PID):<br/>
+								<i><small>jconsole 5353</small></i></li>
+							<li>Add custom library for classes not available in JDK (e.g. entity City): <br/>
+								<i><small>jconsole -J-Djava.class.path="%JAVA_HOME%\lib\jconsole.jar;%JAVA_HOME%\lib\tools.jar;%MY_PATH%\sat-rest.jar"</small></i><br/>
+								Note: use quotation (character ") on windows</li>
+							<li><a href="http://hibernate-jcons.sourceforge.net/index.html" alt="Link to Hibernate JConsole Plugin page"> Usage of Hibernate JConsole Plugin</a></li>
+						</ol>
+					</section>
+					<section>
+						<h3>8.5 Jolokia</h3>
+						<h4>Expose JMX over HTTP</h4>
+						<p align="left">Add maven dependency:</p>
+						<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.jolokia&lt;/groupId&gt;
+    &lt;artifactId&gt;jolokia-core&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+						<p align="left">Browse JMX via HTTP, e.g.:</p>
+						<pre><code>http://localhost:8080/jolokia/read/com.github.aha.training.sat-rest:name=cityMBean,type=CityMBean</code></pre>
+						<small>See: Jolokia's <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-jmx.html">spring integration</a> or <a href="http://www.jolokia.org/">home page</a></small>
+					</section>
+					<section>
+						<h3>8.6 Dropwizard Metrics</h3>
+						<h4>Expose metrics via JMX</h4>
+						<p align="left">Add maven dependency:</p>
+						<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.dropwizard.metrics&lt;/groupId&gt;
+    &lt;artifactId&gt;metrics-core&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+						<p align="left">Add JMX metrics reporter:</p>
+						<pre><code class="java">@Autowired
+private MetricRegistry registry;
+
+@Bean
+public JmxReporter jmxReporter() {
+    JmxReporter reporter = JmxReporter.forRegistry(registry)
+	    .inDomain("appMetrics").build();
+    reporter.start();
+    return reporter;
+}</code></pre>
+						<small>Based on <a href="http://blog.frankel.ch/become-a-devops-with-spring-boot" alt="Article with DevOps hints">Become a DevOps with Spring Boot</a>; see: <a href="https://github.com/arnosthavelka/spring-advanced-training/blob/master/sat-spring-boot/src/main/java/com/github/aha/sat/sb/SbApplication.java" alt="Link to example HealthService usage">SbApplication</a> in the project <strong>sat-spring-boot</strong></small>
+					</section>
+					<section>
+						<h3>8.6 Dropwizard Metrics</h3>
+						<h4>Metrics result in JConsole</h4>
+						<img src="img/dropwizard_metrics.png" alt="Screenshot of metrics result in JConsole">
+						<small>Note: some metrics have to be gathered before appearing in JConsole</small>
+					</section>
+					<section>
+						<h3>8.7 Hibernate Statistics [1/2]</h3>
+						<p align="left">Define factory bean:</p>
+						<pre><code class="java">public class HibStatFactoryBean implements FactoryBean&lt;Statistics&gt; {
+    private HibernateEntityManagerFactory entityManagerFactory;
+
+    @Autowired
+    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = 
+            (HibernateEntityManagerFactory) entityManagerFactory;
+    }
+    ...
+}</code></pre>
+					</section>
+					<section>
+						<h3>8.7 Hibernate Statistics [2/2]</h3>
+						<p align="left">Spring configuration:</p>
+						<pre><code class="xml">&lt;bean id="exporter" class="o.s.jmx.export.MBeanExporter" 
+    lazy-init="false"&gt;
+	
+    &lt;property name="beans"&gt;
+        &lt;map&gt;
+            &lt;entry key="my-app:application=Statistics" 
+            value-ref="hibStatFB"/&gt;
+        &lt;/map&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+&lt;bean id="hibStatFB" class="abc.HibStatFactoryBean"
+    p:entityManagerFactory-ref="entityManagerFactory" /&gt;</code></pre>
+					</section>
+					<section>
+						<h3>8.8 Other Resources</h3>
+						<ol>
+							<li><a href="http://java.dzone.com/articles/enabling-jmx-hibernate-ehcache">Enabling JMX in Hibernate, Ehcache, Quartz, DBPC and Spring</a></li>
+							<li><a href="http://www.dzone.com/snippets/spring-jmx-sample">Spring JMX Sample Configuration (Hibernate & Ehcache Statistics)</a></li>
+							<li><a href="http://groovy.codehaus.org/Groovy+and+JMX">Groovy and JMX</a></li>
+							<li><a href="http://java.dzone.com/articles/exposing-pojo-jmx-mbean-easily">Exposing a POJO as a JMX MBean Easily With Spring</a></li>
+						</ol>
+					</section>
+					
+				</section>
+
+				<!-- Chapter 9 - AOP; -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## 9. AOP
+							
+							1. Tangling & scattering
+							2. Expression pattern
+							3. Simple example
+							4. Pointcat example
+							5. Annotating introductions
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.1 Tangling & scattering
+							
+							<svg style="position:absolute; margin-left:0px; margin-top:0px; z-index:10; width:100%; height:450px;">
+								<rect x="340" y="70" width="200" height="80" stroke=black stroke-width="4" fill="#AAAAFF" />
+								<text x="360" y="120">Tangling</text>
+								<text x="360" y="140" font-size="20">(mixing of concerns)</text>
+								
+								<line x1="340" y1="110" x2="230" y2="80" stroke="white" stroke-width="2"/>
+								<line x1="240" y1="75" x2="230" y2="80" stroke="white" stroke-width="2"/>
+								<line x1="240" y1="90" x2="230" y2="80" stroke="white" stroke-width="2"/>
+								
+								<line x1="340" y1="110" x2="20" y2="140" stroke="white" stroke-width="2"/>
+								<line x1="30" y1="130" x2="20" y2="140" stroke="white" stroke-width="2"/>
+								<line x1="30" y1="150" x2="20" y2="140" stroke="white" stroke-width="2"/>
+
+								<rect x="340" y="170" width="200" height="80" stroke=black stroke-width="4" fill="#AAAAFF" />
+								<text x="360" y="220">Scattering</text>
+								<text x="360" y="240" font-size="20">(code duplication)</text>
+								
+								<line x1="340" y1="210" x2="200" y2="80" stroke="white" stroke-width="2"/>
+								<line x1="215" y1="85" x2="200" y2="80" stroke="white" stroke-width="2"/>
+								<line x1="205" y1="95" x2="200" y2="80" stroke="white" stroke-width="2"/>
+								
+								<line x1="340" y1="210" x2="200" y2="240" stroke="white" stroke-width="2"/>
+								<line x1="210" y1="230" x2="200" y2="240" stroke="white" stroke-width="2"/>
+								<line x1="215" y1="245" x2="200" y2="240" stroke="white" stroke-width="2"/>
+							</svg>							
+```
+public class UserService {
+   public User getUser(int id) {
+      if (!hasPermission(SecurityContext.getPrincipal())) 
+		throw new AccessDeniesException();
+
+      em.find(User.class, id);
+   }
+}
+
+public class CustomerService {
+   public Customer getCustomer(int id) {
+      if (!hasPermission(SecurityContext.getPrincipal())) 
+		throw new AccessDeniesException();
+      …
+   }
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.2 Expression pattern 1/2
+							#### Definition
+							
+```
+execution(modifiers-pattern? ret-type-pattern declaring-type-pattern? 
+          name-pattern(param-pattern) throws-pattern?)
+```
+							<div align="left">Markers:</div>
+							* '?' - optional value
+							* '\*' - represents any type (e.g. for return type) or wildcard in name pattern (for all or just part)
+							* '..' - matches any number of parameters (zero or more)
+							* '(\*)' - matches a method taking one parameter of any type (or '(\*,String)' for defined type)
+							* '(..)' - matches any number of parameters (zero or more)
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.2 Expression pattern 2/2
+							#### Examples
+							
+							* all public methods
+```
+execution(public * *(..))
+```
+							* all setters (starting with prefix 'set')
+```
+execution(* set*(..))
+```
+							* all methods in any Controller (class with suffix 'Controller') in package 'com.github.aha.poc' (or its sub-package)
+```
+execution(* com.github.aha.poc..*Controller.*(..))
+```
+							
+							<small>See: [Spring AOP](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/aop.html)</small>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.3 Simple example
+							
+```
+@Aspect
+@Component
+public class DrinkLogger {
+
+	@After("execution(* com..spring_advanced.core.wiring.Drink.*())")
+	public void logAnyDrinkUsage(JoinPoint jp) {
+		LOG.info("Drink {} was just used...", 
+			jp.getTarget().getClass().getSimpleName());
+	}
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.4 Pointcut example
+							
+```
+@Aspect
+@Component
+public class DrinkLogger {
+
+	@Pointcut("execution(* com.github.aha.sat..Tea.*())")
+	private void teaUsage() {
+
+	}
+
+	@Before("teaUsage()")
+	public void logTeaUsage(JoinPoint joinPoint) {
+		LOG.info("Tea drink is being used...");
+	}
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.5 Annotating introductions
+							
+							1. Overview
+							2. Original function
+							2. New function
+							3. Introduction aspect
+							
+							<small>See: [BeanEnhancer.java](https://github.com/arnosthavelka/spring-advanced-training/tree/master/sat-core/src/main/java/com/github/aha/sat/core/aop/BeanEnhancer.java) in project sat-core</small>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.5.1 Overview
+							
+							<div align="left">The purpose of the introduction is to introduce new feature (enhance) in the existing component (spring bean).</div>
+							<svg style="width:100%; height:450px;">
+								<rect x="60" y="120" width="140" height="60" stroke="black" stroke-width="4" fill="#AAAAFF" />
+								<text x="70" y="160" fill="black">Caller</text>
+								
+								<rect x="420" y="10" width="420" height="260" stroke=black stroke-width="4" fill="gray" />
+								<text x="430" y="50">Proxy</text>
+								
+								<rect x="440" y="70" width="380" height="80" stroke=black stroke-width="4" fill="#AAAAFF" />
+								<text x="460" y="120">Advised bean</text>
+								
+								<rect x="440" y="170" width="380" height="80" stroke=black stroke-width="4" fill="#AAAAFF" />
+								<text x="460" y="220">Introduction delegate</text>
+								
+								<line x1="200" y1="150" x2="440" y2="100" stroke="white" stroke-width="2"/>
+								<line x1="430" y1="110" x2="440" y2="100" stroke="white" stroke-width="2"/>
+								<line x1="430" y1="95" x2="440" y2="100" stroke="white" stroke-width="2"/>
+								<text x="230" y="100" fill="white" font-size="20">Existing method</text>
+								
+								<line x1="200" y1="150" x2="440" y2="210" stroke="white" stroke-width="2"/>
+								<line x1="430" y1="220" x2="440" y2="210" stroke="white" stroke-width="2"/>
+								<line x1="430" y1="200" x2="440" y2="210" stroke="white" stroke-width="2"/>
+								<text x="230" y="230" fill="white" font-size="20">Introduced method</text>
+								
+							</svg>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.5.2 Original function
+							
+							<div align="left">**Adviced bean** from the picture - the original component to be extended with new feature</div>
+							
+```
+public interface Drink {
+	
+	String getName();
+
+}
+
+
+```
+							
+
+```
+@Bean
+public Drink beer() {
+	return new Drink() {
+
+		@Override
+		public String getName() {
+			return "Beer";
+		}
+
+	};
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.5.3 New function
+							
+							<div align="left">**Introduced method** from the picture - the implementation of the new feature</div>
+							
+```
+public interface Enjoyable {
+
+	String enjoy(Drink drink);
+}
+```
+							
+
+```
+public class EnjoyableImpl implements Enjoyable {
+
+	@Override
+	public String enjoy(Drink drink) {
+		return String.format("Wow %s!", drink.getName());
+	}
+
+}
+```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### 9.5.4 Introduction aspect
+							
+							<div align="left">Wiring both features together with Aspects.</div>
+							
+```
+@Aspect
+@Component
+public class BeanEnhancer {
+
+	@DeclareParents(
+		value = "com.github.aha.sat.core.aop.Drink+", 
+		defaultImpl = EnjoyableImpl.class)
+	public static Enjoyable enjoyable;
+
+}
+```
+						</script>
+					</section>
+				</section>
+
+				<!--section>
+					<h2>10. Remoting & WS</h2>
+					<p style="color:red">TODO</p>
+					<ol>
+						<li>Overview</li>
+						<li>Spring HTTP Invoker</li>
+						<li>JAX-WS</li>
+					</ol>
+					<aside class="notes">
+						<p>Spring documentation - http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/html/remoting.html</p>
+					</aside>
+				</section-->
+
+				<section>
+					<h1>THE END</h1>
+					<h3>Thank you!</h3>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'convex', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
