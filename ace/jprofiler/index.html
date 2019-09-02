@@ -1,0 +1,278 @@
+<!--
+Google IO 2012/2013 HTML5 Slide Template
+
+Authors: Eric Bidelman <ebidel@gmail.com>
+         Luke Mahé <lukem@google.com>
+
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <!--This one seems to work all the time, but really small on ipad-->
+  <!--<meta name="viewport" content="initial-scale=0.4">-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" media="all" href="theme/css/default.css">
+  <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="theme/css/phone.css">
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="js/slides" src="js/require-1.0.8.min.js"></script>
+</head>
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+    <aside class="gdbar"><img src="images/jprofiler_logo.png"></aside>
+    <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+    </hgroup>
+  </slide>
+
+  <slide>
+	<aside class="gdbar right"><img src="images/jprofiler_logo.png"></aside>
+    <hgroup>
+      <h2>Agenda</h2>
+    </hgroup>
+    <article>
+      <ul>
+        <li>What is profiling</li>
+		<li>What is JProfiler</li>
+        <li>Start center & Session Settings</li>
+		<li>CPU View</li>
+		<li>Memory views & Heap walker & VM Telemetry Views</li>
+		<li>JEE & Probes View</li>
+		<li>Monitor View</li>
+		<li>IDE Integration</li>
+		<li>Demo</li>
+		<li>Documentation & Screencast</li>
+      </ul>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>What is profiling</h2>
+	  <h3>From <a href="http://en.wikipedia.org/wiki/Profiling_%28computer_programming%29">wikipedia</a></h3>
+    </hgroup>
+    <article>
+	  <p>In software engineering, profiling ("program profiling", "software profiling") is a form of dynamic program analysis that measures, 
+	  for example, the space (memory) or time complexity of a program, the usage of particular instructions, or frequency and duration of function calls. 
+	  The most common use of profiling information is to aid program optimization.</p>
+	  <p>Profiling is achieved by instrumenting either the program source code or its binary executable form using a tool called a profiler (or code profiler). 
+	  A number of different techniques may be used by profilers, such as event-based, statistical, instrumented, and simulation methods.</p>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>What is JProfiler</h2>
+	  <h3>From <a href="http://www.ej-technologies.com/products/jprofiler/overview.html">official site</a></h3>
+    </hgroup>
+    <article>
+	  <p>JProfiler's intuitive UI helps you resolve performance bottlenecks, pin down memory leaks and understand threading issues.</p>
+	  <p>Features:
+		  <ul>
+			<li>Supported platforms: Windows, Linux, Solaris, Mac OS, AIS, etc.</li>
+			<li>Live profiling of a local or remote session</li>
+			<li>Offline profiling and triggers</li>
+			<li>Viewing and comparision of snapshots</li>
+			<li>Request tracking</li>
+			<li>Easy creation of custom probes </li>
+		  </ul>	
+	  </p>
+    </article>
+  </slide>
+
+  <slide>
+	<aside class="gdbar right"><img src="images/jprofiler_logo.png"></aside>
+    <hgroup>
+      <h2>Start center & Session Settings</h2>
+    </hgroup>
+    <article>
+	  <ul>
+		<li>Start center</li>
+	    <li>Session Settings:
+		  <ul>
+			<li>Profiling settings</li>
+			<li>Filter settings</li>
+			<li>JEE & Probes</li>
+		  </ul>
+		</li>
+      </ul>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Start center</h2>
+    </hgroup>
+    <article>
+		<img src="images/jprofiler_start_center.png" style="float:right;">
+	  <ul>
+        <li>Open session (demo and custom)</li>
+	    <li>New session
+		  <ul>
+			<li>Create</li>
+			<li>Attach to running JVM</li>
+			<li>Integration wizards</li>
+		  </ul>
+		</li>
+		<li>Open snapshot (stored profiled data)</li>
+      </ul>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Session Settings - Profiling settings</h2>
+    </hgroup>
+    <article>
+	  <ul>
+        <li><b>Instrumentation</b> - full featured profiling with accurate information but high CPU overhead<br/><br/><img src="images/jprofiler_session_setting_instrumentation.png"></li>
+        <li><b>Sampling</b> - has very low CPU overhead and does not distort measured call tines<br/><br/><img src="images/jprofiler_session_setting_sampling.png"></li>
+		<li><b>Custom - to customize desired settings</b></li>
+      </ul>	
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Session Settings - Filter settings</h2>
+    </hgroup>
+    <article>
+		Filters defines which classes are recorded for CPU profiling. JProfiler has default settings, but we can customize it with include and exlude options.
+		<br/><br/><img src="images/jprofiler_session_filter_setting.png">
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Session Settings - JEE & Probes</h2>
+    </hgroup>
+    <article>
+		This settings is related to view "JEE & Probes" with purpose to disable (by default all probes are enabled) not relevant probes and define settings for each probe.
+		<br/><br/><img src="images/jprofiler_session_probe_setting.png">
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>CPU View</h2>
+    </hgroup>
+    <article>
+		<p>We can see CPU usage per class or methods, number of invocations (in instrumentation mode). Possible views are: Call Tree, Hot Spots, Call Graph, etc.</p>
+		<a href="http://blog.ej-technologies.com/2011/08/cpu-profiling-sampling-and.html"><img src="images/jprofiler_demo_cpu.png" style="float:center;"></a>
+    </article>
+  </slide>
+  
+  <slide>
+    <hgroup>
+      <h2>Memory views & Heap walker & VM Telemetry Views</h2>
+    </hgroup>
+    <article>
+		<p>We can see memory usage, objects on heap, GC activities, etc. Possible views are: Call Tree, Hot Spots, Call Graph, etc.</p>
+		<a href="http://blog.ej-technologies.com/2009/04/in-screencast-below-i-show-strategy-for.html"><img src="images/jprofiler_demo_memory_leak.jpg" style="float:center;"></a>
+    </article>
+  </slide>
+  
+  <slide>
+    <hgroup>
+      <h2>JEE & Probes View</h2>
+    </hgroup>
+    <article>
+		<p>We can investigate several important technologies (from JEE and JSE), such as JDBC, JPA, JMS, etc.</p>
+		<a href="http://blog.ej-technologies.com/2011/08/probes-overview.html"><img src="images/jprofiler_probes.png" style="float:center;"></a>
+    </article>
+  </slide>
+  
+  <slide>
+    <hgroup>
+      <h2>JPA Probe - Example</h2>
+    </hgroup>
+    <article>
+		<a href="http://blog.ej-technologies.com/2012/01/profiling-jpahibernate.html"><img src="images/jprofiler_probes_jpa.png" style="float:center;"></a>
+    </article>
+  </slide>
+  
+  <slide>
+    <hgroup>
+      <h2>Monitor View</h2>
+    </hgroup>
+    <article>
+		<p>We can see (and investigate) locking (monitor) on instances.</p>
+		<a href="http://blog.ej-technologies.com/2010/02/cumulating-and-filtering-monitor-events.html"><img src="images/jprofiler_monitor.png" style="float:center;"></a>
+    </article>
+  </slide>
+  
+  <slide>
+    <hgroup>
+      <h2>IDE Integration</h2>
+    </hgroup>
+    <article>
+		<p>We can integrate JProfiler to our favorit IDE and start profilling from there.</p>
+		<a href="http://blog.ej-technologies.com/2009/06/jprofilers-ide-integrations.html"><img src="images/jprofiler_ide_integration.png" style="float:center;"></a>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Demo</h2>
+    </hgroup>
+    <article>
+		<p>Let's see some demos...</p>
+    </article>
+  </slide>
+
+  <slide>
+	<aside class="gdbar right"><img src="images/jprofiler_logo.png"></aside>
+    <hgroup>
+      <h2><a href="http://www.ej-technologies.com/products/jprofiler/docs">Documentation & Screencast</a></h2>
+    </hgroup>
+    <article class="smaller">
+      <ul>
+        <li><a href="http://resources.ej-technologies.com/jprofiler/help/doc">Online help</a></li>
+		<li><a href="http://resources.ej-technologies.com/jprofiler/help/doc/help.pdf">Reference manual</a></li>
+		<li>Screencasts (videos) - more then used in this presentation</li>
+      </ul>
+    </article>
+  </slide>
+
+  <slide class="thank-you-slide segue nobackground">
+    <aside class="gdbar right"><img src="images/jprofiler_logo.png"></aside>
+    <article class="flexbox vleft auto-fadein">
+      <h2>Thank You!</h2>
+    </article>
+    <p class="auto-fadein" data-config-contact>
+      <!-- populated from slide_config.json -->
+    </p>
+  </slide>
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-XXXXXXXX-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+<!--[if IE]>
+  <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+</body>
+</html>

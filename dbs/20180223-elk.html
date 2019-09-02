@@ -1,0 +1,538 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Usage of ELK</title>
+
+		<link rel="stylesheet" href="../reveal.js/css/reveal.css">
+		<link rel="stylesheet" href="../reveal.js/css/theme/blood.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<!-- 
+				https://help.github.com/articles/basic-writing-and-formatting-syntax/
+				https://www.webpagefx.com/tools/emoji-cheat-sheet/
+				-->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## ELK
+							#### Elasticsearch, Logstash & Kibana 
+													
+							Created by [Arnošt Havelka](http://cz.linkedin.com/in/arnosthavelka/)
+							
+							23/2/2018
+						</textarea>
+					</section>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## Agenda
+						
+						1. The Concept
+						1. Elasticsearch
+						1. Logstash
+						1. Kibana
+						1. Usage
+						1. Access from SpringBoot
+						1. Links
+						
+						<p><small>See: <a href="https://www.elastic.co/">elastic.co</a></small></p>
+					</textarea>
+				</section>
+					
+				<!-- Chapter 1 - The Concept -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 1. The Concept
+							
+							1. Overview
+							1. Architecture
+							1. Big Data Landscape
+							1. ELK products
+						</textarea>
+					</section>
+								
+					<section data-markdown>
+						<textarea data-template>
+							## 1.1 Overview
+
+							ELK stands for:
+							1. **Elasticsearch**
+							   - Full-text search engine
+							   - NoSQL database
+							1. **Logstash**
+							   - Data collector (filtering, modifications, etc.)
+							1. **Kibana** -
+							   - Web console (visualization, data analysis, etc.)
+						</textarea>
+					</section>
+					
+					<section>
+						<h3>1.2 Architecture</h3>
+						<img src="img/big_data_architecture.jpg" alt="Simple architecture of Big Data"/>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 1.3 ELK products [1/2]
+
+							1. **Elasticsearch** - a distributed, RESTful search and analytics engine capable of solving a growing number of use cases.
+							1. **Kibana** - lets you visualize your Elasticsearch data and navigate the Elastic Stack
+							1. **Logstash** - is server-side data processing pipeline that ingests data from a multitude of sources simultaneously, transforms it, and then sends it to your favorite “stash.”.
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 1.3 ELK products [2/2]
+
+							1. **Beats** - is the platform for single-purpose data shippers. The Beats family consists of Filebeat, Metricbeat, Packetbeat, Winlogbeat, Heartbeat.
+							1. **X-Pack** - the additional components (security, alerting, monitoring, reporting, grapg, machine learning).
+							1. **Cloud** - the hosted Elasticsearch & Kibana on AWS and GCP.
+						</textarea>
+					</section>
+				</section>
+				
+				<!-- Chapter 2 - Data Reservoir -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 2. Elasticsearch
+							### [Data Reservoir]
+							
+							1. Overview
+							1. Features
+							1. Architecture
+							1. Key components (nodes, shards, indices etc.)
+							1. Cluster & Scaling
+							1. API
+							1. REST API usage
+							
+							<p><small>See: <a href="https://www.elastic.co/products/elasticsearch">Elasticsearch product page</a></small></p>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 2.1 Overview
+							
+							1. Search and analytics engine based on **Lucine** engine
+							1. Serves as NoSQL database
+							1. Uses standard RESTful APIs and JSON (including management & batch processing)
+							1. Clients are available in many languages such as Java, Python, .NET, and Groovy (and more by contributors)
+							
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 2.2 Features
+							
+							1. Handle data (indexing, CRUD operations)
+							1. Analyzing data (analyzers, tokenizers, stemming, ngrams, etc.)
+							1. Search data (via match or filter)
+							1. Searching with relevancy (boosting, reducing, scripting, etc.)
+						</textarea>
+					</section>
+
+					<section>
+						<h3>2.3 Architecture</h3>
+						<img src="img/elasticsearch.jpg" alt="Elasticsearch architecture"/>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 2.4 Key components
+							
+							1. **Node** - a single server that stores the data and participates in indexing and search capabilities.
+							1. **Index** - a collection of documents that have somewhat similar characteristics.
+							1. **Type** - a logical category/partition of your index.
+							1. **Document** - a basic unit of information that can be indexed.
+							1. **Shards & Replicas** - the basic element to store data. The index is split into multiple pieces called shards.
+							
+							<p><small>See: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_basic_concepts.html">Basic Concept</a></small></p>
+						</textarea>
+					</section>
+
+					<section>
+						<h3>2.5 Cluster & Scaling [1/3]</h3>
+						<img src="img/elasticsearch-scaling.jpg" alt="Scaling of Elasticsearch"/>
+					</section>
+					
+					<section>
+						<h3>2.5 Cluster & Scaling [2/3]</h3>
+						<img src="img/elasticsearch-multicast.jpg" alt="Multicast communication of Elasticsearch"/>
+					</section>
+
+					<section>
+						<h3>2.5 Cluster & Scaling [3/3]</h3>
+						<img src="img/elasticsearch-unicast.jpg" alt="Unicast communication of Elasticsearch"/>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 2.6 API
+							
+							Examples:
+							1. **_search** - search in defined index or type (including wildcards)
+							1. **_cat** - helpful diagnostic and debugging tools
+							1. **_cluster** - cluster tools
+							1. **_cache** - cache tools
+							1. and more
+							
+							<p><small>See: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_basic_concepts.html">Basic Concept</a></small></p>
+						</textarea>
+					</section>
+					<section data-markdown>
+						<textarea data-template>
+							## 2.7 REST API usage
+							
+							Simple by URL (e.g. http://localhost:9200/logstash-2018.02.22/doc/rsq6vWEB2rqRs0xeAJbp) or with JSON document:
+							
+							```
+curl -H "Content-Type: application/json" -XGET
+'http://localhost:9200/social-*/_search' -d '{
+  "query": {
+    "match": {
+      "message": "myProduct"
+    }
+  },
+  "aggregations": {
+    "top_10_states": {
+      "terms": {
+        "field": "state",
+        "size": 10
+      }
+    }
+  }
+}'
+							```
+						</textarea>
+					</section>
+					
+				</section>
+
+				<!-- Chapter 3 - Logstash -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 3. Logstash
+							### [Data Collectors]
+							
+							1. Precessing overview
+							1. Inputs
+							1. Filters
+							1. Outputs
+						</textarea>
+					</section>
+
+					<section>
+						<h3>3.1 Precessing overview</h3>
+						<img src="img/logstash-processing.png" alt="Schema of logstach inputs"/>
+					</section>
+					
+					<section>
+						<h3>3.2 Inputs [1/2]</h3>
+						<img src="img/logstash-inputs.png" alt="Schema of logstach inputs"/>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 3.2 Inputs [1/2]
+							
+							1. elasticsearch
+							1. file
+							1. jdbc
+							1. eventlog
+							1. and many more
+						</textarea>
+					</section>
+
+					<section>
+						<h3>3.3 Filters [1/2]</h3>
+						<img src="img/logstash-filters.png" alt="Schema of logstach filters"/>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 3.3 Filters [1/2]
+							
+							1. grok
+							1. clone
+							1. split
+							1. translate
+							1. and many more
+						</textarea>
+					</section>
+
+					<section>
+						<h3>3.4 Outputs [1/2]</h3>
+						<img src="img/logstash-outputs.png" alt="Schema of logstach outputs"/>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 3.4 Outputs [1/2]
+							
+							1. elasticsearch
+							1. email
+							1. file
+							1. jira
+							1. and many more
+						</textarea>
+					</section>
+				
+				</section>
+
+				<!-- Chapter 4 - Kibana -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 4. Kibana
+							### [Console]
+							
+							1. Discover
+							1. Visualize
+							1. Dashboard
+							1. Dev Tools
+							1. Management							
+						</textarea>
+					</section>
+
+					<section>
+						<h3>4.1 Discover</h3>
+						<img src="img/kibana-discover.png" alt="Kibana dashboard"/>
+					</section>
+					
+					<section>
+						<h3>4.2 Visualize</h3>
+						<img src="img/kibana-visualize.png" alt="Kibana dashboard"/>
+					</section>
+					
+					<section>
+						<h3>4.3 Dashboard</h3>
+						<img src="img/kibana-dashboard.jpg" alt="Kibana dashboard"/>
+					</section>
+					
+					<section>
+						<h3>4.4 Dev Tools</h3>
+						<img src="img/kibana-devtools.jpg" alt="Kibana Dev Tools"/>
+					</section>
+
+				</section>
+
+				<!-- Chapter 5 - Live demo -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 5. Usage
+							
+							1. Create data
+							1. Get data
+							1. Search data
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 5.1 Create data
+							
+							```
+PUT team/member/1
+{
+  "name": "Arnost",
+  "title": "SW engineer"
+}
+							```
+							```
+PUT team/member/2
+{
+  "name": "Florin",
+  "title": "Team Leader"
+}
+							```
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 5.2 Retrieve data
+							
+							```
+GET team/member/1
+							```
+							
+							```
+{
+  "_index": "team",
+  "_type": "member",
+  "_id": "1",
+  "_version": 6,
+  "found": true,
+  "_source": {
+    "name": "Arnost Havelka",
+    "job": "SW engineer"
+  }
+}
+							```
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 5.3 Search all
+							
+							```
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+							```
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 5.3 Search by field
+							
+							```
+GET _search
+{
+  "query": {
+    "match": {
+      "name" : "arnost"
+    }
+  }
+}
+							```
+						</textarea>
+					</section>
+
+				</section>
+
+				<!-- Chapter 5 - Access from SpringBoot -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 5. Access from SpringBoot
+							
+							1. Use *spring-boot-starter-data-elasticsearch*
+							1. Define connection to ElasticSearch
+							1. Define document entity
+							1. Define repository
+
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 5.1 Connection definition
+							
+							```
+spring.data.elasticsearch.cluster-nodes=localhost:9300
+spring.data.elasticsearch.cluster-name=elk-poc
+							```
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 5.2 Document entity
+							
+							```
+@Document(indexName = "logstash-*", type = "doc")
+public class LogItem {
+
+	@Id
+	private String id;
+
+	private String datetime;
+	
+	...
+}
+							```
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 5.3 Repository
+							
+							```
+public interface  LogItemRepository 
+	extends ElasticsearchRepository<LogItem, String>{
+
+	public List<LogItem> findByEvent(String event);
+
+	public List<LogItem> findByState(String state);
+	
+}
+
+							```
+						</textarea>
+					</section>					
+
+				</section>
+				
+				<!-- Chapter 6 - POC sources -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 6. Links
+							
+							1. [POC sources on GIT](https://github.deutsche-boerse.de/hh310/elk-poc)
+							1. Kibana:
+							  1. [Local Kibana](http://localhost:5601/app/kibana)
+							  1. [Local Kibana - Main dashboard](http://localhost:5601/app/kibana#/dashboard/ae63e230-1897-11e8-bdad-f774dc10d132)
+							  1. [Official Kibana](http://demo.elastic.co/app/kibana)
+							1. [Local ES - heath](http://localhost:9200/_cluster/health)
+						</textarea>
+					</section>				
+				</section>
+				
+				<section>
+					<h1>THE END</h1>
+					<h3>Thank you!</h3>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="../reveal.js/lib/js/head.min.js"></script>
+		<script src="../reveal.js/js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: '../reveal.js/plugin/markdown/marked.js' },
+					{ src: '../reveal.js/plugin/markdown/markdown.js' },
+					{ src: '../reveal.js/plugin/notes/notes.js', async: true },
+					{ src: '../reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
