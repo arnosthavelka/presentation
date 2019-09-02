@@ -1,0 +1,922 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Audit POC - Hibernate Envers vs. Javers</title>
+
+		<link rel="stylesheet" href="../reveal.js/css/reveal.css">
+		<link rel="stylesheet" href="../reveal.js/css/theme/blood.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<!-- 
+				https://help.github.com/articles/basic-writing-and-formatting-syntax/
+				https://www.webpagefx.com/tools/emoji-cheat-sheet/
+				-->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## Audit POC
+							#### Envers & Javers
+													
+							Created by [Arnošt Havelka](http://cz.linkedin.com/in/arnosthavelka/)
+						</textarea>
+					</section>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## Agenda
+					
+						1. Requirements for audit
+						1. Hibernate Envers
+						1. Javers details
+						1. Comparision
+						1. Summary & decision
+					</textarea>
+				</section>
+					
+				<!-- Chapter 1 - Requirements -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 1. Requirements for audit
+							
+							1. Requirements
+							1. Nice to have features
+							
+							<p><small>See: <a href="http://oxygen-confluence.ifs.dev.dbgcloud.io:8090/display/OX/Audit">Confluence page</a></small></p>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 1.1 Requirements
+
+|#|Definition|
+|--|--|
+|R1|Every data change [in PART module] is audited|
+|R2|Allow to list changes of entity (show history)|
+|R3|Simplicity (easy to use & understand)|
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 1.2 Nice to have features (optional)
+
+|#|Definition|
+|--|--|
+|O1|Group changes together|
+|O2|Extensible (features or infrastructure)|
+|O3|See changed attributes (diff)|
+|O4|Get entity detail in some revision (publishing)|
+|O5|Independence on modules|
+|O6|PDM change agnostic|
+						</textarea>
+					</section>
+				</section>
+
+				<!-- Chapter 2 - Hibernate Envers -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 2. Hibernate Envers
+							
+							1. General Info
+							1. Links
+							1. Configuration
+							1. Implementation
+							1. Usage
+							1. DB Data
+							1. Results
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 2.1 General Info
+
+|Key|Value|
+|--|--|
+|Branch|IFSOXY-1033-audit-poc-envers|
+|PR|<a href="https://github.deutsche-boerse.de/dev/cs.oxygen/pull/727"># 727</a></small>|
+|DB schema|OXG_PART_ENVERS|
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.2 Links
+
+	https://hibernate.org/orm/envers/
+    https://spring.io/projects/spring-data-envers
+    https://docs.jboss.org/hibernate/stable/orm/userguide/html_single/chapters/envers/Envers.html
+    https://github.com/rashidi/spring-data-envers-audit-entity
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.3 Configuration [1/3]
+							#### Maven dependency
+
+							```
+<dependency>
+	<groupId>org.springframework.data</groupId>
+	<artifactId>spring-data-envers</artifactId>
+</dependency>
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.3 Configuration [2/3]
+							#### Spring Boot
+
+							Change JPA repositories to support Envers
+							```
+@Configuration
+@EnableJpaRepositories(	
+	repositoryFactoryBeanClass = \
+	EnversRevisionRepositoryFactoryBean.class )
+public class EnversConfiguration {
+
+}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.3 Configuration [3/3]
+							#### Properties
+							##### Automatic DDL update
+
+							```
+spring.jpa.hibernate.ddl-auto=update
+							```
+							##### Allow modification DB flag
+							```
+spring.jpa.properties.org. \
+	hibernate.envers.global_with_modified_flag=true
+							```	
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 2.4 Implementation [1/2]
+							#### Repository
+
+							Extends repository with `RevisionRepository`
+							```
+@Repository
+public interface PscRepository extends 
+	AbstractModelRepository<Psc>, 
+	RevisionRepository<Psc, Long, Integer> {
+}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.4 Implementation [2/2]
+							#### JPA Entity
+
+							Annotate entity with `@Audit`
+							```
+@Entity
+@Table( name = PscParty.TABLE_NAME )
+@Audited
+...
+public class PscParty extends AbstractModelEntity {
+
+	...
+	
+	@ManyToOne( fetch = LAZY )
+	...
+	@Audited( targetAuditMode = NOT_AUDITED )
+	private PartInstRoleRelship partInstRoleRelship;
+}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.5 Usage
+							
+							```
+@NonNull
+private PscRepository repository;
+
+public Optional<Revision<Integer, Psc>> getHistoryRevision(
+  @NotNull Long pscId, @NotNull Integer revision ) {
+	return repository.findRevision( pscId, revision );
+}
+
+public Optional<Revision<Integer, Psc>> getLastRevision( 
+  @NotNull Long pscId ) {
+	return repository.findLastChangeRevision( pscId );
+}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.6 DB data [1/3]
+							
+							<img src="img/audit-envers-revinfo.png"/>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.6 DB data [2/3]
+							
+							<img src="img/audit-envers-psc-aud.png"/>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.6 DB data [3/3]
+							
+							<img src="img/audit-envers-psc-curr-aud.png"/>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.6 Results
+							#### Changes
+
+							```
+{
+  "content": [
+    {
+      "metadata": {
+        "delegate": {
+          "id": 101,
+          "timestamp": 1553074864787,
+          "revisionDate": "2019-03-20T09:41:04.787+0000"
+        },
+        "revisionNumber": 101,
+        "revisionDate": "2019-03-20T10:41:04.787",
+        "revisionInstant": "2019-03-20T09:41:04.787Z",
+        "requiredRevisionNumber": 101,
+        "requiredRevisionInstant": "2019-03-20T09:41:04.787Z",
+        "requiredRevisionDate": "2019-03-20T10:41:04.787"
+      },
+      "entity": {
+        "insertedTimestamp": "2019-03-20T12:09:52.916+0000",
+        "lastUpdatedTimestamp": null,
+        "lastUpdatedUser": null,
+        "active": true,
+        "partRole": null,
+        "id": 1,
+        "name": "CASH - Jeliman",
+        "type": "SECURITY",
+        "subType": "SEC_ICSD",
+        "paymentSwift": "MT202",
+        "startDate": "2018-10-23T08:53:03.000+0000",
+        "endDate": null,
+        "currencies": [],
+        "parties": [],
+        "hfas": []
+      },
+      "revisionNumber": 101,
+      "revisionDate": "2019-03-20T10:41:04.787",
+      "requiredRevisionNumber": 101,
+      "requiredRevisionInstant": "2019-03-20T09:41:04.787Z",
+      "requiredRevisionDate": "2019-03-20T10:41:04.787",
+      "revisionInstant": "2019-03-20T09:41:04.787Z"
+    },
+  ...
+]
+							```	
+						</textarea>
+					</section>
+
+				</section>
+
+				<!-- Chapter 3 - Javers -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 3. Javers
+							
+							1. General Info
+							1. Links
+							1. Configuration
+							1. Implementation
+							1. Usage
+							1. DB Data
+							1. Results
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 3.1 General Info
+
+|Key|Value|
+|--|--|
+|Branch|IFSOXY-1033-audit-poc-javers|
+|PR|<a href="https://github.deutsche-boerse.de/dev/cs.oxygen/pull/743"># 743</a></small>|
+|DB schema|OXG_PART_JAVERS|
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.2 Links
+							
+    https://javers.org/documentation/spring-boot-integration/
+    https://javers.org/blog/2017/12/javers-vs-envers-comparision.html
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.3 Configuration [1/2]
+							#### Maven dependency
+
+							```
+<dependency>
+	<groupId>org.javers</groupId>
+	<artifactId>javers-spring-boot-starter-sql</artifactId>
+	<version>5.3.2</version>
+</dependency>
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.3 Configuration [2/2]
+							#### Properties
+
+							Disable Javers schema creation
+							```
+javers.sqlSchemaManagementEnabled = false
+							```	
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 3.4 Implementation [1/2]
+							#### Mark desired repository with audit annotation
+
+							```
+@Repository
+@JaversSpringDataAuditable
+public interface PscRepository
+	extends AbstractModelRepository<Psc> {
+}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.4 Implementation [2/2]
+							#### Exclude attribute from auditing with `@DiffIgnore`
+
+							```
+@MappedSuperclass
+...
+public abstract class AbstractBaseEntity implements BaseEntity {
+
+	...
+
+	@Column( name = "ISRT_TMSTMP", nullable = false )
+	@DiffIgnore
+	private Date insertedTimestamp = new Date();
+}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.5 Usage [1/5]
+							#### Changes
+							```
+@NonNull
+private final Javers javers;
+	
+public String getChanges( @NotNull Long pscId ) {
+	List<Change> changes = javers.findChanges(
+			QueryBuilder.byInstanceId( pscId, Psc.class )
+					.withNewObjectChanges( true )
+					.withScopeDeepPlus()
+					.build() );
+	return javers.getJsonConverter().toJson( changes );
+}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.5 Usage [2/5]
+							#### Snapshots
+							
+							```
+@NonNull
+private final Javers javers;
+	
+public String getSnapshots( @NotNull Long pscId ) {
+	List<CdoSnapshot> snapshots = javers.findSnapshots(
+			QueryBuilder.byInstanceId( pscId, Psc.class )
+					.withScopeDeepPlus()
+					.build() );
+	return javers.getJsonConverter().toJson( snapshots );
+}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.5 Usage [3/5]
+							#### Changes by commit ID
+
+							```
+@NonNull
+private final Javers javers;
+	
+public String getChangesByCommiId(@NotNull BigDecimal commitId ) {
+	List<Change> changes = javers.findChanges(
+			QueryBuilder.anyDomainObject()
+					.withCommitId( commitId )
+					// .withScopeDeepPlus()
+					.build() );
+
+	return javers.getJsonConverter().toJson( changes );
+}
+							```	
+							_Note : not working on Oracle now_
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.5 Usage [4/5]
+							#### Snapshot from version
+							
+							```
+public Psc getFirstShadowByVersion( @NotNull Long pscId, @NotNull Long version ) {
+	List<Shadow<Psc>> shadows = javers.findShadows(
+			QueryBuilder.byInstanceId( pscId, Psc.class )
+					.withVersion( version )
+					.withScopeDeepPlus()
+					.build() );
+
+	return shadows.get( 0 ).get();
+}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.5 Usage [5/5]
+							#### Diff
+							```
+public Diff getDiff( @NotNull Long pscId ) {
+	List<Shadow<Psc>> shadows = javers.findShadows(
+			QueryBuilder.byInstanceId( pscId, Psc.class )
+					.withNewObjectChanges( true )
+					.withScopeDeepPlus()
+					.build() );
+
+	Psc firstPsc = shadows.get( 0 ).get();
+	Psc lastPsc = shadows.get( shadows.size() - 1 ).get();
+
+	return javers.compare( firstPsc, lastPsc );
+}
+							```	
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 3.6 DB data [1/3]
+							
+							<img src="img/audit-envers-jv-global-id.png"/>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.6 DB data [2/3]
+							
+							<img src="img/audit-envers-jv-commit.png"/>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.6 DB data [3/3]
+							
+							<img src="img/audit-envers-jv-snapshot.png"/>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.6 Results [1/4]
+							#### Example of PSC update
+
+							```
+{
+		"name": "CASH - Hastrman",
+        "currencies": [
+          { "id": 2, "currencyCode": "CHF" },
+          { "currencyCode": "USD" }
+        ]
+}
+							```
+
+							#### Logs from Javers
+
+							```
+Commit(id:9.0, snapshots:1, author:anonymousUser, changes - ValueChange:2), done in 281 millis (diff:265, persist:16)
+Commit(id:10.0, snapshots:3, author:anonymousUser, changes - ValueChange:1 NewObject:1 ListChange:1), done in 203 millis (diff:187, persist:16)
+Skipping persisting empty commit: Commit(id:11.0, snapshots:0, author:anonymousUser, changes -)
+Commit(id:11.0, snapshots:0, author:anonymousUser, changes -), done in 93 millis (diff:93, persist:0)
+							```
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.6 Results [2/4]
+							#### Changes
+
+							```
+[
+  {
+    "changeType": "ValueChange",
+    "globalId": {
+      "entity": "com.cs.ifs.oxygen.part.entity.Psc",
+      "cdoId": 1
+    },
+    "commitMetadata": {
+      "author": "anonymousUser",
+      "properties": [],
+      "commitDate": "2019-03-22T13:11:37.712",
+      "commitDateInstant": "2019-03-22T12:11:37.712Z",
+      "id": 6
+    },
+    "property": "name",
+    "left": "CASH - Hejkal",
+    "right": "CASH - Bludicka"
+  },
+  ...
+]
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.6 Results [3/4]
+							#### Snapshots
+
+							```
+[
+  {
+    "commitMetadata": {
+      "author": "anonymousUser",
+      "properties": [],
+      "commitDate": "2019-03-22T13:11:37.712",
+      "commitDateInstant": "2019-03-22T12:11:37.712Z",
+      "id": 6
+    },
+    "globalId": {
+      "entity": "com.cs.ifs.oxygen.part.entity.Psc",
+      "cdoId": 1
+    },
+    "state": {
+      "hfas": [
+        {
+          "entity": "com.cs.ifs.oxygen.part.entity.PscHfa",
+          "cdoId": 1
+        },
+        {
+          "entity": "com.cs.ifs.oxygen.part.entity.PscHfa",
+          "cdoId": 2
+        },
+        {
+          "entity": "com.cs.ifs.oxygen.part.entity.PscHfa",
+          "cdoId": 3
+        }
+      ],
+      "paymentSwift": "MT202",
+      "name": "CASH - Bludicka",
+      "parties": [
+        {
+          "entity": "com.cs.ifs.oxygen.part.entity.PscParty",
+          "cdoId": 1
+        },
+        {
+          "entity": "com.cs.ifs.oxygen.part.entity.PscParty",
+          "cdoId": 2
+        },
+        {
+          "entity": "com.cs.ifs.oxygen.part.entity.PscParty",
+          "cdoId": 5
+        }
+      ],
+      "active": true,
+      "lastUpdatedUser": "OXG_APPL_U",
+      "subType": "SEC_ICSD",
+      "id": 1,
+      "partRole": {
+        "entity": "com.cs.ifs.oxygen.part.entity.ParticipantRole",
+        "cdoId": 6
+      },
+      "type": "SECURITY",
+      "startDate": "2018-10-23T10:53:03",
+      "currencies": [
+        {
+          "entity": "com.cs.ifs.oxygen.part.entity.PscCurrency",
+          "cdoId": 2
+        },
+        {
+          "entity": "com.cs.ifs.oxygen.part.entity.PscCurrency",
+          "cdoId": 1
+        },
+        {
+          "entity": "com.cs.ifs.oxygen.part.entity.PscCurrency",
+          "cdoId": 3
+        },
+        {
+          "entity": "com.cs.ifs.oxygen.part.entity.PscCurrency",
+          "cdoId": 19
+        }
+      ]
+    },
+    "changedProperties": [
+      "name",
+      "startDate"
+    ],
+    "type": "UPDATE",
+    "version": 5
+  },
+  ...
+]
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.6 Results [4/4]
+							#### Diff
+
+							```
+Diff:
+* changes on com.cs.ifs.oxygen.part.entity.PscCurrency/3 :
+  - 'lastUpdatedUser' changed from 'demo data' to 'OXG_APPL_U'
+* changes on com.cs.ifs.oxygen.part.entity.Psc/1 :
+  - 'currencies' collection changes :
+    3. '...PscCurrency/19' added
+  - 'lastUpdatedUser' changed from 'init data' to 'OXG_APPL_U'
+  - 'name' changed from 'CASH - ARS' to 'CASH - Budulinek'
+* changes on com.cs.ifs.oxygen.part.entity.PscCurrency/2 :
+  - 'currencyCode' changed from 'CZK' to 'CHF'
+  - 'lastUpdatedUser' changed from 'demo data' to 'OXG_APPL_U'
+* new object: com.cs.ifs.oxygen.part.entity.PscCurrency/19
+							```	
+						</textarea>
+					</section>
+				</section>
+				
+				<!-- Chapter 4 - Comparision -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 4. Comparision
+							
+							1. Evaluation of Requirements
+							1. Evaluation of Nice to have features
+							1. Comunity
+							1. Trends
+							1. Found Issues
+							1. Summary
+						</textarea>
+					</section>
+					<section data-markdown>
+					
+						<textarea data-template>
+							### 4.1 Evaluation of Requirements
+							
+							|#|Description|Envers|Javers|
+							|--|--|--|--|
+							|R2|List changes|1|1|
+							|R3|Simplicity - configuration|1|1|
+							|R3|Simplicity - audit definition|3|1|
+							|R3|Simplicity - usage|1|2|
+							|R3|Simplicity - understanding|1|3|
+							
+							_Note : 1 ... best, 5 ... worst_
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 4.2 Evaluation of Nice to have features
+							
+							|#|Description|Envers|Javers|
+							|--|--|--|--|
+							|01|Group changes|1|1|
+							|O2|Extensibility|5|1|
+							|O3|Diff|(N/A)|1|
+							|O4|Get entity in some versin|1|1|
+							|O5|Independence on modules (transaction?)|5|1|
+							|O6|PDM change agnostic|5|1|
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 4.3 Comunity - Contributions [1/2]
+							### Envers
+							
+							<img src="img/audit-envers-git-contributors.png"/>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 4.3 Comunity - Contributions [1/2]
+							### Javers
+							
+							<img src="img/audit-javers-git-contributors.png"/>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 4.3 Comunity - Pulse [2/2]
+							### Envers
+							
+							<img src="img/audit-envers-git-pulse.png"/>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 4.3 Comunity - Pulse [2/2]
+							### Javers
+							
+							<img src="img/audit-javers-git-pulse.png"/>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 4.4 Google Trends
+							
+							<img src="img/audit-trends.png"/>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 4.5 Found issues [1/2]
+							#### Envers
+							* JPA entities are polluted with Envers annotation (@Audit)
+							* conflict with Hibernate version (Envers expects the latest one)
+							* wrong generation of DDL (not a serious issue for us) - can be fixed with relevant information on entities (not there now)
+							* attribute changes are not audited by default (has to be enforced by @Audited( withModifiedFlag = true ))
+							* pretty sensitive where was auditing applied
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 4.5 Found issues [2/2]
+							#### Javers
+							* Javers DDL creation must be switched off - OK for us
+							* Usage of UnmodifiableList - e.g. issue for PscParty (sorting)
+							* Initialization of data is necessary - can be provided manually
+							* Some attributes should be ignored - to reduce audit size with not important staff (e.g. last updated date)
+						</textarea>
+					</section>
+					
+				</section>
+
+				<!-- Chapter 5 - Summary & decision -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 5. Summary & decision
+							
+							1. Evaluation
+							1. Final words
+							1. Decision
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.1 Summary & decision
+							
+							|Item|Envers|Javers|
+							|--|--|--|
+							|Requirements|1|2|
+							|Nice to have features|4|1|
+							|Documentation|4|1|
+							|Comunity|1|2|
+							|Trends|1|1|
+							
+							_Note : 1 ... best, 5 ... worst_
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.2 Final words [1/2]
+							#### Envers
+							
+							* More known and proved solution (e.g. used in IFRD)
+							* More mature and bigger comunity
+							* Really tight to DB structure
+							* Very sensistive to audit definition (hierarchy / relationship)
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.2 Final words [2/2]
+							#### Javers
+							
+							* More flexible & elegant solution (we can manually store any class - e.g. DTO)
+							* More difficult to understand how to use audit data (auditing itself is pretty easy)
+							* Independent on DB structure
+							* Logging related to audit storing
+							* Small issue regarding Oracle found
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.3 Decision
+							
+							
+							#### Let's vote
+						</textarea>
+					</section>
+				</section>
+
+				<section>
+					<h1>THE END</h1>
+					<h3>Thank you!</h3>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="../reveal.js/lib/js/head.min.js"></script>
+		<script src="../reveal.js/js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: '../reveal.js/plugin/markdown/marked.js' },
+					{ src: '../reveal.js/plugin/markdown/markdown.js' },
+					{ src: '../reveal.js/plugin/notes/notes.js', async: true },
+					{ src: '../reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
