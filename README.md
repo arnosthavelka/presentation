@@ -12,9 +12,9 @@
 * [20171113 ELK](atos/20171113-elk.html)
 
 # Presentations for Asseco
-* [01/2013 Automated testing (DevDay)](ace/devday/automated_testing/index.html)
-* [01/2013 Spring framework - hints (DevDay)](ace/devday/spring_hints/index.html)
-* [04/2013 JProfiler](ace/jprofiler/index.html)
+* [01/2013 Automated testing (DevDay)](ace/google_html5_slide_template/20130100-automated-testing.html)
+* [01/2013 Spring framework - hints (DevDay)](ace/google_html5_slide_template/20130100-sprinh-hints.html)
+* [04/2013 JProfiler](ace/google_html5_slide_template/20130400-jprofiler.html)
 * [11/2014 WebServices (JAX-WS & REST)](ace/20141100-webservices.html)
 * [12/2014 Spring - Advanced topics](ace/20141218-spring-advanced.html)
 * [08/2015 Spring Boot (removed from "Spring - Advanced topics")](ace/20180825-spring-boot.html)
