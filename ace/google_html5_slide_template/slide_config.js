@@ -1,8 +1,8 @@
 var SLIDE_CONFIG = {
   // Slide settings
   settings: {
-    title: 'Automated testing',
-    subtitle: 'DevDay 01/2013',
+    //title: 'Automated testing',
+    //subtitle: 'DevDay 01/2013',
     //eventTitle: 'Google I/O 2013',
     useBuilds: true, // Default: true. False will turn off slide animation builds.
     usePrettify: true, // Default: true
