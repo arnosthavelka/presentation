@@ -13,7 +13,7 @@
 
 # Presentations for Asseco
 * [01/2013 Automated testing (DevDay)](ace/google_html5_slide_template/20130100-automated-testing.html)
-* [01/2013 Spring framework - hints (DevDay)](ace/google_html5_slide_template/20130100-sprinh-hints.html)
+* [01/2013 Spring framework - hints (DevDay)](ace/google_html5_slide_template/20130100-spring-hints.html)
 * [04/2013 JProfiler](ace/google_html5_slide_template/20130400-jprofiler.html)
 * [11/2014 WebServices (JAX-WS & REST)](ace/20141100-webservices.html)
 * [12/2014 Spring - Advanced topics](ace/20141218-spring-advanced.html)
