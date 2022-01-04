@@ -1,25 +1,16 @@
 <!doctype html>
-<html>
+<html lang="en">
+
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 		<title>WEB SERVICES with JAX-WS & Spring (in ACE Academy)</title>
 
-		<link rel="stylesheet" href="../reveal.js/css/reveal.css">
-		<link rel="stylesheet" href="../reveal.js/css/theme/blood.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
-
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
+		<link rel="stylesheet" href="../reveal.js/dist/reveal.css">
+		<link rel="stylesheet" href="../reveal.js/dist/theme/blood.css" id="blood">
+		<link rel="stylesheet" href="../reveal.js/plugin/highlight/monokai.css">
 	</head>
 	<body>
 
@@ -1113,22 +1104,16 @@ Response-Body:
 			</div>
 
 		</div>
-
-		<script src="../reveal.js/lib/js/head.min.js"></script>
-		<script src="../reveal.js/js/reveal.js"></script>
-
+		
+		<script src="../reveal.js/dist/reveal.js"></script>
+		<script src="../reveal.js/plugin/highlight/highlight.js"></script>
 		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
 			Reveal.initialize({
-				dependencies: [
-					{ src: '../reveal.js/plugin/markdown/marked.js' },
-					{ src: '../reveal.js/plugin/markdown/markdown.js' },
-					{ src: '../reveal.js/plugin/notes/notes.js', async: true },
-					{ src: '../reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
+				center: true,
+				hash: true,
+				plugins: [ RevealHighlight ]
 			});
 		</script>
+
 	</body>
 </html>

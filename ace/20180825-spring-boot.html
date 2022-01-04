@@ -1,4 +1,18 @@
 <!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Spring Boot</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="../reveal.js/dist/reveal.css">
+		<link rel="stylesheet" href="../reveal.js/dist/theme/blood.css" id="blood">
+		<link rel="stylesheet" href="../reveal.js/plugin/highlight/monokai.css">
+	</head>
+
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -590,7 +604,7 @@ spring.boot.admin.url=http://localhost:8085</code></pre>
     &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
     &lt;version&gt;9.1-901-1.jdbc4&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
-						<p align="left">Exmaple of datasource & JPA configuration (in application.yml):</p>
+						<p align="left">Example of datasource & JPA configuration (in application.yml):</p>
 						<pre><code>spring:
   jpa:
     database: POSTGRESQL
@@ -836,21 +850,14 @@ public UndertowEmbeddedServletContainerFactory embeddedServletContainerFactory()
 
 		</div>
 
-		<script src="../reveal.js/lib/js/head.min.js"></script>
-		<script src="../reveal.js/js/reveal.js"></script>
-
+		<script src="../reveal.js/dist/reveal.js"></script>
+		<script src="../reveal.js/plugin/markdown/markdown.js"></script>
+		<script src="../reveal.js/plugin/highlight/highlight.js"></script>
 		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
 			Reveal.initialize({
-				dependencies: [
-					{ src: '../reveal.js/plugin/markdown/marked.js' },
-					{ src: '../reveal.js/plugin/markdown/markdown.js' },
-					{ src: '../reveal.js/plugin/notes/notes.js', async: true },
-					{ src: '../reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
+				center: true,
+				hash: true,
+				plugins: [ RevealMarkdown, RevealHighlight ]
 			});
-		</script>
-	</body>
+		</script>	</body>
 </html>
