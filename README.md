@@ -19,4 +19,4 @@
 * [12/2014 Spring - Advanced topics](ace/20141218-spring-advanced.html)
 * [08/2015 Spring Boot (removed from "Spring - Advanced topics")](ace/20180825-spring-boot.html)
 
-Sources are available [here](https://github.com/arnosthavelka/presentation/tree/master). All presentations can be access directly here [http://arnosthavelka.github.com/presentation/](http://arnosthavelka.github.com/presentation/).
+Sources are available [here](https://github.com/arnosthavelka/presentation/tree/master). All presentations can be access directly here [http://arnosthavelka.github.io/presentation/](http://arnosthavelka.github.io/presentation/).
