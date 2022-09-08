@@ -341,6 +341,7 @@
 					Reveal.configure({ hash: true, fragmentInURL: false });
 
 					Reveal.slide( 2, 0 );
+<<<<<<< HEAD
 					assert.strictEqual( window.location.hash, '#/2' );
 
 					Reveal.slide( 2, 1 );
@@ -354,12 +355,28 @@
 
 					Reveal.slide( 2, 2, 1 );
 					assert.strictEqual( window.location.hash, '#/fragments3' );
+=======
+					assert.strictEqual( Reveal.getSlidePath(), '/2' );
+
+					Reveal.slide( 2, 1 );
+					assert.strictEqual( Reveal.getSlidePath(), '/2/1' );
+
+					Reveal.slide( 2, 0, 1 );
+					assert.strictEqual( Reveal.getSlidePath(), '/2' );
+
+					Reveal.slide( 2, 2, 0 );
+					assert.strictEqual( Reveal.getSlidePath(), '/fragments3' );
+
+					Reveal.slide( 2, 2, 1 );
+					assert.strictEqual( Reveal.getSlidePath(), '/fragments3' );
+>>>>>>> master
 				});
 
 				QUnit.test( 'Write (fragmentInURL: true)', function( assert ) {
 					Reveal.configure({ hash: true, fragmentInURL: true });
 
 					Reveal.slide( 2, 0, -1 );
+<<<<<<< HEAD
 					assert.strictEqual( window.location.hash, '#/2' );
 
 					Reveal.slide( 2, 1, -1 );
@@ -373,6 +390,21 @@
 
 					Reveal.slide( 2, 2, 1 );
 					assert.strictEqual( window.location.hash, '#/fragments3/1' );
+=======
+					assert.strictEqual( Reveal.getSlidePath(), '/2' );
+
+					Reveal.slide( 2, 1, -1 );
+					assert.strictEqual( Reveal.getSlidePath(), '/2/1' );
+
+					Reveal.slide( 2, 0, 1 );
+					assert.strictEqual( Reveal.getSlidePath(), '/2/0/1' );
+
+					Reveal.slide( 2, 2, -1 );
+					assert.strictEqual( Reveal.getSlidePath(), '/fragments3' );
+
+					Reveal.slide( 2, 2, 1 );
+					assert.strictEqual( Reveal.getSlidePath(), '/fragments3/1' );
+>>>>>>> master
 				});
 
 				QUnit.test( 'Read', async function( assert ) {

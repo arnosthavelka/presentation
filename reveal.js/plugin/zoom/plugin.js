@@ -24,6 +24,15 @@ const Plugin = {
 				});
 			}
 		} );
+<<<<<<< HEAD:reveal.js/plugin/zoom/plugin.js
+=======
+
+	},
+
+	destroy: () => {
+
+		zoom.reset();
+>>>>>>> master:reveal.js/plugin/zoom-js/zoom.js
 
 	}
 
@@ -52,19 +61,11 @@ var zoom = (function(){
 		panUpdateInterval = -1;
 
 	// Check for transform support so that we can fallback otherwise
-	var supportsTransforms = 	'WebkitTransform' in document.body.style ||
-								'MozTransform' in document.body.style ||
-								'msTransform' in document.body.style ||
-								'OTransform' in document.body.style ||
-								'transform' in document.body.style;
+	var supportsTransforms = 	'transform' in document.body.style;
 
 	if( supportsTransforms ) {
 		// The easing that will be applied when we zoom in/out
 		document.body.style.transition = 'transform 0.8s ease';
-		document.body.style.OTransition = '-o-transform 0.8s ease';
-		document.body.style.msTransition = '-ms-transform 0.8s ease';
-		document.body.style.MozTransition = '-moz-transform 0.8s ease';
-		document.body.style.WebkitTransition = '-webkit-transform 0.8s ease';
 	}
 
 	// Zoom out if the user hits escape
@@ -105,10 +106,6 @@ var zoom = (function(){
 			// Reset
 			if( scale === 1 ) {
 				document.body.style.transform = '';
-				document.body.style.OTransform = '';
-				document.body.style.msTransform = '';
-				document.body.style.MozTransform = '';
-				document.body.style.WebkitTransform = '';
 			}
 			// Scale
 			else {
@@ -116,16 +113,7 @@ var zoom = (function(){
 					transform = 'translate('+ -rect.x +'px,'+ -rect.y +'px) scale('+ scale +')';
 
 				document.body.style.transformOrigin = origin;
-				document.body.style.OTransformOrigin = origin;
-				document.body.style.msTransformOrigin = origin;
-				document.body.style.MozTransformOrigin = origin;
-				document.body.style.WebkitTransformOrigin = origin;
-
 				document.body.style.transform = transform;
-				document.body.style.OTransform = transform;
-				document.body.style.msTransform = transform;
-				document.body.style.MozTransform = transform;
-				document.body.style.WebkitTransform = transform;
 			}
 		}
 		else {

@@ -394,4 +394,13 @@ export default class Backgrounds {
 
 	}
 
+<<<<<<< HEAD
+=======
+	destroy() {
+
+		this.element.remove();
+
+	}
+
+>>>>>>> master
 }

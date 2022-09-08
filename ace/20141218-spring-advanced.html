@@ -1,23 +1,20 @@
 <!doctype html>
-<html lang="en">
-
+<html>
 	<head>
 		<meta charset="utf-8">
 
 		<title>Spring Advanced (ACE Academy)</title>
 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 		<link rel="stylesheet" href="../reveal.js/dist/reveal.css">
-		<link rel="stylesheet" href="../reveal.js/dist/theme/blood.css" id="blood">
-		<link rel="stylesheet" href="../reveal.js/plugin/highlight/monokai.css">
+		<link rel="stylesheet" href="../reveal.js/dist/theme/blood.css" id="theme">
+
+        <link rel="stylesheet" href="../reveal.js/plugin/highlight/zenburn.css">
 	</head>
 	<body>
 
 		<div class="reveal">
 
 			<div class="slides">
-			
 				<section>
 					<h2>Spring - Advanced</h2>
 					<h4>Advanced topics based on Spring Boot</h4>
@@ -3230,14 +3227,22 @@ public class BeanEnhancer {
 		</div>
 
 		<script src="../reveal.js/dist/reveal.js"></script>
-		<script src="../reveal.js/plugin/markdown/markdown.js"></script>
-		<script src="../reveal.js/plugin/highlight/highlight.js"></script>
+        <script src="../reveal.js/plugin/markdown/markdown.js"></script>
+        <script src="../reveal.js/plugin/highlight/highlight.js"></script>
+        <script src="../reveal.js/plugin/notes/notes.js"></script>
+        <script src="../reveal.js/plugin/math/math.js"></script>
+
 		<script>
+
 			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
 				center: true,
-				hash: true,
-				plugins: [ RevealMarkdown, RevealHighlight ]
+
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX ]
 			});
+
 		</script>
 	</body>
 </html>

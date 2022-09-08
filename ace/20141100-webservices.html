@@ -1,17 +1,16 @@
 <!doctype html>
-<html lang="en">
-
+<html>
 	<head>
 		<meta charset="utf-8">
 
 		<title>WEB SERVICES with JAX-WS & Spring (in ACE Academy)</title>
 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 		<link rel="stylesheet" href="../reveal.js/dist/reveal.css">
-		<link rel="stylesheet" href="../reveal.js/dist/theme/blood.css" id="blood">
-		<link rel="stylesheet" href="../reveal.js/plugin/highlight/monokai.css">
+		<link rel="stylesheet" href="../reveal.js/dist/theme/blood.css" id="theme">
+
+        <link rel="stylesheet" href="../reveal.js/plugin/highlight/zenburn.css">
 	</head>
+	
 	<body>
 
 		<div class="reveal">
@@ -1106,14 +1105,22 @@ Response-Body:
 		</div>
 		
 		<script src="../reveal.js/dist/reveal.js"></script>
-		<script src="../reveal.js/plugin/highlight/highlight.js"></script>
-		<script>
-			Reveal.initialize({
-				center: true,
-				hash: true,
-				plugins: [ RevealHighlight ]
-			});
-		</script>
+        <script src="../reveal.js/plugin/markdown/markdown.js"></script>
+        <script src="../reveal.js/plugin/highlight/highlight.js"></script>
+        <script src="../reveal.js/plugin/notes/notes.js"></script>
+        <script src="../reveal.js/plugin/math/math.js"></script>
 
+		<script>
+
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX ]
+			});
+
+		</script>
 	</body>
 </html>
