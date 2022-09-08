@@ -4,11 +4,7 @@
  * of external markdown documents.
  */
 
-<<<<<<< HEAD
-import marked from 'marked'
-=======
 import { marked } from 'marked';
->>>>>>> master
 
 const DEFAULT_SLIDE_SEPARATOR = '\r?\n---\r?\n',
 	  DEFAULT_NOTES_SEPARATOR = 'notes?:',

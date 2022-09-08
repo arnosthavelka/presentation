@@ -123,13 +123,10 @@ export default class SlideNumber {
 
 	}
 
-<<<<<<< HEAD
-=======
 	destroy() {
 
 		this.element.remove();
 
 	}
 
->>>>>>> master
 }

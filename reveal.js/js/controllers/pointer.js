@@ -75,8 +75,6 @@ export default class Pointer {
 
 	}
 
-<<<<<<< HEAD
-=======
 	destroy() {
 
 		this.showCursor();
@@ -88,7 +86,6 @@ export default class Pointer {
 
 	}
 
->>>>>>> master
 	/**
 	 * Called whenever there is mouse input at the document level
 	 * to determine if the cursor is active or not.

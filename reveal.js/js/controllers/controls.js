@@ -188,8 +188,6 @@ export default class Controls {
 		}
 	}
 
-<<<<<<< HEAD
-=======
 	destroy() {
 
 		this.unbind();
@@ -197,7 +195,6 @@ export default class Controls {
 
 	}
 
->>>>>>> master
 	/**
 	 * Event handlers for navigation control buttons.
 	 */

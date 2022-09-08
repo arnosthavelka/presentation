@@ -16,19 +16,6 @@ The framework comes with a powerful feature set including [nested slides](https:
 ### Sponsors
 Hakim's open source work is supported by <a href="https://github.com/sponsors/hakimel">GitHub sponsors</a>. Special thanks to:
 <div align="center">
-<<<<<<< HEAD
-<a href="https://www.doppler.com/?utm_campaign=github_repo&utm_medium=referral&utm_content=revealjs&utm_source=github">
-  <div>
-    <img src="https://user-images.githubusercontent.com/629429/146530588-2980c34d-862f-4393-8ac3-65fbef6443ca.png" width="290" alt="Doppler">
-  </div>
-  <b>All your environment variables, in one place</b>
-  <div>
-    <sub>Stop struggling with scattered API keys, hacking together home-brewed tools,</sub>
-    <br>
-    <sup>and avoiding access controls. Keep your team and servers in sync with Doppler.</sup>
-  </div>
-</a>
-=======
   <table>
     <td align="center">
       <a href="https://workos.com/?utm_campaign=github_repo&utm_medium=referral&utm_content=revealjs&utm_source=github">
@@ -54,7 +41,6 @@ Hakim's open source work is supported by <a href="https://github.com/sponsors/ha
       </a>
     </td>
   </table>
->>>>>>> master
 </div>
 
 ---

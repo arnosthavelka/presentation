@@ -238,8 +238,6 @@ export default class Plugins {
 
 	}
 
-<<<<<<< HEAD
-=======
 	destroy() {
 
 		Object.values( this.registeredPlugins ).forEach( plugin => {
@@ -253,5 +251,4 @@ export default class Plugins {
 
 	}
 
->>>>>>> master
 }

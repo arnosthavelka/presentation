@@ -52,11 +52,7 @@
 						<p>Slides can be nested inside of each other.</p>
 						<p>Use the <em>Space</em> key to navigate through all slides.</p>
 						<br>
-<<<<<<< HEAD
-						<a href="#" class="navigate-down">
-=======
 						<a href="#/2/1" class="navigate-down">
->>>>>>> master
 							<img class="r-frame" style="background: rgba(255,255,255,0.1);" width="178" height="238" data-src="https://static.slid.es/reveal/arrow.png" alt="Down arrow">
 						</a>
 					</section>
@@ -455,25 +451,6 @@ Reveal.on( 'customevent', function() {
 		</div>
 
 		<script src="dist/reveal.js"></script>
-<<<<<<< HEAD
-		<script>
-			Reveal.initialize();
-
-			const loadScript = src => {
-				return new Promise((resolve, reject) => {
-						const script = document.createElement('script');
-						script.type = 'text/javascript';
-						script.onload = resolve;
-						script.onerror = reject;
-						script.src = src;
-						document.head.append(script);
-				})
-			}
-
-			loadScript( 'plugin/highlight/highlight.js' ).then(() => {
-				Reveal.registerPlugin( RevealHighlight )
-			})
-=======
 		<script src="plugin/zoom/zoom.js"></script>
 		<script src="plugin/notes/notes.js"></script>
 		<script src="plugin/search/search.js"></script>
@@ -493,7 +470,6 @@ Reveal.on( 'customevent', function() {
 				plugins: [ RevealZoom, RevealNotes, RevealSearch, RevealMarkdown, RevealHighlight ]
 			});
 
->>>>>>> master
 		</script>
 
 	</body>

@@ -8,9 +8,4 @@ out/
 log/*.log
 tmp/**
 node_modules/
-<<<<<<< HEAD
 .sass-cache
-dist/*.map
-=======
-.sass-cache
->>>>>>> master

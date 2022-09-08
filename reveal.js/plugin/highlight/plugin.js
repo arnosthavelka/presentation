@@ -106,11 +106,7 @@ const Plugin = {
 
 			var scrollState = { currentBlock: block };
 
-<<<<<<< HEAD
-			// If there is at least one highlight step, generate
-=======
 			// If there is more than one highlight step, generate
->>>>>>> master
 			// fragments
 			var highlightSteps = Plugin.deserializeHighlightSteps( block.getAttribute( 'data-line-numbers' ) );
 			if( highlightSteps.length > 1 ) {
@@ -146,11 +142,7 @@ const Plugin = {
 
 				} );
 
-<<<<<<< HEAD
-				block.removeAttribute( 'data-fragment-index' )
-=======
 				block.removeAttribute( 'data-fragment-index' );
->>>>>>> master
 				block.setAttribute( 'data-line-numbers', Plugin.serializeHighlightSteps( [ highlightSteps[0] ] ) );
 
 			}

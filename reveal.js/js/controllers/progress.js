@@ -101,13 +101,10 @@ export default class Progress {
 
 	}
 
-<<<<<<< HEAD
-=======
 	destroy() {
 
 		this.element.remove();
 
 	}
->>>>>>> master
 
 }

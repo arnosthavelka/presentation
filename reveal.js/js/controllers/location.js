@@ -3,13 +3,10 @@
  */
 export default class Location {
 
-<<<<<<< HEAD
-=======
 	// The minimum number of milliseconds that must pass between
 	// calls to history.replaceState
 	MAX_REPLACE_STATE_FREQUENCY = 1000
 
->>>>>>> master
 	constructor( Reveal ) {
 
 		this.Reveal = Reveal;
@@ -17,11 +14,8 @@ export default class Location {
 		// Delays updates to the URL due to a Chrome thumbnailer bug
 		this.writeURLTimeout = 0;
 
-<<<<<<< HEAD
-=======
 		this.replaceStateTimestamp = 0;
 
->>>>>>> master
 		this.onWindowHashChange = this.onWindowHashChange.bind( this );
 
 	}
@@ -154,17 +148,10 @@ export default class Location {
 			else if( config.hash ) {
 				// If the hash is empty, don't add it to the URL
 				if( hash === '/' ) {
-<<<<<<< HEAD
-					window.history.replaceState( null, null, window.location.pathname + window.location.search );
-				}
-				else {
-					window.history.replaceState( null, null, '#' + hash );
-=======
 					this.debouncedReplaceState( window.location.pathname + window.location.search );
 				}
 				else {
 					this.debouncedReplaceState( '#' + hash );
->>>>>>> master
 				}
 			}
 			// UPDATE: The below nuking of all hash changes breaks
@@ -182,8 +169,6 @@ export default class Location {
 
 	}
 
-<<<<<<< HEAD
-=======
 	replaceState( url ) {
 
 		window.history.replaceState( null, null, url );
@@ -204,7 +189,6 @@ export default class Location {
 
 	}
 
->>>>>>> master
 	/**
 	 * Return a hash URL that will resolve to the given slide location.
 	 *

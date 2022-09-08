@@ -24,15 +24,12 @@ const Plugin = {
 				});
 			}
 		} );
-<<<<<<< HEAD:reveal.js/plugin/zoom/plugin.js
-=======
 
 	},
 
 	destroy: () => {
 
 		zoom.reset();
->>>>>>> master:reveal.js/plugin/zoom-js/zoom.js
 
 	}
 

@@ -26,11 +26,7 @@ import {
 } from './utils/constants.js'
 
 // The reveal.js version
-<<<<<<< HEAD
-export const VERSION = '4.2.1';
-=======
 export const VERSION = '4.3.1';
->>>>>>> master
 
 /**
  * reveal.js
@@ -373,70 +369,6 @@ export default function( revealElement, options ) {
 	 * checking if the slides have been offset :(
 	 */
 	function setupScrollPrevention() {
-<<<<<<< HEAD
-
-		setInterval( () => {
-			if( dom.wrapper.scrollTop !== 0 || dom.wrapper.scrollLeft !== 0 ) {
-				dom.wrapper.scrollTop = 0;
-				dom.wrapper.scrollLeft = 0;
-			}
-		}, 1000 );
-
-	}
-
-	/**
-	 * After entering fullscreen we need to force a layout to
-	 * get our presentations to scale correctly. This behavior
-	 * is inconsistent across browsers but a force layout seems
-	 * to normalize it.
-	 */
-	function setupFullscreen() {
-
-		document.addEventListener( 'fullscreenchange', onFullscreenChange );
-		document.addEventListener( 'webkitfullscreenchange', onFullscreenChange );
-
-	}
-
-	/**
-	 * Registers a listener to postMessage events, this makes it
-	 * possible to call all reveal.js API methods from another
-	 * window. For example:
-	 *
-	 * revealWindow.postMessage( JSON.stringify({
-	 *   method: 'slide',
-	 *   args: [ 2 ]
-	 * }), '*' );
-	 */
-	function setupPostMessage() {
-
-		if( config.postMessage ) {
-			window.addEventListener( 'message', event => {
-				let data = event.data;
-
-				// Make sure we're dealing with JSON
-				if( typeof data === 'string' && data.charAt( 0 ) === '{' && data.charAt( data.length - 1 ) === '}' ) {
-					data = JSON.parse( data );
-
-					// Check if the requested method can be found
-					if( data.method && typeof Reveal[data.method] === 'function' ) {
-
-						if( POST_MESSAGE_METHOD_BLACKLIST.test( data.method ) === false ) {
-
-							const result = Reveal[data.method].apply( Reveal, data.args );
-
-							// Dispatch a postMessage event with the returned value from
-							// our method invocation for getter functions
-							dispatchPostMessage( 'callback', { method: data.method, result: result } );
-
-						}
-						else {
-							console.warn( 'reveal.js: "'+ data.method +'" is is blacklisted from the postMessage API' );
-						}
-
-					}
-				}
-			}, false );
-=======
 
 		setInterval( () => {
 			if( dom.wrapper.scrollTop !== 0 || dom.wrapper.scrollLeft !== 0 ) {
@@ -474,7 +406,6 @@ export default function( revealElement, options ) {
 
 		if( config.postMessage ) {
 			window.addEventListener( 'message', onPostMessage, false );
->>>>>>> master
 		}
 
 	}
@@ -612,56 +543,6 @@ export default function( revealElement, options ) {
 		controls.unbind();
 		progress.unbind();
 		location.unbind();
-<<<<<<< HEAD
-
-		window.removeEventListener( 'resize', onWindowResize, false );
-
-		dom.slides.removeEventListener( 'click', onSlidesClicked, false );
-		dom.slides.removeEventListener( 'transitionend', onTransitionEnd, false );
-		dom.pauseOverlay.removeEventListener( 'click', resume, false );
-
-	}
-
-	/**
-	 * Adds a listener to one of our custom reveal.js events,
-	 * like slidechanged.
-	 */
-	function on( type, listener, useCapture ) {
-
-		revealElement.addEventListener( type, listener, useCapture );
-
-	}
-
-	/**
-	 * Unsubscribes from a reveal.js event.
-	 */
-	function off( type, listener, useCapture ) {
-
-		revealElement.removeEventListener( type, listener, useCapture );
-
-	}
-
-	/**
-	 * Applies CSS transforms to the slides container. The container
-	 * is transformed from two separate sources: layout and the overview
-	 * mode.
-	 *
-	 * @param {object} transforms
-	 */
-	function transformSlides( transforms ) {
-
-		// Pick up new transforms from arguments
-		if( typeof transforms.layout === 'string' ) slidesTransform.layout = transforms.layout;
-		if( typeof transforms.overview === 'string' ) slidesTransform.overview = transforms.overview;
-
-		// Apply the transforms to the slides container
-		if( slidesTransform.layout ) {
-			Util.transformElement( dom.slides, slidesTransform.layout + ' ' + slidesTransform.overview );
-		}
-		else {
-			Util.transformElement( dom.slides, slidesTransform.overview );
-		}
-=======
 
 		window.removeEventListener( 'resize', onWindowResize, false );
 
@@ -727,38 +608,19 @@ export default function( revealElement, options ) {
 			slide.removeAttribute( 'hidden' );
 			slide.removeAttribute( 'aria-hidden' );
 		} );
->>>>>>> master
 
 	}
 
 	/**
-<<<<<<< HEAD
-	 * Dispatches an event of the specified type from the
-	 * reveal DOM element.
-	 */
-	function dispatchEvent({ target=dom.wrapper, type, data, bubbles=true }) {
-=======
 	 * Adds a listener to one of our custom reveal.js events,
 	 * like slidechanged.
 	 */
 	function on( type, listener, useCapture ) {
 
 		revealElement.addEventListener( type, listener, useCapture );
->>>>>>> master
 
-		let event = document.createEvent( 'HTMLEvents', 1, 2 );
-		event.initEvent( type, bubbles, true );
-		Util.extend( event, data );
-		target.dispatchEvent( event );
+	}
 
-<<<<<<< HEAD
-		if( target === dom.wrapper ) {
-			// If we're in an iframe, post each reveal.js event to the
-			// parent window. Used by the notes plugin
-			dispatchPostMessage( type );
-		}
-
-=======
 	/**
 	 * Unsubscribes from a reveal.js event.
 	 */
@@ -808,7 +670,6 @@ export default function( revealElement, options ) {
 			dispatchPostMessage( type );
 		}
 
->>>>>>> master
 		return event;
 
 	}
@@ -1650,15 +1511,9 @@ export default function( revealElement, options ) {
 
 		backgrounds.sync( slide );
 		fragments.sync( slide );
-<<<<<<< HEAD
 
 		slideContent.load( slide );
 
-=======
-
-		slideContent.load( slide );
-
->>>>>>> master
 		backgrounds.update();
 		notes.update();
 
@@ -2535,8 +2390,6 @@ export default function( revealElement, options ) {
 
 	}
 
-<<<<<<< HEAD
-=======
 
 	// --------------------------------------------------------------------//
 	// ----------------------------- EVENTS -------------------------------//
@@ -2553,51 +2406,20 @@ export default function( revealElement, options ) {
 		if( config.autoSlideStoppable ) {
 			pauseAutoSlide();
 		}
->>>>>>> master
 
-	// --------------------------------------------------------------------//
-	// ----------------------------- EVENTS -------------------------------//
-	// --------------------------------------------------------------------//
+	}
 
 	/**
-<<<<<<< HEAD
-	 * Called by all event handlers that are based on user
-	 * input.
-	 *
-	 * @param {object} [event]
-	 */
-	function onUserInput( event ) {
-
-		if( config.autoSlideStoppable ) {
-			pauseAutoSlide();
-		}
-=======
 	* Listener for post message events posted to this window.
 	*/
 	function onPostMessage( event ) {
 
 		let data = event.data;
->>>>>>> master
 
 		// Make sure we're dealing with JSON
 		if( typeof data === 'string' && data.charAt( 0 ) === '{' && data.charAt( data.length - 1 ) === '}' ) {
 			data = JSON.parse( data );
 
-<<<<<<< HEAD
-	/**
-	 * Event listener for transition end on the current slide.
-	 *
-	 * @param {object} [event]
-	 */
-	function onTransitionEnd( event ) {
-
-		if( transition === 'running' && /section/gi.test( event.target.nodeName ) ) {
-			transition = 'idle';
-			dispatchEvent({
-				type: 'slidetransitionend',
-				data: { indexh, indexv, previousSlide, currentSlide }
-			});
-=======
 			// Check if the requested method can be found
 			if( data.method && typeof Reveal[data.method] === 'function' ) {
 
@@ -2615,38 +2437,11 @@ export default function( revealElement, options ) {
 				}
 
 			}
->>>>>>> master
 		}
 
 	}
 
 	/**
-<<<<<<< HEAD
-	 * A global listener for all click events inside of the
-	 * .slides container.
-	 *
-	 * @param {object} [event]
-	 */
-	function onSlidesClicked( event ) {
-
-		const anchor = Util.closest( event.target, 'a[href^="#"]' );
-
-		// If a hash link is clicked, we find the target slide
-		// and navigate to it. We previously relied on 'hashchange'
-		// for links like these but that prevented media with
-		// audio tracks from playing in mobile browsers since it
-		// wasn't considered a direct interaction with the document.
-		if( anchor ) {
-			const hash = anchor.getAttribute( 'href' );
-			const indices = location.getIndicesFromHash( hash );
-
-			if( indices ) {
-				Reveal.slide( indices.h, indices.v, indices.f );
-				event.preventDefault();
-			}
-		}
-
-=======
 	 * Event listener for transition end on the current slide.
 	 *
 	 * @param {object} [event]
@@ -2688,7 +2483,6 @@ export default function( revealElement, options ) {
 			}
 		}
 
->>>>>>> master
 	}
 
 	/**
@@ -2727,19 +2521,11 @@ export default function( revealElement, options ) {
 	 * @param {object} [event]
 	 */
 	function onFullscreenChange( event ) {
-<<<<<<< HEAD
 
 		let element = document.fullscreenElement || document.webkitFullscreenElement;
 		if( element === dom.wrapper ) {
 			event.stopImmediatePropagation();
 
-=======
-
-		let element = document.fullscreenElement || document.webkitFullscreenElement;
-		if( element === dom.wrapper ) {
-			event.stopImmediatePropagation();
-
->>>>>>> master
 			// Timeout to avoid layout shift in Safari
 			setTimeout( () => {
 				Reveal.layout();
@@ -2801,10 +2587,7 @@ export default function( revealElement, options ) {
 
 		initialize,
 		configure,
-<<<<<<< HEAD
-=======
 		destroy,
->>>>>>> master
 
 		sync,
 		syncSlide,
@@ -2920,48 +2703,6 @@ export default function( revealElement, options ) {
 
 		// Returns the slide background element at the specified index
 		getSlideBackground,
-<<<<<<< HEAD
-
-		// Returns the speaker notes string for a slide, or null
-		getSlideNotes: notes.getSlideNotes.bind( notes ),
-
-		// Returns an Array of all slides
-		getSlides,
-
-		// Returns an array with all horizontal/vertical slides in the deck
-		getHorizontalSlides,
-		getVerticalSlides,
-
-		// Checks if the presentation contains two or more horizontal
-		// and vertical slides
-		hasHorizontalSlides,
-		hasVerticalSlides,
-
-		// Checks if the deck has navigated on either axis at least once
-		hasNavigatedHorizontally: () => navigationHistory.hasNavigatedHorizontally,
-		hasNavigatedVertically: () => navigationHistory.hasNavigatedVertically,
-
-		// Adds/removes a custom key binding
-		addKeyBinding: keyboard.addKeyBinding.bind( keyboard ),
-		removeKeyBinding: keyboard.removeKeyBinding.bind( keyboard ),
-
-		// Programmatically triggers a keyboard event
-		triggerKey: keyboard.triggerKey.bind( keyboard ),
-
-		// Registers a new shortcut to include in the help overlay
-		registerKeyboardShortcut: keyboard.registerKeyboardShortcut.bind( keyboard ),
-
-		getComputedSlideSize,
-
-		// Returns the current scale of the presentation content
-		getScale: () => scale,
-
-		// Returns the current configuration object
-		getConfig: () => config,
-
-		// Helper method, retrieves query string as a key:value map
-		getQueryHash: Util.getQueryHash,
-=======
 
 		// Returns the speaker notes string for a slide, or null
 		getSlideNotes: notes.getSlideNotes.bind( notes ),
@@ -3005,7 +2746,6 @@ export default function( revealElement, options ) {
 
 		// Returns the path to the current slide as represented in the URL
 		getSlidePath: location.getHash.bind( location ),
->>>>>>> master
 
 		// Returns reveal.js DOM elements
 		getRevealElement: () => revealElement,

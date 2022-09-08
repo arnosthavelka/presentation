@@ -111,13 +111,10 @@ export default class Notes {
 
 	}
 
-<<<<<<< HEAD
-=======
 	destroy() {
 
 		this.element.remove();
 
 	}
 
->>>>>>> master
 }

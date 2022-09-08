@@ -269,18 +269,6 @@ gulp.task('default', gulp.series(gulp.parallel('js', 'css', 'plugins'), 'test'))
 
 gulp.task('build', gulp.parallel('js', 'css', 'plugins'))
 
-<<<<<<< HEAD
-gulp.task('package', gulp.series('default', () =>
-
-    gulp.src([
-        './index.html',
-        './dist/**',
-        './lib/**',
-        './images/**',
-        './plugin/**',
-        './**.md'
-    ]).pipe(zip('reveal-js-presentation.zip')).pipe(gulp.dest('./'))
-=======
 gulp.task('package', gulp.series(() =>
 
     gulp.src(
@@ -295,7 +283,6 @@ gulp.task('package', gulp.series(() =>
         { base: './' }
     )
     .pipe(zip('reveal-js-presentation.zip')).pipe(gulp.dest('./'))
->>>>>>> master
 
 ))
 
@@ -315,11 +302,7 @@ gulp.task('serve', () => {
 
     gulp.watch(['js/**'], gulp.series('js', 'reload', 'eslint'))
 
-<<<<<<< HEAD
-    gulp.watch(['plugin/**/plugin.js'], gulp.series('plugins', 'reload'))
-=======
     gulp.watch(['plugin/**/plugin.js', 'plugin/**/*.html'], gulp.series('plugins', 'reload'))
->>>>>>> master
 
     gulp.watch([
         'css/theme/source/*.{sass,scss}',
