@@ -4,6 +4,8 @@
 * [20180315 - DEV Concept](dbs/20180315-dev-concept.html)
 * [20181018 - Spring Rest Docs](dbs/20181018-spring-rest-docs.html)
 * [20190323 - Audit POC](dbs/20190323-javers.html)
+* [20210113 - Evaluation of NoSQL technologies](dbs/20210113-nosql.html)
+* [TODO - REST API documentation](dbs/202103xx-rest-docs.html)
 
 # Presentations for Atos
 * [20170911 JPA](atos/20170911-jpa.html)
