@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<title>REST API documentation</title>
+
+		<link rel="stylesheet" href="../reveal.js/dist/reveal.css">
+		<link rel="stylesheet" href="../reveal.js/dist/theme/beige.css" id="theme">
+
+        <link rel="stylesheet" href="../reveal.js/plugin/highlight/monokai.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<!-- 
+				https://help.github.com/articles/basic-writing-and-formatting-syntax/
+				https://www.webpagefx.com/tools/emoji-cheat-sheet/
+				-->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## REST API documentation
+							#### The goal, requirements, tools & proposal
+													
+							Created by [Arnošt Havelka](https://github.deutsche-boerse.de/hh310)
+						</textarea>
+					</section>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## Agenda
+					
+						1. Goal
+						1. IA documents
+						1. Requirements
+						1. Tools
+					</textarea>
+				</section>
+					
+				<!-- Part 1 - Goal -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 1. Goal
+							
+							* Simplify **I**nterface **A**greement documents
+							* Ensure up-to-date content
+							* Promote automation
+							* Promote versioning of IA documents
+						</textarea>
+					</section>
+
+				</section>
+				
+				<!-- Part 2 - IA documents -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 2. IA documents
+							
+							1. Many versions
+							1. Different formats
+							1. Issues
+							1. ASIS Summary
+							1. Proposal
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 2.1 Many versions (1/2)
+							
+							<small>W:\Vestima\VestimaPlus\Oxygen\08 - Interface Agreement\2107</small>
+							
+							<img src="img/rest_api_doc_ia_oxygen-releases.png" alt="List of releases for Oxygen"/>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 2.1 Many versions (2/2)
+							
+							<img src="img/rest_api_doc_ia_many-versions.png" alt="Many versions of IA documents (in 2107)"/>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 2.2 Different formats (1/4)
+							
+							<img src="img/rest_api_doc_ia_oxygen-example-1-1.png" alt="Old IA example 1"/>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 2.2 Different formats (2/4)
+							
+							<img src="img/rest_api_doc_ia_oxygen-example-1-2.png" alt="Old IA example 2"/>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 2.2 Different formats (3/4)
+							
+							<img src="img/rest_api_doc_ia_oxygen-example-1-3.png" alt="Old IA example 3"/>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 2.2 Different formats (4/4)
+							
+							<img src="img/rest_api_doc_ia_oxygen-example-2.png" alt="New IA example"/>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 2.3 Issues (1/2)
+							
+							<img src="img/rest_api_doc_ia_hydrogen-example-1-2.png" alt="IA example for Hydrogen"/>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 2.3 Issues (2/2)
+							### Wrong JSON format
+							
+							<img src="img/rest_api_doc_ia_hydrogen-wrong-json-format.png" alt="Wrong JSON format"/>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 2.4 ASIS Summary
+							
+							1. Many documents (systems, versions)
+							1. Many different formats
+							1. No QA guaranteed (errors, up-to-date, etc.)
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 2.5 Proposal
+							
+							1. Write only high level details without specifics (endpoint ID, purpose, security, etc.)
+							1. The API documentation (endpoint URL, request / response params) should be generated
+							-> in order to achieve up-to-date content
+						</textarea>
+					</section>
+				</section>
+				
+				<!-- Part 3 - Requirements -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 3. Requirements
+							
+							1. Related topics
+							1. Requirements
+							1. Additional objectives
+							1. Proposal
+							1. Summary
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 3.1 Related topics (optional)
+							
+							* REST API guideline as kicked off by Martin (email "IFS REST API response format agreement")
+							* Documentation objectives (requirements, tools, storage, etc.)
+							* Automaticaly generated client library for API
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 3.2 Requirements
+							
+							* Simplify and increase quality of IA documents
+							* Document external APIs only 
+							* Integrate documentation into pipelines
+							* Focus on the documentation itself (see: <a href="https://github.deutsche-boerse.de/pages/hh310/reveal.js/20181018-spring-rest-docs.html#/3/1">different concerns</a>)
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 3.3 Additional objectives
+							
+							* Highlight changes from previous version
+							* Support different versions
+							* Documentation available at all time (offline)
+								* not linked to our demos (unavailable when DEMO is down)
+								* linked to our demos (simplified access)
+							* First contract approach - prepare the documentation as the first activity
+						</textarea>
+					</section>
+					
+				</section>
+				
+				<!-- Part 4 - Tools for specification -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 4. Tools for specification
+							
+							1. OpenAPI
+							2. Spring Cloud Contract
+							3. [GraphQL](https://graphql.org/)
+							4. [json:api](https://jsonapi.org/)
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 4.1 OpenAPI Specification [1/2]
+							### API-First Development with Swagger
+							
+							* https://reflectoring.io/spring-boot-openapi/
+							* https://dzone.com/articles/spring-boot-api-first-approach
+							
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 4.1 OpenAPI Specification [2/2]
+							### Summary
+							
+							* (+) Real specification
+								* Support for any language
+								* More strict
+								* Less flexible
+							* (-) Very tight to the implementation (see **operationId**)
+							* (-) Controllers generated automaticaly (missing security, mappers, etc.) 
+							* (-) Some unsolved issues
+
+							<small>See: https://swagger.io/specification/,</small>
+							<small>Vestima OpenApi: https://github.deutsche-boerse.de/dev/cs.vestima_gui/blob/release/2107/rest-api-generator/src/main/resources/open-api/oxygen.yaml or</small>
+							<small>Oxygen Swagger: https://oxygen-develop-demo.ifs.dev.dbgcloud.io:13210/oxygen-task/swagger-ui.html</small>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 4.2 Spring Cloud Contract
+							
+							* (+) Already used by Oxygen
+							* (+) Stubs can be generated from it (not used in Oxygen now)
+							* (-) Not real specification
+							* (-) Some minor evaluation issues (with list)
+							* (-) Transaction issues (see: [#PR 6371](https://github.deutsche-boerse.de/dev/cs.oxygen/pull/6371/files))
+							
+							<small>See: Example: [Guideline](https://github.deutsche-boerse.de/dev/cs.oxygen/blob/develop/oxygen-task/src/test/resources/contracts/oxygen/task/guideline/shouldGetGuideline.groovy) example or
+							<a href="https://docs.spring.io/spring-cloud-contract/docs/current/reference/html/">the reference documentation</a></small>
+						</textarea>
+					</section>
+
+				</section>
+				
+				<!-- Part 5 - Tools for documentation -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 5. Tools for documentation
+							
+							3. Spring REST Docs
+							4. OpenAPI Documentation
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 5.3 Spring REST Docs
+							
+							* (+) Real documentation
+							* (-) Not specification
+							* (+) Based on tests (request & response examples)
+							* (+) It can indicate a missing description of the attribute
+							* (-) The generation requires 2 steps (easy with Maven plugin)
+							
+							<small>See: my previous presentation for <a href="https://github.deutsche-boerse.de/pages/hh310/reveal.js/20181018-spring-rest-docs.html">Spring REST Docs</a> 
+							or <a href="https://docs.spring.io/spring-restdocs/docs/current/reference/html5/">the official documentation</a></small>
+						</textarea>
+					</section>
+
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 5.4 OpenAPI Documentation
+							
+							* (+) Well known
+							* (-) Highly tight with code or just synthetical
+							* (+) Easy to use
+							* (-) Risk of API changes (see <a href="https://github.com/arnosthavelka/spring-advanced-training/pull/12/files">my PR</a>)
+							
+							<small>See: demo for <a href="https://oxygen-develop-demo.ifs.dev.dbgcloud.io:13210/oxygen-task/swagger-ui.html">TASK module</a> or
+							<a href="https://www.baeldung.com/spring-rest-openapi-documentation">a tutorial</a></small>
+							<small>See: https://swagger.io/solutions/api-documentation/</small>
+						</textarea>
+					</section>
+				</section>
+
+				<!-- Part 6 - Proposal -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 6. Proposal
+							
+							1. Specification
+								* IA document for high level details (purpose, URL, security, etc.)
+								* OpenAPI Specification for external API (Gateway module in Oxygen)
+							2. Documentation
+								* Spring REST Docs (based on tests)
+								* Extend our pipeline with documentation stage
+						</textarea>
+					</section>
+				</section>
+
+				<section>
+					<h1>Discussion</h1>
+				</section>
+				
+				<section>
+					<h1>THE END</h1>
+					<h3>Thank you!</h3>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="../reveal.js/dist/reveal.js"></script>
+        <script src="../reveal.js/plugin/markdown/markdown.js"></script>
+        <script src="../reveal.js/plugin/highlight/highlight.js"></script>
+        <script src="../reveal.js/plugin/notes/notes.js"></script>
+        <script src="../reveal.js/plugin/math/math.js"></script>
+
+		<script>
+
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX ]
+			});
+
+		</script>
+
+	</body>
+</html>

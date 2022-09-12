@@ -1,0 +1,1108 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<title>Evaluation of NoSQL</title>
+
+		<link rel="stylesheet" href="../reveal.js/dist/reveal.css">
+		<link rel="stylesheet" href="../reveal.js/dist/theme/beige.css" id="theme">
+
+        <link rel="stylesheet" href="../reveal.js/plugin/highlight/monokai.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<!-- 
+				https://help.github.com/articles/basic-writing-and-formatting-syntax/
+				https://www.webpagefx.com/tools/emoji-cheat-sheet/
+				-->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## Evaluation of NoSQL
+							#### Redis vs. Elasticsearch vs. Oracle
+													
+							Created by [Arnošt Havelka](http://cz.linkedin.com/in/arnosthavelka/)
+						</textarea>
+					</section>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## Agenda
+					
+						1. Overview
+						1. Redis
+						1. Elasticsearch
+						1. Oracle JSON column
+						1. Plain Oracle
+						1. Summary
+					</textarea>
+				</section>
+					
+				<!-- Part 1 - Overview -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 1. Overview
+							
+							1. Goal
+							1. Prototyped technologies
+							1. Used data sets
+							1. Disclaimer
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 1.1 Goal
+							
+							The goal of the POC was to check several technologies to process fast huge data.
+							
+							The main concerns are:
+						
+							1. Upload data
+							1. Fast search
+							
+							<p><small>See: <a href="https://en.wikipedia.org/wiki/NoSQL">NoSQL page on Wikipedia</a></small></p>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 1.2 Prototyped technologies
+							
+							1. **Redis** - distributed cache & NoSQL DB
+							1. **Elasticsearch** - distributed search engine & NoSQL DB
+							1. **Oracle with JSON column** - special column type for querying JSON content
+							1. **Plain Oracle** - the old good RDBMS
+							
+							<p><small>Disclosure: no special optimization was applied for any technology</p>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 1.3 Used datasets
+							
+							| Type        | Count | CSV size | Description                                                                  |
+							| ----------- | ----- | -------- |----------------------------------------------------------------------------- |
+							| Person      | 3     | N/A      | <small>Just kickoff for the technology (originally as Institution)</small>   |
+							| Part data   | 245k  | 39MB     | <small>Inst - Part - Oi - Portfolio - TC</small>                             |
+							| Institution | 2m    | 320MB    | <small>Inst - HFA - SFund & Umbrella</small>                                 |
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 1.4 Disclaimer
+							
+							1. end-to-end - any performance measurement was taken from the browser (except uploads taken from the log)
+							1. no technology was optimized for the performance (e.g. indexes in Oracle or mapping in ELK)
+							1. no transaction used
+							1. avoid native approach -> use Spring Data starters
+						</textarea>
+					</section>
+						
+				</section>
+				
+				<!-- Part 2 - Redis -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 2. Redis
+							
+							1. Overview
+							1. Docker Setup
+							1. Implementation
+							1. Stored data
+							1. PROS
+							1. CONS
+							1. Performance Results
+							
+							<p><small>See GitHub repo <a href="https://github.deutsche-boerse.de/hh310/redis-poc/">Redis-POC</a></small></p>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 2.1 Redis - Overview
+							
+							Redis is an in-memory data structure store, used as:
+							- Distributed cache & NoSQL database
+							- Message broker
+							- Stream processing (not tested)
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.2 Redis - Docker Setup
+							
+							| Image   | Command                                                                                                   |
+							| ------- | --------------------------------------------------------------------------------------------------------- |
+							| Create  | <small>`docker run --name oxygen-redis-poc -p 6379:6379 -d redis redis-server --appendonly yes`</small>   |
+							| Start   | <small>`docker start oxygen-redis-poc`</small>                                                            |
+							| Run CLI | <small>`docker exec -it oxygen-redis-poc redis-cli`</small>                                               |
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.3 Redis - Implementation [1/5]
+							#### Maven dependency
+
+							Spring Boot Starter:
+							```
+							<dependency>
+								<groupId>org.springframework.boot</groupId>
+								<artifactId>spring-boot-starter-data-redis</artifactId>
+							</dependency>
+							```	
+							
+							CSV support:
+							```
+							<dependency>
+								<groupId>com.fasterxml.jackson.dataformat</groupId>
+								<artifactId>jackson-dataformat-csv</artifactId>
+							</dependency>
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.3 Redis - Implementation [2/5]
+							#### Configuration
+
+							`application.yaml`:
+							```
+							spring:
+							  application:
+								name: oxygen-redis-poc
+							  redis:
+								host: oxygen-arnost.ifs.dev.dbgcloud.io
+								port: 6379 # standard Redis port
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.3 Redis - Implementation [3/5]
+							#### Record
+
+							```
+							@RedisHash( PartData.PART_KEY )
+							@Data
+							public class PartData {
+								// Redis keyspace
+								public final static String PART_KEY = "Part";
+
+								@Id
+								private String id;
+
+								@JsonProperty( "INST_ID" )
+								private Long instId;
+
+								@JsonProperty( "INST_CD" )
+								@Indexed
+								private String instCode;
+								
+								...
+							}
+
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.3 Redis - Implementation [4/5]
+							#### Repository
+
+							```
+							@Repository
+							public interface PartRepository extends 
+								QueryByExampleExecutor<PartData>, 
+								PagingAndSortingRepository<PartData, String> {
+
+							}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.3 Redis - Implementation [5/5]
+							#### Service
+
+							```
+							public Optional<PartData> getOne( String partId ) {
+								return repository.findById( partId );
+							}
+
+							public Page<PartData> search( PartData searchDto, Pageable pageable ) {
+								return repository.findAll( buildFilterByExample( searchDto ), pageable );
+							}
+
+							private Example<PartData> buildFilterByExample( PartData partData ) {
+								ExampleMatcher matcher = ExampleMatcher.matching()
+										.withIgnorePaths( "id" );
+								// .withMatcher( "code", exact() )
+								// .withMatcher( "name", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase() );
+								return Example.of( partData, matcher );
+							}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.4 Redis - Stored data [1/2]
+							#### Institution (aka Person) content
+							
+							```
+							{
+							  "id": "760df1f0-dc1c-48ba-8e11-ce03a52626a4",
+							  "code": "CM",
+							  "name": "Crazy Monkey",
+							  "_links": {
+								"self": {
+								  "href": "http://localhost:8080/api/insts/760df1f0-dc1c-48ba-8e11-ce03a52626a4"
+								},
+								"institutions": {
+								  "href": "http://localhost:8080/api/insts"
+								}
+							  }
+							}
+							 ...
+							```							
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.4 Redis - Stored data [2/2]
+							#### Redis Keystore Content
+							
+							```
+							 1) "Institution:aea5a748-a57a-49bd-bcfa-b88a6abbb73d"
+							 2) "Institution:name:Sad Monkey"
+							 3) "Institution:414b8ec5-a2fd-43f8-b728-2684a04c2e53:idx"
+							 4) "Institution:code:SM"
+							 5) "Institution:0c2056a5-1a23-4d86-9733-0a1e8113a7f5:idx"
+							 ...
+							```							
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.5 Redis - PROS
+							
+							* messaging
+							* streaming (not tested)
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.6 Redis - CONS
+							
+							* ID has to be String -> it doesn't work correctly with Long (get or delete)
+							* Indexing is done with updates.
+							* Search features
+								* It allows search only by indexed attributes
+								* It's limited to Example only -> when we ignore native Redis search
+								* The search is limited to case-sensitive and exact matches only.
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.7 Redis - Performance Results
+							#### PartData [1/2]
+							
+							| Action                      | URL path                                                    | Duration |
+							| --------------------------- | ----------------------------------------------------------- |          |
+							| Upload                      | <small>`/parts/upload?filename=xyz.csv`</small>             | 17m 47s  |
+							| Get item                    | <small>`/part/a21c4ed5-a615-4ea7-8701-1daf519e4cbf`</small> | 0.014s   |
+							
+							<p><small>Update from 14/1/2021: upload without persistance took 11m 4s.</small></p>
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 2.7 Redis - Performance Results
+							#### PartData [2/2]
+							
+							| Action                      | URL path                                                    | Duration |
+							| --------------------------- | ----------------------------------------------------------- |          |
+							| Search (all)                | <small>`/parts` (found=245238)</small>                      | 0.362s   |
+							| Search I.                   | <small>`/parts?instCode=AXAIMBE` (found=164)</small>        | 0.026s   |
+							| Search II.                  | <small>`/parts?instCode=CMCIFR` (found=121098)</small>      | 0.355s   |
+							| Search III.                 | <small>`/parts?tcHfaHfaId=1615` (found=4)</small>           | 0.012s   |
+						</textarea>
+					</section>
+
+				</section>
+	
+				<!-- Part 3 - Elasticsearch -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 3. Elasticsearch
+							
+							1. Overview
+							1. Docker Setup
+							1. Implementation
+							1. Stored data
+							1. PROS
+							1. CONS
+							1. Performance Results
+							
+							<p><small>See GitHub repo <a href="https://github.deutsche-boerse.de/hh310/elk-poc/">ELK-POC</a></small></p>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 3.1 ES - Overview
+							
+							- Distributed search and analytics engine for all types of data
+							- Built on Apache Lucene
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.2 ES - Docker Setup
+							
+							| Image                | Command                                                                                                                                                             |
+							| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+							| Create network       | <small>`docker network create oxygen-elk-net`</small>                                                                                                               |
+							| Create Elasticsearch | <small>`docker run -d --name oxygen-elasticsearch-poc --net oxygen-elk-net -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.9.3`</small>   |
+							| Create ElasticHQ     | <small>`docker run -d --name oxygen-elastichq-poc --net oxygen-elk-net -p 5000:5000 elastichq/elasticsearch-hq`</small>                                             |
+							| Start                | <small>`oxygen-elasticsearch-poc` and `oxygen-elastichq-poc`</small>                                                                                                |
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.3 ES - Implementation [1/5]
+							#### Maven dependency
+
+							Spring Boot Starter:
+							```
+							<dependency>
+								<groupId>org.springframework.boot</groupId>
+								<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+							</dependency>
+							```	
+							
+							CSV support:
+							```
+							<dependency>
+								<groupId>com.fasterxml.jackson.dataformat</groupId>
+								<artifactId>jackson-dataformat-csv</artifactId>
+							</dependency>
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.3 ES - Implementation [2/5]
+							#### Configuration
+
+							`application.yaml`:
+							```
+							spring:
+							  application:
+								name: oxygen-elasticsearch-poc
+							  elasticsearch:
+								rest:
+								  uris: http://oxygen-arnost.ifs.dev.dbgcloud.io:9200
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.3 ES - Implementation [3/5]
+							#### Record
+
+							```
+							@Document( indexName = PartData.INDEX )
+							@Data
+							public class PartData {
+								// Elasticsearch index name
+								public final static String INDEX = "part";
+
+								@Id
+								private String id;
+
+								@JsonProperty( "INST_ID" )
+								private Long instId;
+
+								@JsonProperty( "INST_CD" )
+								private String instCode;
+								
+								...
+							}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.3 ES - Implementation [4/5]
+							#### Repository
+
+							```
+							@Repository
+							public interface PartRepository extends 
+								ElasticsearchRepository<PartData, String> {
+								// extends PagingAndSortingRepository
+
+							}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.3 ES - Implementation [5/5]
+							#### Service
+
+							```
+							public Optional<PartData> getOne( String partId ) {
+								return repository.findById( partId );
+							}
+
+							public Page<PartData> search( PartData searchDto, Pageable pageable ) {
+								IndexCoordinates index = IndexCoordinates.of( PartData.INDEX );
+
+								CriteriaQuery query = buildSearchQuery( searchDto );
+								query.setPageable( pageable );
+								return esTemplate.queryForPage( query, PartData.class, index );
+							}
+
+							private CriteriaQuery buildSearchQuery( PartData searchDto ) {
+								Criteria criteria = new Criteria();
+								if ( nonNull( searchDto.getInstCode() ) ) {
+									criteria.and( new Criteria( "instCode" ).is( searchDto.getInstCode() ) );
+								}
+								if ( nonNull( searchDto.getInstName() ) ) {
+									criteria.and( new Criteria( "instName" ).contains( searchDto.getInstName() ) );
+								}
+								...
+								return new CriteriaQuery( criteria );
+							}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.4 ES - Stored data
+							#### Person content
+							
+							```
+							{
+							  "id": "YSYO3HYBdxbfIffP6Ap6",
+							  "code": "FM",
+							  "name": "Funny Monkey",
+							  "_links": {
+								"self": {
+								  "href": "http://localhost:8080/api/persons/YSYO3HYBdxbfIffP6Ap6"
+								},
+								"persons": {
+								  "href": "http://localhost:8080/api/persons"
+								}
+							  }
+							}
+							```							
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.5 ES - PROS
+							
+							* powerfull search engine (e.g. we can define synonyms)
+							* easy management console (ElasticHQ GUI or Kibana)
+							* fast upload
+							* search is case insensitive by default
+							* usable for more cases:
+								* centralized logging
+								* store processing state (e.g. publication or GFDM)
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.6 ES - CONS
+							
+							* pagination API is depricated -> we should use the `SearchHits` return type (not tested)
+							* default limit 10000 for the result
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.7 ES - Performance Results
+							#### General [1/3]
+							
+							| Action                      | HTTP Method | URL path                                        | Duration |
+							| --------------------------- | ----------- | ----------------------------------------------- | -------- |
+							| Upload (part)               | POST        | <small>`/parts/upload?filename=xyz.csv`</small> | 0m 52s   |
+							| Upload (inst)               | POST        | <small>`/insts/upload?filename=xyz.csv`</small> | 6m 21s   |
+							| Get an item                 | GET         | <small>`/parts/fZUY03YBW4NcV0bDWCUz`</small>    | 0.020s   |
+							| Create                      | POST        | <small>`/persons`</small>                       | 0.045s   |
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.7 ES - Performance Results
+							#### PartData [2/3]
+							
+							| Action                      | URL path                                                    | Duration |
+							| --------------------------- | ----------------------------------------------------------- | -------- |
+							| Search (all)                | <small>`/parts` (found=245238)</small>                      | 0.026s   |
+							| Search I.                   | <small>`/parts?instCode=AXAIMBE` (found=164)</small>        | 0.023s   |
+							| Search II.                  | <small>`/parts?instCode=CMCIFR` (found=121098)</small>      | 0.022s   |
+							| Search III.                 | <small>`/parts?tcHfaHfaId=1615` (found=4)</small>           | 0.023s   |
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 3.7 ES - Performance Results
+							#### InstData [3/3]
+							
+							| Action                      | URL path                                                    | Duration |
+							| --------------------------- | ----------------------------------------------------------- | -------- |
+							| Search (all)                | <small>`/insts` (found=2058098)</small>                     | 0.023s   |
+							| Search I.                   | <small>`/insts?instRoleCode=tragent` (found=10000+)</small> | 0.024s   |
+							| Search II.                  | <small>`/insts?hfaRefIsin=HK0000514494` (found=4)</small>   | 0.103s   |
+							| Search III.                 | <small>`/insts?tcHfaHfaId=1615` (found=10000+)</small>      | 0.019s   |
+						</textarea>
+					</section>
+
+				</section>
+
+				<!-- Part 4 - Oracle JSON column -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 4. Oracle JSON Column
+							
+							1. Overview
+							1. Database
+							1. Implementation
+							1. Reason for abandoning
+							
+							<p><small>See Person domain in GitHub repo <a href="https://github.deutsche-boerse.de/hh310/oracle-poc/">Oracle-POC</a></small></p>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 4.1 Oracle JSON - Overview
+							
+							- Allows store and search data as JSON
+							
+							See also https://docs.oracle.com/database/121/ADXDB/json.htm#ADXDB6371
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 4.2 Oracle JSON - DB [1/2]
+							#### DDL
+
+							```
+							CREATE TABLE PERSON  (
+								ID          NUMBER(22)   NOT NULL,
+								CTNT        CLOB
+								CONSTRAINT PERSON_ensure_json CHECK (CTNT IS JSON)
+							);
+							```
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 4.2 Oracle JSON - DB [2/2]
+							#### Insert record
+
+							```
+							insert into PERSON
+							VALUES (1, '{
+							  "code" : "HM",
+							  "name" : "Happy Monkey"
+							}');
+							```
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 4.3 Oracle JSON - Implementation [1/4]
+							#### Maven dependency
+
+							Spring Boot Starter:
+							```
+							<dependency>
+								<groupId>org.springframework.boot</groupId>
+								<artifactId>spring-boot-starter-data-jdbc</artifactId>
+							</dependency>
+							```	
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 4.3 Oracle JSON - Implementation [2/4]
+							#### Record
+
+							```
+							@Data
+							@Relation( collectionRelation = "persons" )
+							public class Person {
+
+								@Id
+								private Long id;
+								private String code;
+								private String name;
+
+							}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 4.3 Oracle JSON - Implementation [3/4]
+							#### Repository
+
+							```
+							@Repository
+							public interface PersonRepository extends CrudRepository<Person, Long> {
+
+								@Query( "SELECT i.id, i.ctnt.code, i.ctnt.name FROM PERSON i where i.id = :id" )
+								Optional<Person> findOne( @Param( "id" ) long id );
+
+								@Modifying
+								@Query( "INSERT INTO PERSON VALUES (:id, :content)" )
+								boolean create( @Param( "id" ) long id, @Param( "content" ) String jsonContent );
+
+								... 
+								
+								@Query( "SELECT i.id, i.ctnt.code, i.ctnt.name FROM PERSON i where i.ctnt.name like :name" )
+								List<Person> findByName( @Param( value = "name" ) String name );
+
+							}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 4.3 Oracle JSON - Implementation [4/4]
+							#### Service
+
+							```
+							public Optional<Person> getOne( Long personId ) {
+								return repository.findOne( personId );
+							}
+
+							public List<Person> search( String personName ) {
+								if ( isNull( personName ) ) {
+									return repository.findAll();
+								}
+								return repository.findByName( "%" + personName + "%" );
+							}
+
+							public Person create( Person person ) {
+								String jsonContent = format( "{\"code\" : \"%s\",\"name\" : \"%s\" }", person.getCode(), person.getName() );
+								repository.create( person.getId(), jsonContent );
+								return repository.findById( person.getId() ).orElseThrow();
+							}
+							```	
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 4.4 Oracle JSON - Reason for abandoning
+							
+							* poor Spring Data support
+							* no significant benefit
+								* custom saving data
+								* custom reading data
+						</textarea>
+					</section>
+					
+				</section>
+				
+				<!-- Part 5 - Plain Oracle -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 5. Plain Oracle
+							
+							1. Overview
+							1. Implementation
+							1. Stored data
+							1. PROS
+							1. CONS
+							1. Performance Results
+							
+							<p><small>See Inst or Part domains in GitHub repo <a href="https://github.deutsche-boerse.de/hh310/oracle-poc/">Oracle-POC</a></small></p>
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							### 5.1 Plain Oracle - Overview
+							
+							The standard way we use in Oxygen
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.2 Plain Oracle - Implementation [1/5]
+							#### Maven dependency
+
+							Spring Boot Starter:
+							```
+							<dependency>
+								<groupId>org.springframework.boot</groupId>
+								<artifactId>spring-boot-starter-data-jpa</artifactId>
+							</dependency>
+							```	
+							
+							CSV support:
+							```
+							<dependency>
+								<groupId>com.fasterxml.jackson.dataformat</groupId>
+								<artifactId>jackson-dataformat-csv</artifactId>
+							</dependency>
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.2 Plain Oracle - Implementation [2/5]
+							#### Configuration
+
+							`application.yaml`:
+							```
+							spring:
+							  application:
+								name: oxygen-oracle-poc
+							  jpa:
+								database-platform: org.hibernate.dialect.Oracle12cDialect
+								open-in-view: false
+								show-sql: false
+								hibernate:
+								  ddl-auto: validate
+							  datasource:
+								url: jdbc:oracle:thin:@oxygen-arnost.ifs.dev.dbgcloud.io:1521:OXG
+								username: OXG_IREP_OWNER
+								password: OXG_IREP_OWNER
+								driver-class-name: oracle.jdbc.OracleDriver
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.2 Plain Oracle - Implementation [3/5]
+							#### Record
+
+							```
+							@Entity
+							@Table( name = PartData.TABLE_NAME )
+							@Data
+							public class PartData {
+
+								static final String TABLE_NAME = "PART_DATA";
+
+								@Id
+								@GeneratedValue( generator = "system-uuid" )
+								@GenericGenerator( name = "system-uuid", strategy = "uuid" )
+								private String id;
+
+								@Column( name = "INST_ID" )
+								@JsonProperty( "INST_ID" )
+								private Long instId;
+								
+								...
+							}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.2 Plain Oracle - Implementation [4/5]
+							#### Repository
+
+							```
+							@Repository
+							public interface PartRepository extends 
+								JpaRepository<PartData, String>, PagingAndSortingRepository<PartData, String> {
+
+							}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.2 Plain Oracle - Implementation [5/5]
+							#### Service
+
+							```
+							public Optional<PartData> getOne( String partId ) {
+								return repository.findById( partId );
+							}
+
+							public Page<PartData> search( PartData searchDto, Pageable pageable ) {
+								return repository.findAll( buildFilterByExample( searchDto ), pageable );
+							}
+
+							private Example<PartData> buildFilterByExample( PartData partData ) {
+								ExampleMatcher matcher = ExampleMatcher.matching()
+										.withIgnorePaths( "id" )
+										.withMatcher( "instCode", ExampleMatcher.GenericPropertyMatchers.exact() )
+										.withMatcher( "instName", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase() )
+										.withMatcher( "partCode", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase() )
+										.withMatcher( "portfolioName", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase() )
+										.withMatcher( "tcName", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase() );
+								return Example.of( partData, matcher );
+							}
+							```	
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.3 Plain Oracle - Stored data
+							#### PartData content
+							
+							```
+							{
+							  "id": "8af0b8f776f71bbe0176f71fce000012",
+							  "INST_ID": 4855,
+							  "INST_CD": "BBVA",
+							  "INST_NM": "BBVA",
+							  "PART_ID": 1250,
+							  "PART_CD": "BBVAES.XVES",
+							  "PART_ROLE_ID": 184,
+							  "PART_ROLE_CD": "OI",
+							  ...,
+							  "_links": {
+								"self": {
+								  "href": "http://localhost:8080/api/parts/8af0b8f776f71bbe0176f71fce000012"
+								},
+								"parts": {
+								  "href": "http://localhost:8080/api/parts"
+								}
+							  }
+							}
+							```							
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.5 Plain Oracle - PROS
+							
+							* standard JPA approach we are used in Oxygen
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.6 Plain Oracle - CONS
+							
+							* not sufficient performance for huge data
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.7 Plain Oracle - Performance Results
+							#### General [1/3]
+							
+							| Action                      | HTTP Method | URL path                                                 | Duration |
+							| --------------------------- | ----------- | -------------------------------------------------------- | -------- |
+							| Upload (part)               | POST        | <small>`/parts/upload?filename=xyz.csv`</small>          | 2m 20s   |
+							| Upload (inst)               | POST        | <small>`/insts/upload?filename=xyz.csv`</small>          | 18m 8s   |
+							| Get an item                 | GET         | <small>`/parts/8af0b8f776f71bbe0176f71fce000012`</small> | 0.02s    |
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.7 Plain Oracle - Performance Results
+							#### PartData [2/3]
+							
+							| Action                      | URL path                                                    | Duration |
+							| --------------------------- | ----------------------------------------------------------- | -------- |
+							| Search (all)                | <small>`/parts` (found=245238)</small>                      | 0.024s   |
+							| Search I.                   | <small>`/parts?instCode=AXAIMBE` (found=164)</small>        | 0.031s   |
+							| Search II.                  | <small>`/parts?instCode=CMCIFR` (found=121098)</small>      | 0.032s   |
+							| Search III.                 | <small>`/parts?tcHfaHfaId=1615` (found=4)</small>           | 0.033s   |
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							### 5.7 Plain Oracle - Performance Results
+							#### InstData [3/3]
+							
+							| Action                      | URL path                                                    | Duration |
+							| --------------------------- | ----------------------------------------------------------- | -------- |
+							| Search (all)                | <small>`/insts` (found=2058098)</small>                     | 0.081s   |
+							| Search I.                   | <small>`/insts?instRoleCode=TRAGENT` (found=199054)</small> | 0.387s   |
+							| Search II.                  | <small>`/insts?hfaRefIsin=HK0000514494` (found=4)</small>   | 0.895s   |
+							| Search III.                 | <small>`/insts?tcHfaHfaId=1615` (found=2058098)</small>     | 0.079s   |
+						</textarea>
+					</section>
+
+				</section>
+					
+				<!-- Part 6 - Summary -->
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							## 6. Summary
+							
+							1. Performance
+							1. Disk consumption
+							1. PROS
+							1. CONS
+							1. Conclusion
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 6.1 Performance [1/2]
+							### PartData (dataset=245k)
+							
+							| Type         | Redis   | ElasticSearch | Oracle |
+							| ------------ | ------- | ------------- |------- |
+							| Upload       | 17m 47s | 0m 52s        | 2m 20s |
+							| Get          | 0.014s  | 0.019s        | 0.020s |
+							| Search (all) | 0.362s  | 0.026s        | 0.024s |
+							| Search I.    | 0.026s  | 0.023s        | 0.031s |
+							| Search II.   | 0.355s  | 0.022s        | 0.032s |
+							| Search III.  | 0.012s  | 0.023s        | 0.033s |
+						</textarea>
+					</section>
+				
+					<section data-markdown>
+						<textarea data-template>
+							## 6.1 Performance [2/2]
+							### Institution (dataset=2m)
+							
+							| Type         | Redis   | ElasticSearch | Oracle |
+							| ------------ | ------- | ------------- |------- |
+							| Upload       | N/A     | 6m 21s        | 18m 8s |
+							| Get          | N/A     | 0.016s        | 0.015s |
+							| Search (all) | N/A     | 0.023s        | 0.081s |
+							| Search I.    | N/A     | 0.024s        | 0.387s |
+							| Search II.   | N/A     | 0.103s        | 0.895s |
+							| Search III.  | N/A     | 0.019s        | 0.079s |
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 6.2 Disk consumption
+
+							| Type                          | Redis   | ElasticSearch | Oracle |
+							| ----------------------------- | ------- | ------------- |------- |
+							| keystore /<br/>index /<br/>table  | 166MB   | 33.1MB        | 49MB |
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 6.3 PROS
+							
+							| Redis                  | ElasticSearch                 | Oracle                                      |
+							| ---------------------- | ----------------------------- |-------------------------------------------- |
+							| messaging              | really fast upload and search | standard JPA approach we are used in Oxygen |
+							| streaming (not tested) | usable for more cases         |                                             |
+						</textarea>
+					</section>
+
+					<section data-markdown>
+						<textarea data-template>
+							## 6.4 CONS
+							
+							| Redis               | ElasticSearch                | Oracle                                   |
+							| ------------------- | ---------------------------- |----------------------------------------- |
+							| indexing            | default limit 10000          | not sufficient performance for huge data |
+							| search features     | pagination API is depricated |                                          |
+						</textarea>
+					</section>
+					
+					<section data-markdown>
+						<textarea data-template>
+							## 6.5 Conclusion
+							
+							1. **Redis** - bad performance and high disk consumption, "bad" Spring Data support 
+							1. **Elasticsearch** - very good performance and search possibilities, Spring Data tuning might be needed, efficient with resources
+							1. **Oracle** - best technology support, but insufficient performance
+						</textarea>
+					</section>
+
+				</section>
+
+				<section>
+					<h1>Discussion</h1>
+				</section>
+
+				<section>
+					<h1>THE END</h1>
+					<h3>Thank you!</h3>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="../reveal.js/dist/reveal.js"></script>
+        <script src="../reveal.js/plugin/markdown/markdown.js"></script>
+        <script src="../reveal.js/plugin/highlight/highlight.js"></script>
+        <script src="../reveal.js/plugin/notes/notes.js"></script>
+        <script src="../reveal.js/plugin/math/math.js"></script>
+
+		<script>
+
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX ]
+			});
+
+		</script>
+
+	</body>
+</html>
